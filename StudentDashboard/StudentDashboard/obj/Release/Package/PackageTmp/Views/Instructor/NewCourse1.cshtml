@@ -1,0 +1,382 @@
+﻿@{
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Course</h1>
+    </div>
+    <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Create New Course</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    @*<div class="dropdown-header">Dropdown Header:</div>*@
+                    <a class="dropdown-item" href="./AccountManager/EditAccountDetails">Add New Index</a>
+                    <a class="dropdown-item" href="./LogOut">Add New Assignment</a>
+                    <a class="dropdown-item" href="./LogOut">Add New Test</a>
+                    <a class="dropdown-item" href="./ChangePassword">Cancel</a>
+                    <a class="dropdown-item" href="./Contact">Save</a>
+                    <a class="dropdown-item" href="./LogOut">Upload</a>
+
+                    @*<div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>*@
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card">
+            @*<div class="card-header">
+                    for more details
+                </div>*@
+            <div class="card-body">
+                <h5 class="card-title">Add Course Details</h5>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Name of course</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="courseName" class="form-control" id="inputPassword" placeholder="Enter name of course">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Description of course</label>
+                    <div class="col-sm-8">
+                        <textarea type="text" placeholder="Enter course description" id="message" name="courseContents" rows="2" class="form-control md-textarea"></textarea>
+                    </div>
+                </div>
+                <!--Section contents-->
+
+                <div class="card">
+                    <div class="course-content" id="addContent">
+                    </div>
+                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="addCourseContent()">Add new index</button>
+                    <button type="button" class="btn btn-outline-primary btn-lg btn-block" onclick="document.getElementById('courseForm').submit()">Submit</button>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <!-- Course section -->
+    <div class="card shadow mb-4">
+        <!-- Card Header - Accordion -->
+        <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+            <h6 class="m-0 font-weight-bold text-primary">Create New Index</h6>
+        </a>
+
+        <!-- Card Content - Collapse -->
+        <div class="collapse show" id="collapseCardExample">
+
+            <div class="card-body">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Index Contents</a>
+                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Assignment</a>
+                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Test</a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <!--Section course content-->
+
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <form action="FileUpload" id="courseForm" method="post" enctype="multipart/form-data">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <div class="card">
+                                    @*<div class="card-header">
+                                            for more details
+                                        </div>*@
+                                    <div class="card-body">
+                                        <h5 class="card-title">Add Index Details</h5>
+                                        <div class="form-group row">
+                                            <label for="inputPassword" class="col-sm-3 col-form-label">Name of Index</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" name="courseName" class="form-control" id="inputPassword" placeholder="Enter name of Index">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputPassword" class="col-sm-3 col-form-label">Description of Index</label>
+                                            <div class="col-sm-8">
+                                                <textarea type="text" placeholder="Enter Index description" id="message" name="courseContents" rows="2" class="form-control md-textarea"></textarea>
+                                            </div>
+                                        </div>
+                                        <!--Section contents-->
+
+                                        <div class="card">
+                                            <div class="course-content" id="addContent">
+                                            </div>
+                                            <button type="button" class="btn btn-primary btn-lg btn-block" onclick="addCourseContent()">Add new Topic</button>
+                                            <button type="button" class="btn btn-outline-primary btn-lg btn-block" onclick="document.getElementById('courseForm').submit()">Next</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+
+
+                    <!--Section Assignment content-->
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <form>
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <div class="card">
+                                    @*<div class="card-header">
+                                            for more details
+                                        </div>*@
+                                    <div class="card-body">
+
+                                        <h5 class="card-title">Add Assignment Details</h5>
+                                        <div class="form-group row">
+                                            <label for="inputPassword" class="col-sm-3 col-form-label">Name of assignment</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" id="inputPassword" placeholder="Enter name of course">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputPassword" class="col-sm-3 col-form-label">Description of assignment</label>
+                                            <div class="col-sm-8">
+                                                <textarea type="text" placeholder="Enter course description" id="message" name="message" rows="2" class="form-control md-textarea"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="sel1" class="col-sm-3 col-form-label">Select Assignment type:</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="sel1">
+                                                    <option>MCQ</option>
+                                                    <option>Subjective</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--Options section-->
+                                        <div class="assignment-question-container" id="assignmentMcqContainer">
+                                            <div class="card assignment-mcq-section">
+                                                <div class="card-body">
+                                                    <div class="form-group row">
+                                                        <label for="inputPassword" class="col-sm-3 col-form-label">Question statement</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" class="form-control" id="inputPassword" placeholder="Enter question">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="inputPassword" class="col-sm-3 col-form-label">Option 1</label>
+                                                        <div class="col-sm-8 mb-2">
+                                                            <input type="text" class="form-control" id="inputPassword" placeholder="Enter question 1">
+                                                        </div>
+                                                        <label for="inputPassword" class="col-sm-3 col-form-label">Option 2</label>
+                                                        <div class="col-sm-8 mb-2">
+                                                            <input type="text" class="form-control" id="inputPassword" placeholder="Enter question 2">
+                                                        </div>
+                                                        <label for="inputPassword" class="col-sm-3 col-form-label">Option 3</label>
+                                                        <div class="col-sm-8 mb-2">
+                                                            <input type="text" class="form-control" id="inputPassword" placeholder="Enter question 3">
+                                                        </div>
+                                                        <label for="inputPassword" class="col-sm-3 col-form-label">Option 4</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" class="form-control" id="inputPassword" placeholder="Enter question 4">
+                                                        </div>
+                                                        <hr />
+
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="sel1" class="col-sm-3 col-form-label">Select Correct Option</label>
+                                                        <div class="col-sm-8">
+                                                            <select class="form-control" id="sel1">
+                                                                <option value="opt1">select...</option>
+                                                                <option value="opt1">Option 1</option>
+                                                                <option value="opt2">Option 2</option>
+                                                                <option value="opt3">Option 3</option>
+                                                                <option value="opt4">Option 4</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary" onclick="addAssignmentMcqQuestion()">Add Question</button>
+                                        <button type="button" class="btn btn-outline-primary">Next</button>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <!--Section Test contesnt content-->
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                        <form>
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <h5 class="card-title">Add Tets Details</h5>
+                                        <div class="form-group row">
+                                            <label for="inputPassword" class="col-sm-3 col-form-label">Name of Test*</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" id="inputPassword" placeholder="Enter name of course">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputPassword" class="col-sm-3 col-form-label">Description of Test</label>
+                                            <div class="col-sm-8">
+                                                <textarea type="text" placeholder="Enter course description" id="message" name="message" rows="2" class="form-control md-textarea"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="sel1" class="col-sm-3 col-form-label">Select Assignment type:</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="sel1">
+                                                    <option>MCQ</option>
+                                                    <option>Subjective</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="sel1" class="col-sm-3 col-form-label">Time of test(Hours:minutes)*</label>
+                                            <div class="col-sm-8">
+                                                <div class="col-sm-8">
+                                                    <input type="time" class="without_ampm" id="inputPassword" placeholder="Enter question">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--Options section-->
+                                        <div class="assignment-question-container" id="testSubjectiveContainer">
+                                            <div class="card test-subjective-section">
+                                                <div class="card-body">
+                                                    <div class="form-group row">
+                                                        <label for="inputPassword" class="col-sm-3 col-form-label">Question statement</label>
+                                                        <div class="col-sm-8">
+                                                            <input type="text" class="form-control" id="inputPassword" placeholder="Enter question">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary" onclick="addTestSubjectiveQuestion()">Add Question</button>
+                                        <button type="button" class="btn btn-outline-primary">Save</button>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function removeDiv(elem) {
+        $(elem).parent('div').remove();
+    }
+    function addCourseContent()
+    {
+        document.getElementById("addContent").insertAdjacentHTML("afterend",
+            ' <div class="course-content-col">'
+                +'<button type="button" class="btn close' + 'data-dismiss="alert" onclick="removeDiv(this)" aria-label="Close">'
+                        +'<span aria-hidden="true" class="ml-3">×</span>'
+                +'</button> '
+                +'<div class="form-group row ml-3">'
+                        +'<label for="inputPassword" class="col-sm-3 col-form-label">Topic Name</label>'
+                        +'<div class="col-sm-8">'
+                            +'<input type="text" class="form-control" id="inputPassword" placeholder="Enter topic name">'
+                        +'</div>'
+                +'</div>'
+                +'<div class="form-group row ml-3">'
+                        +'<label for="inputPassword" class="col-sm-3 col-form-label">Content decription</label>'
+                        +'<div class="col-sm-8">'
+                            +'<textarea type="text" placeholder="Enter course description" id="message" name="message" rows="2" class="form-control md-textarea"></textarea>'
+                        +'</div>'
+                + '</div> '
+                + '<div class="form-group row ml-3">'
+                +'<label for="exampleFormControlFile1" class="col-sm-3 col-form-label">Add file</label>'
+                +'<div class="col-sm-5">'
+
+                    + '<div class="input-group-append">'
+                    + '<input type="file" name="fileUploads" class="form-control-file" id="exampleFormControlFile1">'
+                        +'<button class="btn btn-outline-secondary" type="button">Upload</button>'+
+                    '</div>'
+                +'</div>'
+                +'</div><hr/></div>'
+            );
+    }
+    function addTestSubjectiveQuestion()
+    {
+        document.getElementById("testSubjectiveContainer").insertAdjacentElement("afterend",
+        '<div class="card test-subjective-section">'
+            + '<div class="card-body">'
+                + '<div class="form-group row">'
+                    + '<label for="inputPassword" class="col-sm-3 col-form-label">Question statement</label>'
+                    + '<div class="col-sm-8">'
+                        + '<input type="text" class="form-control" id="inputPassword" placeholder="Enter question">'
+                    + '</div>'
+                + '</div>'
+            + '</div>'
+        + '</div>');
+
+    }
+    function addAssignmentMcqQuestion()
+    {
+        document.getElementById("assignmentMcqContainer").insertAdjacentHTML("afterend",
+             '<div class="card assignment-mcq-section">'
+                      + '<button type="button" class="btn close' + 'data-dismiss="alert" onclick="removeDiv(this)" aria-label="Close">'
+                                + '<span aria-hidden="true" class="ml-3">×</span>'
+                      + '</button> '
+                    + '<div class="card-body">'
+                        + '<div class="form-group row">'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Question statement</label>'
+                            + '<div class="col-sm-8">'
+                                + '<input type="text" class="form-control" id="inputPassword" placeholder="Enter question">'
+                            + '</div>'
+                        + '</div>'
+                        + '<div class="form-group row">'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Option 1</label>'
+                            + '<div class="col-sm-8 mb-2">'
+                                + '<input type="text" class="form-control" id="inputPassword" placeholder="Enter question 1">'
+                            + '</div>'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Option 2</label>'
+                            + '<div class="col-sm-8 mb-2">'
+                                + '<input type="text" class="form-control" id="inputPassword" placeholder="Enter question 2">'
+                            + '</div>'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Option 3</label>'
+                            + '<div class="col-sm-8 mb-2">'
+                                + '<input type="text" class="form-control" id="inputPassword" placeholder="Enter question 3">'
+                            + '</div>'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Option 4</label>'
+                            + '<div class="col-sm-8">'
+                                + '<input type="text" class="form-control" id="inputPassword" placeholder="Enter question 4">'
+                            + '</div>'
+
+                            + '<hr />'
+                        + '</div>'
+                        + '<div class="form-group row">'
+                                                            + '<label for="sel1" class="col-sm-3 col-form-label">Select Correct Option</label>'
+                                                            + '<div class="col-sm-8">'
+                                                                + '<select class="form-control" id="sel1">'
+                                                                    + '<option value="opt1">select...</option>'
+                                                                    + '<option value="opt1">Option 1</option>'
+                                                                    + '<option value="opt2">Option 2</option>'
+                                                                    + '<option value="opt3">Option 3</option>'
+                                                                    + '<option value="opt4">Option 4</option>'
+                                                                + '</select>'
+                                                            + '</div>'
+                                                        + '</div>'
+                    + '</div>'
+                + '</div>'
+
+
+            );
+
+    }
+</script>
+
+

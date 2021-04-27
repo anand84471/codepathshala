@@ -1,0 +1,853 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_AboutLayout.cshtml";
+}
+<style type="text/css">
+    .checked {
+        color: orange;
+    }
+</style>
+
+<style type="text/css">
+        /*   body {
+      background: #222;
+    }*/
+
+        .video-play-button {
+            position: absolute;
+            z-index: 1;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            box-sizing: content-box;
+            display: block;
+            width: 32px;
+            height: 44px;
+            /* background: #fa183d; */
+            border-radius: 50%;
+            padding: 18px 20px 18px 28px;
+        }
+
+            .video-play-button:before {
+                content: "";
+                position: absolute;
+                z-index: 0;
+                left: 50%;
+                top: 50%;
+                transform: translateX(-50%) translateY(-50%);
+                display: block;
+                width: 80px;
+                height: 80px;
+                background: #ba1f24;
+                border-radius: 50%;
+                animation: pulse-border 1500ms ease-out infinite;
+            }
+
+            .video-play-button:after {
+                content: "";
+                position: absolute;
+                z-index: 1;
+                left: 50%;
+                top: 50%;
+                transform: translateX(-50%) translateY(-50%);
+                display: block;
+                width: 80px;
+                height: 80px;
+                background: #fa183d;
+                border-radius: 50%;
+                transition: all 200ms;
+            }
+
+            .video-play-button:hover:after {
+                background-color: darken(#fa183d, 10%);
+            }
+
+            .video-play-button img {
+                position: relative;
+                z-index: 3;
+                max-width: 100%;
+                width: auto;
+                height: auto;
+            }
+
+            .video-play-button span {
+                display: block;
+                position: relative;
+                z-index: 3;
+                width: 0;
+                height: 0;
+                border-left: 32px solid #fff;
+                border-top: 22px solid transparent;
+                border-bottom: 22px solid transparent;
+            }
+
+        @@keyframes pulse-border {
+            0% {
+                transform: translateX(-50%) translateY(-50%) translateZ(0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(-50%) translateY(-50%) translateZ(0) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+
+
+        .video-overlay {
+            position: fixed;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.80);
+            opacity: 0;
+            transition: all ease 500ms;
+            max-width: 100vw;
+        }
+
+            .video-overlay.open {
+                position: fixed;
+                z-index: 1000;
+                opacity: 1;
+            }
+
+        .video-overlay-close {
+            position: absolute;
+            z-index: 1000;
+            top: 15px;
+            right: 20px;
+            font-size: 36px;
+            line-height: 1;
+            font-weight: 400;
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 200ms;
+        }
+
+            .video-overlay-close:hover {
+                color: #fa183d;
+            }
+
+        .video-overlay iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            /* width: 90%; */
+            /* height: auto; */
+            box-shadow: 0 0 15px rgba(0,0,0,0.75);
+        }
+</style>
+@using StudentDashboard.HttpResponse;
+@model GetWebsiteHomeDetailsResponse
+<section id="main-header" class="ftco-section ftco-no-pt ftc-no-pb site-back-ground-image img img-responsive" style="background-image: url(../Images/home-page-bg-graphics.svg);background-repeat:no-repeat;max-width:100vw;">
+    <div class="container">
+        <!-- Outer Row -->
+        <div class="row justify-content-center mb-1 pb-2 pt-sm-2">
+            <div class="col-md-8 text-center heading-section heading-section-black ftco-animate">
+                <h2 class="hero-wrap bread ml-4 text-center mr-4">Learn Live<span> Specially designed courses for academics and research</span> </h2>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="o-hidden border-0  my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                            <div class="col-lg-6 mb-2 mt-5" data-stellar-background-ratio="0.5">
+                                <div class="p-5">
+                                    <form method="post" class="needs-validation" action="/Student/ValidateLogin" autocomplete="off" novalidate>
+
+                                        <a href="./Student" class="btn btn-primary btn-user btn-block font-weight-bolder">
+                                            Continue as Student
+                                        </a>
+                                        <hr>
+                                        <a href="./BecomeInstructor" class="btn btn-primary btn-user btn-block font-weight-bolder">
+                                            Continue as Instructor
+                                        </a>
+
+                                        <hr>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-2">
+                                <a id="play-video" class="video-play-button" href="#">
+
+                                    <span></span>
+                                </a>
+
+
+                                <div id="video-overlay" class="video-overlay">
+
+                                    <a class="video-overlay-close">&times;</a>
+                                </div>
+                                @*<div class="embed-responsive embed-responsive-16by9">
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/BrtuFDMr63o" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>*@
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section ftco-counter img" id="section-counter" style="padding-top:1rem;padding-bottom:0.5rem;" data-stellar-background-ratio="0.5">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-2">
+            <div class="col-md-9 text-center heading-section heading-section-black ftco-animate">
+                <h2 class="mb-1"><span>Achieve your targets with </span>ReadMyCourse</h2>
+                <h6 class="mb-1"><span> Try a free live course today from instructors of 10+ world-class universities.</span> </h6>
+                <div class="row  align-items-center">
+                    <img class="img p-2 mr-2" style="width:100px;height:100px;" src="~/Images/iit-indore-logo.png" />
+                    <img class="img p-2 mr-2" style="width:100px;height:100px;" src="~/Images/iit_mandi_logo.png" />
+                    <img class="img p-2 mr-2" style="width:120px;height:110px;" src="~/Images/mnnit-allahabad-logo.png" />
+                    <img class="img p-2 mr-2" style="width:90px;height:90px;" src="~/Images/iit-madras-logo.png" />
+                    <img class="img p-2 mr-2" style="width:90px;height:90px;" src="~/Images/institutions_logo/IIT_Kharagpur_Logo.svg" />
+                    <img class="img p-2 mr-2" style="width:90px;height:70px;" src="~/Images/institutions_logo/mit-logo.png" />
+                    <img class="img p-2 mr-2" style="width:90px;height:90px;" src="~/Images/institutions_logo/stanford.png" />
+                    <img class="img p-2 mr-2" style="width:90px;height:90px;" src="~/Images/institutions_logo/iiser-pune-logo.png" />
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section bg-light" style="padding-top:1rem;padding-bottom:0.5rem;">
+    <div class="container">
+        <div class="row justify-content-center mb-1 pb-2">
+            <div class="col-md-10 text-center heading-section ftco-animate">
+                <h2 class="mb-4"><span>Essential programming language courses for </span>academic research</h2>
+                <p>Specially designed course for learning programming lanuguage concepts and applying to your reserach work.</p>
+            </div>
+        </div>
+        <div class="row card-group">
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/Python_for_scientific_computation_10053" class="block-20 d-flex align-items-end" style="background-image: url('../images/machine_learning.jpg');">
+
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/Python_for_scientific_computation_10053">Python for scientific computation</a></h3>
+                        <p style="display:none;">Learn Machine learning in a practical way with directly working with Biological Data. Here you will learn regression, Artificial Neural networks, Sampling, KNN, Regularization, Optimization.</p>
+                        <p class="d-flex ml-auto mb-0">
+                        <p>4.9/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 1000+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/Python_for_scientific_computation_10053" class="btn btn-secondary">Join Free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/matlab_for_beginner_10024" class="block-20 d-flex align-items-end" style="background-image: url('../images/course_icons/matlab_for_scientific_computation.jpeg');">
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/matlab_for_beginner_10024">MATLAB for scientific computation</a></h3>
+                        <p style="display:none;">This course teaches computer programming to those with little to no previous experience. Here you will learn Matrices and Operators, Functions, Programmer's Toolbox, Loops, Data Types, and plotting.</p>
+                        <p class="ml-auto mb-0">
+                        <p>4.8/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 2000+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/matlab_for_beginner_10024" class="btn btn-secondary">Join free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/R_for_scientific_computation_10054" class="block-20 d-flex align-items-end" style="background-image: url('../images/course_icons/r_for_scientific_computation.jpeg');">
+
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/R_for_scientific_computation_10054">R for scientific computation</a></h3>
+                        <p style="display:none;">Here you will learn python data types, loops, functions, classes, modules, plotting, file processing, and scientific calculations, BLAST, Sequence Alignments, NumPy, SciPy, Biopython, bioinformatics algorithms, and various Python tools for computational molecular biology.</p>
+                        <p class="ml-auto mb-0">
+                        <p>4.5/5 | English | Guided Project |Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked icon-star-half"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 500+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/R_for_scientific_computation_10054" class="btn btn-secondary">Join Free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section bg-light" style="padding-top:1rem;padding-bottom:0.5rem;">
+    <div class="container">
+        <div class="row justify-content-center mb-1 pb-2">
+            <div class="col-md-8 text-center heading-section ftco-animate">
+                <h2 class="mb-4"><span>Specially designed courses for </span>academic research</h2>
+            </div>
+        </div>
+        <div class="row card-group">
+            <div id="home_classroom"></div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/MACHINE_LEARNING_BOOTCAMP_For_biological_research_10052" class="block-20 d-flex align-items-end" style="background-image: url('../images/course_icons/machine_learning_bootcamp_for_biological_research.jpeg');">
+
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/MACHINE_LEARNING_BOOTCAMP_For_biological_research_10052">MACHINE LEARNING BOOTCAMP : For biological research</a></h3>
+                        <p style="display:none;">Learn Machine learning in a practical way with directly working with Biological Data. Here you will learn regression, Artificial Neural networks, Sampling, KNN, Regularization, Optimization.</p>
+                        <p class="d-flex ml-auto mb-0">
+                        <p>5/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 500+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/MACHINE_LEARNING_BOOTCAMP_For_biological_research_10052" class="btn btn-secondary">Join Free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4   ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/MACHINE_LEARNING_BOOTCAMP_For_biological_research_10062" class="block-20 d-flex align-items-end" style="background-image: url('../images/course_icons/machine_learning_bootcamp_for_all_reserachers.jpeg');">
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/MACHINE_LEARNING_BOOTCAMP_For_biological_research_10062">Machine learning Bootcamp for all researchers</a></h3>
+                        <p style="display:none;">This course teaches computer programming to those with little to no previous experience. Here you will learn Matrices and Operators, Functions, Programmer's Toolbox, Loops, Data Types, and plotting.</p>
+                        <p class="ml-auto mb-0">
+                        <p>4.7/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked icon-star-half"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 1000+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/MACHINE_LEARNING_BOOTCAMP_For_biological_research_10062" class="btn btn-secondary">Join free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/python_for_bioinformatics_10060" class="block-20 d-flex align-items-end" style="background-image: url('../images/python_for_bioinfromatics-min.png');">
+
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/python_for_bioinformatics_10063">Python for Bioinformatics</a></h3>
+                        <p style="display:none;">Here you will learn python data types, loops, functions, classes, modules, plotting, file processing, and scientific calculations, BLAST, Sequence Alignments, NumPy, SciPy, Biopython, bioinformatics algorithms, and various Python tools for computational molecular biology.</p>
+                        <p class="ml-auto mb-0">
+                        <p>4.9/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 100+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/python_for_bioinformatics_10060" class="btn btn-secondary">Join Free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/python_for_bioinformatics_10060" class="block-20 d-flex align-items-end" style="background-image: url('../images/python_for_bioinfromatics-min.png');">
+
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/python_for_bioinformatics_10063">Python for Bioinformatics Weekend batch</a></h3>
+                        <p style="display:none;">Here you will learn python data types, loops, functions, classes, modules, plotting, file processing, and scientific calculations, BLAST, Sequence Alignments, NumPy, SciPy, Biopython, bioinformatics algorithms, and various Python tools for computational molecular biology.</p>
+                        <p class="ml-auto mb-0">
+                        <p>4.9/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 100+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/python_for_bioinformatics_10063" class="btn btn-secondary">Join Free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/Bioinformatics_web_application_development_course_with_python_10056" class="block-20 d-flex align-items-end" style="        background-image: url('../images/course_icons/bioinformatics_web_development_with_python.jpeg');">
+
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/Bioinformatics_web_application_development_course_with_python_10056">Bioinformatics web application development course with python</a></h3>
+                        <p style="display:none;">This course will focus on standards used by companies and how and what all we need to crack a Testing interview. Will be covering Automation tools, Performance testing tools and a introduction to Security testing.</p>
+                        <p class="ml-auto mb-0">
+                        <p>4.9/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 100+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/Bioinformatics_web_application_development_course_with_python_10056" class="btn btn-secondary">Join Free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/NGS_Data_analysis_training_with_python_10055" class="block-20 d-flex align-items-end" style="background-image: url('../images/course_icons/ngs_data_analysis_with_python.jpeg');">
+
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/NGS_Data_analysis_training_with_python_10055">NGS Data analysis training with python</a></h3>
+                        <p style="display:none;">Start from core MATLAB Topics matrix operations, function, plotting, file processing you will learn regression, neural network, Genetic Algorithms, curve fitting.</p>
+                        <p class="ml-auto mb-0">
+                        <p>4.5/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked icon-star-half"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 500+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/NGS_Data_analysis_training_with_python_10055" class="btn btn-secondary">Join free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/Computer_aided_drug_design_training_with_python_10059" class="block-20 d-flex align-items-end" style="background-image: url('../images/course_icons/computer_aided_drug_design_with_python.jpeg');">
+
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/Computer_aided_drug_design_training_with_python_10059">Computer-aided drug design with python</a></h3>
+                        <p style="display:none;">Enroll now to learn Python online & be a certified Python professional with ReadMyCourse. Here you will learn python data types, loops, functions, classes, modules, plotting, file processing, and scientific calculations.</p>
+                        <p class="ml-auto mb-0">
+                        <p>4.7/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked icon-star-half"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 200+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/Computer_aided_drug_design_training_with_python_10059" class="btn btn-secondary">Join Free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/Bioinformatics_training_10057" class="block-20 d-flex align-items-end" style="background-image: url('../images/course_icons/bioinformarics_training.jpeg');">
+
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/Bioinformatics_training_10057">Bioinformatics training</a></h3>
+                        <p style="display:none;">Start from core python topics like data types, loops, functions, classes, modules we will continue to learn SciPy, NumPy, Matplotlib, and Scikit library.</p>
+                        <p class="ml-auto mb-0">
+                        <p>4.8/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked icon-star-half"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 500+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/Bioinformatics_training_10057" class="btn btn-secondary">Join Free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 ftco-animate">
+                <div class="live_class blog-entry">
+                    <a href="~/JoinLiveClass/Details/Computer_aided_vaccine_designing_training_10058" class="block-20 d-flex align-items-end" style="background-image: url('../images/course_icons/computer_aided_vaccine_designing.jpeg');">
+
+                    </a>
+                    <div class="text bg-white p-4">
+                        <h3 class="heading"><a href="~/JoinLiveClass/Details/Computer_aided_vaccine_designing_training_10058">Computer-aided vaccine designing with python</a></h3>
+                        <p style="display:none;">Start from core python topics like data types, loops, functions, classes, modules we will continue to learn SciPy, NumPy, Matplotlib, and Scikit library.</p>
+                        <p class="ml-auto mb-0">
+                        <p>4.7/5 | English | Guided Project | Paper Publication</p>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked icon-star-half"></span>
+                        <a href="#" class="meta-chat"><span class="icon-users"></span> 500+</a>
+                        </p>
+                        <div class="d-flex align-items-center mt-4">
+                            <p class="mb-0"><a href="~/JoinLiveClass/Details/Computer_aided_vaccine_designing_training_10058" class="btn btn-secondary">Join Free <span class="ion-ios-arrow-round-forward"></span></a></p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section ftco-counter img" id="section-counter" style="padding-top:1rem;padding-bottom:0.5rem;" data-stellar-background-ratio="0.5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12 text-center heading-section heading-section-black ftco-animate">
+                <h4 class="mb-1 font-weight-bolder"><span>Benefits of learning live</span> </h4>
+                <h6 class="mb-1"><span> Do you want to know why millions of students want to learn live?</span> </h6>
+                <div class="row">
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/bulb.png" style="height:150px;width:150px;" />
+                            <h4>Customized learning</h4>
+                            <h6>Learn what you exactly need, to boost your interest.</h6>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/chat.png" style="height:150px;width:150px;" />
+                            <h4>Better communication </h4>
+                            <h6>Similar to the physical classroom in terms of interaction.</h6>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/book.png" style="height:150px;width:150px;" />
+                            <h4>To established relationship of trust</h4>
+                            <h6>Instructor’s chance to show mastery over the subject at hand.</h6>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/accelerate.png" style="height:150px;width:150px;" />
+                            <h4>Accelerated learning</h4>
+                            <h6>Learning live makes it easy to accelerate your learning. You will earn certificate in very short time period.</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row d-md-flex align-items-center justify-content-center">
+            <div class="col-md-12 text-center heading-section heading-section-black ftco-animate">
+                <h4 class="mb-1 font-weight-bolder"><span>Features available in our live classes</span> </h4>
+                <h6 class="mb-1"><span> “who knows, does it live” </span> </h6>
+                <div class="row">
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/certificate.png" style="height:100px;width:100px;" />
+                            <h4>Certificate of completion</h4>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/video.png" style="height:100px;width:100px;" />
+                            <h4>Life time study material access</h4>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/messenger.png" style="height:100px;width:100px;" />
+                            <h4>Message instructor at any time</h4>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/job-search.png" style="height:100px;width:100px;" />
+                            <h4>Job opportunities</h4>
+                            <h6></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="row justify-content-center mb-5 pb-2">
+                <div class="col-md-9 text-center heading-section heading-section-black ftco-animate">
+                    <h2 class="mb-1"><span>Achieve your targets with </span>ReadMyCourse</h2>
+                    <h6 class="mb-1"><span> Try a free live course today from instructors of 10+ world-class universities.</span> </h6>
+                    <div class="row  col-lg-12 text-center container-fluid">
+                        <img class="img p-2 mr-2" style="width:160px;height:90px;" src="~/Images/companies_logo/biocon-logo.png" />
+                        <img class="img p-2 mr-2" style="width:90px;height:90px;" src="~/Images/companies_logo/google-logo.png" />
+                        <img class="img p-2 mr-2" style="width:120px;height:100px;" src="~/Images/companies_logo/facebook-logo.png" />
+                    </div>
+                    <hr>
+                </div>
+            </div>*@
+
+    </div>
+</section>
+
+
+<section class="ftco-section testimony-section bg-light" style="padding-top:1rem;padding-bottom:0.5rem;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center heading-section ftco-animate">
+                <h2 class="mb-1"><span>Why should you choose us</span></h2>
+                <p></p>
+            </div>
+        </div>
+        <div class="row ftco-animate justify-content-center">
+            <div class="col-md-12">
+                <div class="carousel-testimony owl-carousel">
+                    <div class="item">
+                        <div class="testimony-wrap d-flex">
+                            <div class="user-img mr-4" style="background-image: url(../../Images/testimonial2.jpg)">
+                            </div>
+                            <div class="text ml-2 bg-light">
+                                <span class="quote d-flex align-items-center justify-content-center">
+                                    <i class="icon-quote-left"></i>
+                                </span>
+                                <small>Technical courses of ReadMyCourse can really satisfy to our student’s hunger for learning and development. It can also help to students for correctly automating, storing, handling, measuring, analysing data and information processing. </small>
+                                <p class="name">Anna Bashir Akhnoon</p>
+                                <span class="position">Managing Director for India at University of Huddersfield</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="testimony-wrap d-flex">
+                            <div class="user-img mr-4" style="background-image: url(../../Images/testimonial1.jpg)">
+                            </div>
+                            <div class="text ml-2 bg-light">
+                                <span class="quote d-flex align-items-center justify-content-center">
+                                    <i class="icon-quote-left"></i>
+                                </span>
+                                <small class="text-justify">ReadMyCourse provides flexibility and access of expertise to our students who may not be able to make it for classes in a traditional brick and mortar kind of college due to various reasons. It will provide a platform to our teachers and students to grow and boost their skills.  It's free and paid courses with live lectures, homework exercise, quizzes, projects and certificate of completion which can give an immersive learning experience.</small>
+                                <p class="name">Prof. Anand K Tyagi </p>
+                                <span class="position">Professor &amp; Dean(PG &amp; Research) SBS State Govt. Technical Campus, Firozpur</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@*<section class="ftco-section ftco-counter img" id="section-counter" style="padding-top:0.5rem;padding-bottom:0.5rem;" data-stellar-background-ratio="0.5">
+        <div class="container text-center">
+
+            <div class="row justify-content-center mb-0 pb-1">
+                <div class="col-md-12 text-center heading-section heading-section-black ftco-animate">
+                    <h2 class="mb-1 font-weight-bolder"><span>Are you a student?</span> </h2>
+
+                    <a href="./Student/Join"><img class="img-fluid" src="~/Images/students-joined.jpg" style="max-width:80vw;"/></a>
+                    <p><a class="btn btn-outline-primary mt-2 text-white font-weight-bolder" href="./Student/Join" style="background-color:	#9400D3;">Join now &#8594;</a></p>
+                    <hr style="max-width:50vw;"/>
+                </div>
+            </div>
+        </div>
+    </section>*@
+<section class="ftco-section ftco-counter img" id="section-counter" style="padding-top:0.5rem;" data-stellar-background-ratio="0.5">
+    <div class="container text-center">
+
+        <div class="row justify-content-center pb-1">
+            <div class="col-md-12 text-center heading-section heading-section-black ftco-animate">
+                <h2 class="mb-1 font-weight-bolder"><span>Want to earn a certificate?</span> </h2>
+
+                <a href="./Student/Join"><img class="img-fluid" src="~/Images/rmc_certifcate_sample.jpg.jpg" style="max-height:80vh;border:1px solid #808080" /></a>
+                <p><a href="./JoinLiveClass" class="btn btn-outline-primary mt-2 text-white font-weight-bolder" style="background-color:	#9400D3;">Join live course &#8594;</a></p>
+                <hr style="max-width:50vw;" />
+            </div>
+        </div>
+    </div>
+</section>
+<div class="d-lg-inline"></div>
+<section class="ftco-section ftco-counter img" id="section-counter" style="background-image: url(../Images/bg_4.jpg);" data-stellar-background-ratio="0.5">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-2">
+            <div class="col-md-8 text-center heading-section heading-section-black ftco-animate">
+                <h2 class="mb-4"><span>Our</span> Journey</h2>
+                <strong>Every created content makes someone's life easy</strong>
+            </div>
+        </div>
+        <div class="row d-md-flex align-items-center justify-content-center">
+            <div class="col-lg-10">
+                <div class="row d-md-flex align-items-center">
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="@Model.m_llNoOfStudentsJoined">0</strong>
+                                <span>Students Joined</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="@Model.m_llNoOfInstructorsJoined" id="">0</strong>
+                                <span>Instructors joined</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="@Model.m_llNoOfCoursesCreated">0</strong>
+                                <span>Courses created</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="@Model.m_llNoOfAssignmentscreated">0</strong>
+                                <span>Assignments and Tests</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-services ftco-no-pb">
+    <div class="container-wrap">
+        <div class="row no-gutters">
+            <div class="col-md-3 d-flex services align-self-stretch pb-4 px-4 ftco-animate bg-primary">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-teacher"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Instructor</h3>
+                        <p>
+                            We provide instructors, blend of knowledge and immersive learning experience, to provide real-time interaction with multiple ongoing activities and highest quality content for our learners during live classes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex services align-self-stretch pb-4 px-4 ftco-animate bg-tertiary">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-reading"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Student</h3>
+                        <p>
+                            Join us for various free live classes. Live classses on syallabus of your choice.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex services align-self-stretch pb-4 px-4 ftco-animate bg-quarternary">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-education"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Live class</h3>
+                        <p>
+                            ReadMyCourse offers you to create e-learning classroom to take live classes,
+                            attendance, assignments and to pin learning material.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex services align-self-stretch pb-4 px-4 ftco-animate bg-fifth">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-books"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Courses</h3>
+                        <p>
+                            If you love learning together even when we’re apart. All you need to do is login
+                            and transform your lessons for learners who have never experienced e-learning
+                            before.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section ftco-counter img" id="section-counter" style="padding-top:0.5rem;" data-stellar-background-ratio="0.5">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-12 text-center heading-section heading-section-black ftco-animate">
+                <h2 class="mb-1 font-weight-bolder"><span>Thanks for visiting us</span> </h2>
+                <img class="img-fluid" src="~/Images/community.jpg" />
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(".live_class").hover(
+        function () {
+            $(this).addClass("shadow-lg");
+        },
+        function () {
+            $(this).removeClass("shadow-lg");
+        }
+    );
+</script>
+<script type="text/javascript">
+    $('#play-video').on('click', function (e) {
+        var height = $(window).height() * 0.8;
+        var width = $(window).width() * 0.7;
+        if (width < 500) {
+            width = width * 1.3;
+            height = width;
+        }
+        e.preventDefault();
+        $('#video-overlay').addClass('open');
+        $("#video-overlay").append('<iframe width="' + width + '" height="' + height + '" src="https://www.youtube.com/embed/BrtuFDMr63o"" frameborder="0" allowfullscreen></iframe>');
+    });
+
+    $('.video-overlay, .video-overlay-close').on('click', function (e) {
+        e.preventDefault();
+        close_video();
+    });
+
+    $(document).keyup(function (e) {
+        if (e.keyCode === 27) { close_video(); }
+    });
+
+    function close_video() {
+        $('.video-overlay.open').removeClass('open').find('iframe').remove();
+    };
+</script>

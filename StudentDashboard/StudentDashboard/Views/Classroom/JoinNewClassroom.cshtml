@@ -1,0 +1,333 @@
+﻿@{
+    ViewBag.Title = "Join course";
+    Layout = "~/Views/Shared/_AboutLayout.cshtml";
+}
+<style type="text/css">
+    .custom-blue {
+        background-image: linear-gradient(to right, rgba(51, 91, 255), rgba(51, 80, 210));
+    }
+
+    .custom-white {
+        background-image: linear-gradient(to right, rgba(253, 254, 254), rgba(253, 254, 254));
+    }
+
+    .custom-green {
+        color: white;
+        background-image: linear-gradient(to right, rgba(8, 254, 58, 0.84), rgba(27, 164, 26, 0.63));
+    }
+
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        border-radius: 5px;
+    }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+    .custom-join-button {
+        background: rgb(63,94,251);
+        background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+    }
+
+    .custom-color-desc {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        color: #655b5b;
+    }
+
+    .custom-dialog-header {
+        background: rgb(131,58,180);
+        color: turquoise;
+        background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+    }
+</style>
+
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800 ml-5">Join new Classroom</h1>
+
+    </div>
+    <nav class="container-fluid">
+        @*<a href="./Home" class="btn navbar-item text-white">
+                <i class="fa fa-arrow-left"></i>
+            </a>*@
+        <div class="input-group ">
+            <select class="input-group-prepend " style="width:70px" id="inlineFormCustomSelect">
+                <option selected value="1">Filter...</option>
+                <option value="1">Date of creation ascending</option>
+                <option value="2">Date of creation descending</option>
+                <option value="3">Popularity</option>
+                <option value="4">Rating</option>
+                @*<option value="php">Price high to low</option>
+                    <option value="plh">Price low to high</option>*@
+            </select>
+            <input type="text" class="form-control" id="courseSearchBox" placeholder="Search for classroom..." aria-label="Search">
+            <div class="input-group-append">
+                <button class="btn btn-primary" onclick="showClassrooms()" type="button">
+                    <i class="icon-search"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="text-center ml-3">
+
+            <hr class="mb-3" />
+        </div>
+        <div class="col p-1">
+            <div class="alert alert-danger p-2 m-3" role="alert" style="display:none" id="noCoursesFound">
+                <h4 class="alert-heading">No classroom found.</h4>
+            </div>
+            <div class="row pl-1" id="coursesContainer">
+                <div class="text-center container-fluid">
+                    <h1 class="text-center center">Search for classrooms</h1>
+                    <img src="~/Images/content-search.svg" class="img-fluid" style="width:300px;height:300px;" />
+                </div>
+            </div>
+            <div class="col-sm-12" id="showMoreCourseButton" style="display:none">
+                <button class="btn btn-block btn-outline-primary" onclick="showMoreCourse()">Load more</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade top" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header custom-dialog-header ">
+                <h4 class="modal-title w-100 text-white" id="myModalLabel"> <b>Course Details:</b></h4>
+                <button type="button" class="close " data-dismiss="modal" aria-label="Close">
+                    <span class="" aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body ">
+                <dl class="row">
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9" id="courseName"></dd>
+                    <dt class="col-sm-3">Description:</dt>
+                    <dd class="col-sm-9" id="courseDescription"></dd>
+                    <dt class="col-sm-3 ">Created on:</dt>
+                    <dd class="col-sm-9" id="insertDate">
+                    </dd>
+                    <dt class="col-sm-3">Assignments:</dt>
+                    <dd class="col-sm-9" id="assignments"></dd>
+                    <dt class="col-sm-3">Tests:</dt>
+                    <dd class="col-sm-9" id="tests"></dd>
+                    <dt class="col-sm-3">Indexes:</dt>
+                    <dd class="col-sm-9" id="indexes"></dd>
+                </dl>
+                <ul class="list-group z-depth-0" id="indexContainer"></ul>
+
+            </div>
+            <!--Footer-->
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<script>
+    (function () {
+        'use strict';
+        var input = document.getElementById("courseSearchBox");
+        input.addEventListener("keyup", function (event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                searchForCourse();
+            }
+        });
+        $("#courseMenu").addClass("active");
+        $("#homeMenu").removeClass("active");
+        onpageshow = showCourses();
+    })();
+    function showCourses(id)
+    {
+
+        noOfCourseFetched = 0;
+        $("#noCoursesFound").hide();
+        var _data =
+            {
+                "key": $("#courseSearchBox").val(),
+                "no_of_rows_fetched": 0,
+                "sorting_id": $("#inlineFormCustomSelect").val()
+            }
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/document/SearchCourse",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1 && data.courses!=null) {
+                    var courses = data.courses;
+                    var coursesContainer = $("#coursesContainer");
+                    coursesContainer.empty();
+                    noOfCourseFetched += courses.length;
+                    if(courses.length==10)
+                    {
+                        $("#showMoreCourseButton").show();
+                    }
+                    else {
+                        $("#showMoreCourseButton").hide();
+                    }
+
+                    for (var i = 0; i < courses.length;i++)
+                    {
+
+                        if (courses[i].course_description.length > 50) {
+                            courses[i].course_description = courses[i].course_description.substring(0, 50) + "...";
+                        }
+                       var rows=('<div class="col-xl-4 col-md-6 mb-4">'
+                    + '<div class="card   ml-2 mr-2 mb-2">'
+                    + '<div class="card-header custom-green">'
+                    + '<h4 class="font-weight-bold"><a>' + courses[i].course_name + '</a></h4>'
+                    +'</div>'
+                    +'<div class="card-body text-center">'
+
+                        + '<pre class="custom-color-desc font-weight-bold ">' + courses[i].course_description + '</pe>'
+                         + '<h6 class="text-mutated font-weight-bold">' + courses[i].course_activation_date + ' | FREE</h6>'
+                         + ' <p class="text mr-3"><i class="fa fa-users mr-2"></i><b>Students Joined:</b> ' + courses[i].no_of_students_joined + '</p>'
+                          + ' <p class="text mr-3"><b>Created by:</b> ' + courses[i].instructor_name + '</p>'
+                        +'<ul class="list-unstyled list-inline rating mb-0">'
+                            + '<li class="list-inline-item mr-2"><p><button  class="btn lg btn-outline-primary " onclick="getCourseDetails(' + courses[i].course_id + ',this)"> Details</button></p></li>'
+                            + '<li class="list-inline-item mr-0"><a  class="btn lg btn-primary custom-join-button"  href="Course/Details?id=' + courses[i].course_id + '">Join Now</a></li>'
+                        +'</ul>'
+                    +'</div>'
+                +'</div>'
+            + '</div>');
+                       coursesContainer.append(rows);
+                    }
+                }
+                else {
+                    $("#noCoursesFound").show();
+                }
+            }
+        });
+    }
+    function showMoreCourse() {
+        debugger
+        var _data =
+            {
+                "key": $("#courseSearchBox").val(),
+                "no_of_rows_fetched": noOfCourseFetched,
+                "sorting_id": $("#inlineFormCustomSelect").val()
+            }
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/document/SearchCourse",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1&&data.courses!=null) {
+                    var courses = data.courses;
+                    noOfCourseFetched += courses.length;
+                    var coursesContainer = $("#coursesContainer");
+                    if (courses.length == 10) {
+                        $("#showMoreCourseButton").show();
+                    }
+                    else {
+                        $("#showMoreCourseButton").hide();
+                    }
+
+                    var rows='';
+                    for (var i = 0; i < courses.length; i++) {
+                        if (courses[i].course_name.length > 15) {
+                            courses[i].course_name = courses[i].course_name.substring(0, 15) + "...";
+                        }
+                        if (courses[i].course_description.length > 28) {
+                            courses[i].course_description = courses[i].course_description.substring(0, 28) + "...";
+                        }
+                        var rows = ('<div class="col-xl-4 col-md-6 mb-4">'
+                     + '<div class="card   ml-2 mr-2 mb-2">'
+                     + '<div class="card-header custom-green">'
+                     + '<h4 class="font-weight-bold"><a>' + courses[i].course_name + '</a></h4>'
+                     + '</div>'
+                     + '<div class="card-body text-center">'
+                         + '<h6 class="custom-color-desc font-weight-bold">' + courses[i].course_description + '</h6>'
+                          + '<h6 class="text-mutated font-weight-bold">' + courses[i].course_activation_date + ' | FREE</h6>'
+                         + ' <p class="text mr-3"><i class="fa fa-users mr-2"></i><b>Students Joined:</b> ' + courses[i].no_of_students_joined + '</p>'
+                          + ' <p class="text mr-3"><b>Taught by:</b> ' + courses[i].instructor_name + '</p>'
+                         + '<ul class="list-unstyled list-inline rating mb-0">'
+                             + '<li class="list-inline-item mr-2"><p><button  class="btn lg btn-outline-primary " onclick="getCourseDetails(' + courses[i].course_id + ',this)">Details</button></p></li>'
+                             + '<li class="list-inline-item mr-0"><a  class="btn lg btn-primary custom-join-button"  href="Course/Details?id=' + courses[i].course_id + '">Join Now</a></li>'
+                         + '</ul>'
+                     + '</div>'
+                 + '</div>'
+             + '</div>');
+                        coursesContainer.append(rows);
+                    }
+                }
+            }
+        });
+    }
+
+    function getCourseDetails(Id,buttonid) {
+        $(buttonid).append('<i class="fa fa-spinner fa-spin" id="tempspinner"></i>');
+        $(buttonid).disabled = true;
+        debugger;
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/getcoursedetails?CourseId=".concat(Id),
+            success: function (data) {
+                debugger;
+                $(buttonid).find(":first-child").remove();
+                if (data != null && data.response_code == 1) {
+                    $("#courseDescription").text(data.course_description);
+                    $("#courseName").text(data.course_name);
+                    $("#insertDate").text(data.course_creation_date);
+                    $("#indexes").text(data.indexes.length);
+                    $('#fullHeightModalRight').modal('show');
+                    var assignments = 0;
+                    var tests = 0;
+                    $("#indexContainer").empty();
+                    if (data.indexes.length > 0) {
+                        $("#indexContainer").append(
+                           '<li class="list-group-item justify-content-between">'
+                               + '<b class="mr-2">Indexes:  </b>'
+                               + '<span class="badge badge-primary badge-pill">Topics</span>'
+                               + '<span class="badge badge-primary badge-pill">Assignments</span>'
+                               + '<span class="badge badge-primary badge-pill">Tests</span>'
+                           + '</li>'
+                           );
+                    }
+
+                    for (var i = 0; i < data.indexes.length; i++) {
+                        var x = 0; y = 0;
+                        if (data.indexes[i].assignment_name != null && data.indexes[i].assignment_name != "") {
+                            x++;
+                            assignments++;
+                        }
+                        if (data.indexes[i].test_name != null && data.indexes[i].test_name != "") {
+                            y++;
+                            tests++;
+                        }
+
+                        $("#indexContainer").append(
+                            '<li class="list-group-item justify-content-between">'
+                                + data.indexes[i].index_name
+                                + '  <span class="badge badge-primary badge-pill">' + data.indexes[i].topic_count + '</span>'
+                                + '<span class="badge badge-primary badge-pill">' + x + '</span>'
+                                + '<span class="badge badge-primary badge-pill">' + y + '</span>'
+                            + '</li>'
+                            );
+                    }
+                    $("#tests").text(tests);
+                    $("#assignments").text(assignments);
+                }
+                else {
+                    $("#footer").show();
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,168 @@
+﻿@{
+    ViewBag.Title = "Start new test";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Give new test</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Give new test</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="form-inline">
+        <div class="form-group mb-2">
+            <input type="text" class="form-control ml-2 mr-2" id="courseSearchBox" placeholder="serach for tests...">
+        </div>
+        <button class="btn btn-primary mb-2" onclick="searchForAssignments()">search</button>
+    </div>
+    <hr class="ml-5 mr-5" />
+    <div class="row" id="coursesContainer">
+    </div>
+    <div id="testAccessController" class="card col-sm-6 ml-xl-5 shadow-lg ">
+        <div class="card-body">
+            <h5>Please enter test id and access code to continue</h5>
+            <form method="post" class="needs-validation" action="RequestTestAccess" novalidate>
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Test Id</label>
+                    <input type="text" name="test_id" class="form-control" placeholder="Enter id" required>
+                    <div class="invalid-feedback">
+                        Please enter test id
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Access code</label>
+                    <input type="text" name="test_access_code" class="form-control" placeholder="Enter access code" required>
+                    <div class="invalid-feedback">
+                        Please enter access code
+                    </div>
+                </div>
+                @if (ViewBag.IsAccessError != null)
+                {
+                    if (ViewBag.IsAccessError)
+                    {
+                        <div class="alert alert-danger" role="alert" name="loginMessage1">
+                            Access denied!
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-primary" role="alert" name="loginMessage1">
+                            Access granted
+                        </div>
+                    }
+                    ViewBag.IsLoggedIn = null;
+                }
+                <div class="form-group">
+                    <button type="submit" class="btn btn-block btn-outline-primary">Submit</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="requestTestAccess" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAndUpdateIndexTopicHeader">Please enter access code to continue</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetAddTopicModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" class="needs-validation" action="requestTestAccess" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Test Id</label>
+                        <input type="text" name="test_id" class="form-control" id="testModalId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Access code</label>
+                        <input type="text" name="test_access_code" class="form-control" id="testModalAccessCode" placeholder="Enter access code">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-block btn-outline-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetAddTopicModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        'use strict';
+        var input = document.getElementById("courseSearchBox");
+        input.addEventListener("keyup", function (event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                searchForAssignments();
+            }
+        });
+        //onpageshow = searchForAssignments();
+    })();
+    function searchForAssignments() {
+        debugger
+        $("#testAccessController").hide();
+        var _data =
+            {
+                "key": $("#courseSearchBox").val()
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/SearchTest",
+            error: function (xhr, status, errorThrown) {
+                debugger
+                xhr.status;
+                xhr.responseText;
+            }
+            ,
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var tests = data.test_details;
+                    var coursesContainer = $("#coursesContainer");
+                    var rows='';
+                    for (var i = 0; i < tests.length; i++) {
+                        rows+=''
+                        +'<div class="col-xl-3 col-md-6 mb-4">'
+                            +'<div class="card shadow border-left-success  ml-2 mr-2 mb-2">'
+                                +'<div class="card-body text-center">'
+                                   + ' <h4 class="card-title font-weight-bold text-info">' + tests[i].test_name + '</h4>'
+                                   + ' <h5 class="card-text font-weight-bold ">Created on:</h5><p>' + tests[i].creation_date + '</p>'
+                                   + ' <p class="text mr-3"><i class="fas fa-fw fa-list mr-2"></i><b>No of questions :</b> ' + tests[i].no_of_questions + '</p>'
+                                   //+ ' <p class="text mr-3"><i class="fas fa-fw fa-book mr-2"></i><b>Courses Created:</b> ' + assignments[i].no_of_course + '</p>'
+                                    +'<ul class="list-unstyled list-inline rating mb-1">'
+                                       //+' <li class="list-inline-item mr-2"><button  class="btn btn-outline-primary">Profile</button></li>'
+                                        + '<li class="list-inline-item mr-0"><button  class="btn btn-dark mb-1" onclick=requestTestAccess(' + tests[i].test_id + ')>Start</button></li>'
+                                    +'</ul>'
+                                +'</div>'
+                            +'</div>'
+                         +'</div>';
+                    }
+                    coursesContainer.html(rows);
+                }
+                else {
+
+                }
+            }
+        });
+    }
+    function requestTestAccess(id) {
+        $("#requestTestAccess").modal("show");
+        $("#testModalId").val(id);
+    }
+</script>

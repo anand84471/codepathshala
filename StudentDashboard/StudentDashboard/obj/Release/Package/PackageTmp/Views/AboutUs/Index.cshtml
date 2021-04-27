@@ -1,0 +1,224 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_AboutLayout.cshtml";
+}
+@using StudentDashboard.HttpResponse;
+@model GetWebsiteHomeDetailsResponse
+
+<script src="https://source.zoom.us/zoom-meeting-1.7.8.min.js"></script>
+
+<section class="ftco-section ftco-no-pt ftc-no-pb">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12  wrap-about py-5 wrap-about bg-light">
+                <div class="text px-4 ftco-animate">
+                    <h2 class="mb-4">Welcome to ReadMyCourse</h2>
+                    <p>
+                        <strong>readmycourse.com</strong> is a next generation e-learning platform which provides fully interactive live classes for professional courses and have an aim to create social network of students,
+                        instructors and institutions.
+                    </p>
+                    <h3>Our Mission</h3>
+                    <blockquote>
+                        “To accommodate everyone’s educational needs by providing self paced, relevant,
+                        and personalized content in an e-learning platform which bridges the gap between instructors and
+                        students worldwide through live courses by providing an “online live course marketplace” for instructors
+                        to create and sell their courses globally”
+                    </blockquote>
+                    <h3>Our Vision</h3>
+                    <blockquote>
+                        “To eliminate all educational restrictions & geographical boundaries & providing quality education by connecting Instructors and Students
+                        from all over the world to learn, earn and grow on our next-generation e-learning platform”
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-counter img" id="section-counter" style="background-image: url(../Images/bg_4.jpg);" data-stellar-background-ratio="0.5">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-2">
+            <div class="col-md-8 text-center heading-section heading-section-black ftco-animate">
+                <h2 class="mb-4"><span>Our</span> Journey</h2>
+                <strong>Every created content makes someone's life easy</strong>
+            </div>
+        </div>
+        <div class="row d-md-flex align-items-center justify-content-center">
+            <div class="col-lg-10">
+                <div class="row d-md-flex align-items-center">
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="@Model.m_llNoOfInstructorsJoined" id="">0</strong>
+                                <span>Instructors joined</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="@Model.m_llNoOfStudentsJoined">0</strong>
+                                <span>Students Joined</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="@Model.m_llNoOfCoursesCreated">0</strong>
+                                <span>Courses created</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md d-flex justify-content-center counter-wrap ftco-animate">
+                        <div class="block-18">
+                            <div class="icon"><span class="flaticon-doctor"></span></div>
+                            <div class="text">
+                                <strong class="number" data-number="@Model.m_llNoOfAssignmentscreated">0</strong>
+                                <span>Assignments and Tests</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-services ftco-no-pb">
+    <div class="container-wrap">
+        <div class="row no-gutters">
+            <div class="col-md-3 d-flex services align-self-stretch pb-4 px-4 ftco-animate bg-primary">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-teacher"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Instructors</h3>
+                        <p>Instructor can create courses, assignment and tests in very easy and efficent way. Course progress, test scores will be available in
+                        both student and instructor dashboard.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex services align-self-stretch pb-4 px-4 ftco-animate bg-tertiary">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-reading"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Students</h3>
+                        <p>Student can attempt assignment, online tests and read their courses online. They can connect to instructor and finish their tasks timely.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex services align-self-stretch pb-4 px-4 ftco-animate bg-fifth">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-books"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Courses</h3>
+                        <p>
+                            If you love to teach online? Here you can create your first online course. You can shape your course into
+                            indexes,assignments and tests.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex services align-self-stretch pb-4 px-4 ftco-animate bg-quarternary">
+                <div class="media block-6 d-block text-center">
+                    <div class="icon d-flex justify-content-center align-items-center">
+                        <span class="flaticon-diploma"></span>
+                    </div>
+                    <div class="media-body p-2 mt-3">
+                        <h3 class="heading">Assignments &amp; Tests</h3>
+                        <p>
+                            Here instructors can also create sepearte assignments and tests and can share
+                            it via links to their student. Every submission will be availabe in instructor dashbaord.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-intro" style="background-image: url(../Images/bg_5.jpg);" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <h2>Create online course</h2>
+                <blockquote class="mb-0 ">“People expect to be bored by eLearning—let’s show them it doesn’t have to be like that!” - Cammy Bean</blockquote>
+            </div>
+            <div class="col-md-3 d-flex align-items-center">
+                <p class="mb-0"><a href="https://readmycourse.com/Instructor" class="btn btn-secondary px-4 py-3">Create a Course</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section ftco-no-pb">
+    <div class="row justify-content-center mb-5 pb-2">
+        <div class="col-md-8 text-center heading-section heading-section-black ftco-animate">
+            <h2 class="mb-4"><span>Our</span> Team</h2>
+            <strong>None of us is as smart as all of us.</strong>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="staff">
+                    <div class="img-wrap d-flex align-items-stretch">
+                        <div class="img align-self-stretch" style="background-image: url(images/team-farhan-2.jpg);"></div>
+                    </div>
+                    <div class="text pt-3 text-center">
+                        <h3>Farhan Anjum</h3>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="staff">
+                    <div class="img-wrap d-flex align-items-stretch">
+                        <div class="img align-self-stretch" style="background-image: url(images/team-simran.jpg);"></div>
+                    </div>
+                    <div class="text pt-3 text-center">
+                        <h3>Simran Soni</h3>
+
+                    </div>
+                </div>
+            </div>
+                <div class="col-md-6 col-lg-3 ftco-animate">
+                    <div class="staff">
+                        <div class="img-wrap d-flex align-items-stretch">
+                            <div class="img align-self-stretch" style="background-image: url(images/team-anand.jpg);"></div>
+                        </div>
+                        <div class="text pt-3 text-center">
+                            <h3>Anand Vardhan</h3>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 ftco-animate">
+                    <div class="staff">
+                        <div class="img-wrap d-flex align-items-stretch">
+                            <div class="img align-self-stretch" style="background-image: url(images/team-anand.png);"></div>
+                        </div>
+                        <div class="text pt-3 text-center">
+                            <h3>Anand Kumar</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+<script>
+(function () {
+        'use strict';
+    
+        $("#aboutUsMenu").addClass("active");
+        $("#homeMenu").removeClass("active");
+})();
+</script>

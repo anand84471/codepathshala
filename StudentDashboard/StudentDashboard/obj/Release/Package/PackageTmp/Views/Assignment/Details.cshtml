@@ -1,0 +1,117 @@
+﻿@{
+    Layout = "";
+}
+<html lang="en">
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="CodePathshalaAdmin" content="">
+    <title>ReadMyCourse: Online Assignment</title>
+    <link href="../../Scripts/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="../../fonts/css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+<body style="background-image: url('../Images/bg_4.jpg');">
+    <style type="text/css">
+        .custom-blue {
+            color: white;
+            background: rgb(63,94,251);
+            background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(235,113,138,1) 95%);
+        }
+    </style>
+    <div class="container">
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <div class="text-center">
+                            <a href="./"><img src="../Images/site-logo-v2-full.png" class="img-fluid " alt="..." style="max-height:100px;"></a>
+                            <h4 class="text-gray-900 font-weight-bold mb-2"><span><i class="fa fa-edit"></i></span> Assignment</h4>
+                            <a class="font-weight-bold mb-2" href="~/Student/GiveAssignment?id=@ViewBag.Id">We request you to login to save your responses &rarr;</a>
+                        </div>
+
+                    </div>
+                    <div id="aboutAssignmentContainer" class="p-3 rounded m-4 card p-4 custom-blue shadow-lg">
+
+                        <dl class="row">
+                            <dt class="col-sm-3">Assignment Name:</dt>
+                            <dd class="col-sm-9" id="assignmentName"></dd>
+                            <dt class="col-sm-3">Description:</dt>
+                            <dd class="col-sm-9" id="assignmentDescription"></dd>
+                            <dt class="col-sm-3">No of questions:</dt>
+                            <dd class="col-sm-9" id="noOfQuestionsInAssignment">
+                            <dt class="col-sm-3">Assignment Type:</dt>
+                            <dd class="col-sm-9" id="assignmentType">
+                            <dt class="col-sm-3">Status:</dt>
+                            <dd class="col-sm-9" id="assignmentAttemptStatus">
+                                unattempted
+                            </dd>
+                        </dl>
+                        <hr class="border border-info" />
+                        <div id="assignmentResponseObject"></div>
+                        <a id="startAssignmentButton" onclick="startAssignment()" class="btn btn-outline-success btn-sm btn-block text-white" href="./StartAssignment/?id=@ViewBag.Id&ShareCode=@ViewBag.AccessCode" style="width:50%">Start</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../../Scripts/vendor/jquery/jquery.min.js"></script>
+    <script src="../../Scripts/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../../Scripts/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="../Scripts/js/sb-admin-2.min.js"></script>
+    
+    <script>
+        function disableButton()
+        {
+            var submitButton = document.getElementById("submitButton");
+            submitButton.disabled = true;
+            submitButton.innerText = 'Please wait'
+        }
+    </script>
+</body>
+</html>
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = getAssignmentDetails1();
+    })();
+    function getAssignmentDetails1() {
+        debugger;
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/document/FetchAssignmentDetails?AssignmentId=".concat("@ViewBag.Id").concat("&&AccessCode=").concat("@ViewBag.AccessCode"),
+            success: function (data) {
+                //stopSpinner();
+                debugger;
+                if (data != null && data.response_code == 1) {
+
+                    $("#assignmentName").text(data.assignment_name);
+                    $("#assignmentDescription").text(data.assignment_description);
+                    $("#noOfQuestionsInAssignment").text(data.total_no_of_questions);
+                    $("#assignmentType").text(data.assignment_type);
+                    $("#aboutAssignmentContainer").show();
+                    if (assignmentResponses[Id] != null) {
+                        $("#assignmentResponseObject").html(assignmentResponses[Id]);
+                        $("#assignmentAttemptStatus").text("attempted");
+                    }
+                    else {
+                        $("#assignmentResponseObject").empty();
+                        $("#assignmentAttemptStatus").text("unattempted");
+                    }
+                }
+
+            }
+        });
+    }
+</script>

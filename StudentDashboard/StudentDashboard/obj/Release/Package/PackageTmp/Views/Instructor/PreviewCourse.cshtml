@@ -1,0 +1,930 @@
+﻿@{
+    ViewBag.Title = "Test Response";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/__BackLayout.cshtml";
+}
+<style>
+    .removeThis {
+        margin: 0.675rem;
+        font-size: 2.5rem;
+        padding: 0.8rem;
+        font-family: cursive;
+        color: red;
+    }
+
+    .full-screen {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        top: 0;
+        left: 0;
+    }
+
+    #courseCard.card {
+        background-color: #858796;
+        border: unset;
+        border-radius: 0rem;
+        overflow-y: auto;
+    }
+
+    #courseCard .card-body {
+        display: flex;
+        padding-left: 0rem !important;
+    }
+
+    pre {
+        white-space: pre-wrap;
+        overflow-x: hidden;
+    }
+
+
+    #collapseIcon {
+        cursor: pointer;
+    }
+
+    .indexDetail {
+        width: 30%;
+        background-color: #f8f9fc;
+    }
+
+    .courseDetail {
+        width: 70%;
+        min-height: 500px;
+        max-height: 90vh;
+        overflow-y: scroll;
+    }
+
+
+    .indexHeader {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        margin-top: 5px;
+        padding: 0.8rem;
+        background-color: #d3d3d33d;
+    }
+
+    .indexIcon {
+        float: right;
+        padding-top: 0.7rem;
+        padding-right: 0.7rem;
+        font-size: 25px !important;
+    }
+
+    .indexHeader strong {
+        font-size: 1rem;
+    }
+
+    .contentArea {
+        margin-top: 1.5rem;
+        overflow-y: auto;
+    }
+
+    .singleIndex {
+        padding: 0.7rem;
+        border-bottom: 1px solid #d3d3d36b;
+        cursor: pointer;
+        color: #C8C8C8;
+        font-weight: bolder;
+    }
+
+    .singleIndex-fa {
+        font-size: 25px !important;
+    }
+
+    .dynamicContent {
+        background-color: #fff;
+    }
+
+
+    .dynamicChapter {
+        font-family: Verdana, Tahoma, sans-serifs;
+        padding: 0.7rem;
+        cursor: pointer;
+    }
+
+        .dynamicChapter:hover {
+            background-color: #C8C8C8 !important;
+            cursor: pointer;
+        }
+
+        .dynamicChapter:active {
+            background-color: #C8C8C8 !important;
+            cursor: pointer;
+        }
+
+    #aboutAssignmentContainer {
+        text-align: left;
+    }
+
+    #aboutTestContainer {
+        text-align: left;
+    }
+
+    #indexContent {
+        max-height: 80vh;
+        overflow: auto;
+    }
+
+    @@media (max-width: 480px) {
+        .indexIcon {
+            display: none !important;
+        }
+
+        #courseCard .card-body {
+            flex-direction: column;
+            padding: 0rem;
+        }
+
+        .indexDetail {
+            width: 100%;
+        }
+
+        .courseDetail {
+            width: 100%;
+        }
+
+        #course-container {
+            padding-top: 1rem;
+            padding-right: 0.25rem;
+            padding-bottom: 0rem;
+            padding-left: 0.25rem;
+        }
+    }
+
+    .ui-input-container {
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 4px;
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .ui-form-input-container {
+        position: relative;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .ui-input-container h2 {
+        font-family: sans-serif;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .ui-form-input {
+        padding: 13px 15px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 100%;
+    }
+
+    .ui-form-chat {
+        padding: 13px 15px;
+        margin-bottom: 0px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 70%;
+        float: right;
+    }
+
+    .time_date {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #747474;
+        display: block;
+        font-size: 12px;
+        width: 70%;
+        float: right;
+    }
+
+    .form-input-label {
+        top: -7px;
+        left: 10px;
+        color: #1a73e8;
+        font-size: 0.85rem;
+        padding-right: 0.33rem;
+        padding-left: 0.33rem;
+        background: #fff;
+        transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: sans-serif;
+        text-transform: capitalize;
+    }
+
+    .ui-form-btn {
+        padding: 13px 15px;
+        border-radius: 8px;
+        background: #1a73e8;
+        outline: 0;
+        width: 100%;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        color: white;
+        font-weight: 500;
+    }
+
+    .error .ui-form-input,
+    .error .form-input-label {
+        border-color: #d50000;
+        color: #d50000;
+    }
+
+    textarea {
+        min-height: 3em;
+        max-height: 50vh;
+        width: 100%;
+    }
+
+    .glow {
+        font-size: 40px;
+        color: #fff;
+        text-align: center;
+        -webkit-animation: glow 1s ease-in-out infinite alternate;
+        -moz-animation: glow 1s ease-in-out infinite alternate;
+        animation: glow 1s ease-in-out infinite alternate;
+        text-align: left;
+    }
+
+    @@-webkit-keyframes glow {
+        from {
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+        }
+
+        to {
+            text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+        }
+    }
+
+    .custom-blue {
+        color: white;
+        background: rgb(63,94,251);
+        background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(235,113,138,1) 95%);
+    }
+
+    .custom-white {
+        background-image: linear-gradient(to right, rgba(253, 254, 254), rgba(253, 254, 254));
+    }
+
+    .custom-green {
+        color: white;
+        background-image: linear-gradient(to right, rgba(8, 254, 58, 0.84), rgba(27, 164, 26, 0.63));
+    }
+
+    .custom-black {
+        color: rgba(0, 0, 0, 0.9) !important;
+    }
+</style>
+<nav class="navbar  bg-white shadow" style="padding:0px;">
+    <a href="./ViewCourse?id=@ViewBag.CourseId" class="btn navbar-item nav-item active pr-0">
+        <i class="fa fa-arrow-left"></i>
+
+    </a>
+
+    <div id="courseSpinnerS" class="float-left" style="width:150px">
+        <div class="spinner-grow text-success course-spinner" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-danger course-spinner" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-warning course-spinner" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <a class="navbar-brand " href="#">
+        <img src="~/Images/site-logo-v2-full.png" width="140" height="35" class="align-top " alt="">
+    </a>
+</nav>
+
+
+
+<div id="courseCard content-wrapper" class="d-flex flex-column">
+    <div class="container-fluid" id="course-container">
+        <h1 class="navbar-item nav-item pl-0 text-danger text-center" id="courseName"></h1>
+        
+        <div class="row">
+            <div class="courseDetail col-sm-8">
+
+
+                <div id="mainCourseContainer">
+                    <div class="h3 custom-black font-weight-bolder mt-2 p-1" id="courseHeading">
+                        About this Course
+                    </div>
+                    <div id="extraContainer">
+                        <div id="content-wrapper" class="d-flex flex-column">
+                        </div>
+                    </div>
+                    <div class="embed-responsive embed-responsive-16by9 " id="videoContainer" style="display:none">
+
+                    </div>
+
+                    <pre id="courseDetails" class="p-2 h5 text-gray-900">
+                            
+                        </pre>
+                    <div class="" id="attachmentContainer" style="display:none">
+
+                    </div>
+                    <div id="aboutAssignmentContainer" class="p-3 rounded m-4 card p-4 custom-blue shadow-lg" style="display:none">
+                        <dl class="row">
+                            <dt class="col-sm-3">Assignment Name:</dt>
+                            <dd class="col-sm-9" id="assignmentName"></dd>
+                            <dt class="col-sm-3">Description:</dt>
+                            <dd class="col-sm-9" id="assignmentDescription"></dd>
+                            <dt class="col-sm-3">No of questions:</dt>
+                            <dd class="col-sm-9" id="noOfQuestionsInAssignment">
+                            <dt class="col-sm-3">Assignment Type:</dt>
+                            <dd class="col-sm-9" id="assignmentType">
+                            <dt class="col-sm-3">Status:</dt>
+                            <dd class="col-sm-6" id="assignmentAttemptStatus">
+                            </dd>
+                        </dl>
+                        <h1 class="glow" id="assignmentProgress" style="display:none">Assignment is in progress</h1>
+                        <hr class="border border-info" />
+                        <div id="assignmentResponseObject"></div>
+                        <div class="form-inline">
+                            <button id="startAssignmentButton" onclick="startAssignment()" type="button" class="btn btn-outline-success btn-sm btn-block text-white" style="width:50%">Start</button>
+                            <button id="closeAssignmentButton" onclick="callAssignemntResponse()" type="button" class="btn btn-outline-info mt-0 btn-sm btn-block text-white" style="width:50%;display:none">See Response</button>
+                        </div>
+                    </div>
+                    <div id="aboutTestContainer" class="p-3 rounded m-4 card p-4 custom-blue shadow-lg" style="display:none">
+
+                        <div class="test-details" id="text-details">
+                            <dl class="row">
+                                <dt class="col-sm-3">Test Name:</dt>
+                                <dd class="col-sm-9" id="testName"></dd>
+                                <dt class="col-sm-3">Description:</dt>
+                                <dd class="col-sm-9" id="testDescription"></dd>
+                                <dt class="col-sm-3">No of questions:</dt>
+                                <dd class="col-sm-9" id="noOfQuestionsInTest">
+                                <dt class="col-sm-3">Test Type:</dt>
+                                <dd class="col-sm-9" id="testType">
+                                <dt class="col-sm-3">Total Time:</dt>
+                                <dd class="col-sm-9" id="timeForTest">
+                                <dt class="col-sm-3">Total Marks:</dt>
+                                <dd class="col-sm-9" id="marksForTest">
+                                <dt class="col-sm-3">Status:</dt>
+                                <dd class="col-sm-9" id="testAttemptStatus">
+                            </dl>
+                            <h1 class="glow" id="testProgress" style="display:none">Test is in progress</h1>
+                            <hr class="border border-info" />
+                            <div id="testResponse"></div>
+                            <button id="startTestButton" onclick="startTest()" type="button" class="btn btn-outline-success btn-sm btn-block text-white" style="width:50%">Resubmit</button>
+                            <button id="closeTestButton" onclick="callTestResponse()" type="button" class="btn btn-danger btn-sm btn-block text-white" style="width:50%;display:none">View Response</button>
+                        </div>
+
+                        <div class="test-start-section"></div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="indexDetail col-sm-4">
+                @*<div id="collapseIcon"
+                         data-toggle="collapse"
+                         href="#indexContent"
+                         aria-expanded="true" onclick="this.d">
+                        <span>
+                            <i class="fa fa-angle-double-right indexIcon"></i>
+                        </span>
+                    </div>*@
+                <div id="indexContent" class="collapse show">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-indexes" role="tab" aria-controls="pills-indexes" aria-selected="true">Contents</a>
+                            </li>
+                           
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-about-course" role="tab" aria-controls="pills-about-course" aria-selected="false">About course</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="pills-indexes" role="tabpanel" aria-labelledby="pills-indexes">
+
+                                <div id="allIndexAndContent">
+
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="pills-ask-questions" role="tabpanel" aria-labelledby="pills-ask-questions">
+                                <div class="question" id="questionContainer">
+
+                                </div>
+                                <div class="ui-input-container">
+
+                                    <label class="ui-form-input-container">
+                                        <textarea class="ui-form-input" id="questionStatement" placeholder="Message"></textarea>
+
+                                    </label>
+                                    <button type="button" onclick="callSubmitQuestion()" class="btn btn-primary btn-sm">submit</button>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="pills-about-course" role="tabpanel" aria-labelledby="pills-contact-tab">
+                                <div class="ui-input-container">
+
+                                    <dl class="row">
+                                        <dt class="col-sm-3">Name:</dt>
+                                        <dd class="col-sm-9" id="aboutCourseName"></dd>
+                                        <dt class="col-sm-3">Description:</dt>
+                                        <pre class="col-sm-9" id="aboutCourseDescription"></pre>
+                                        <dt class="col-sm-5 ">Created on:</dt>
+                                        <dd class="col-sm-7" id="courseCreationsDate">
+                                        </dd>
+                                        <dt class="col-sm-5">Assignments:</dt>
+                                        <dd class="col-sm-7" id="noOfAssignments"></dd>
+                                        <dt class="col-sm-5">Tests:</dt>
+                                        <dd class="col-sm-7" id="noOfTests"></dd>
+                                        <dt class="col-sm-5">Indexes:</dt>
+                                        <dd class="col-sm-7" id="noOfIndexes"></dd>
+                                    </dl>
+                                    <ul class="list-group z-depth-0" id="indexContainer"></ul>
+                                </div>
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;" id="toast">
+    <div class="toast" style="position: absolute; top: 0; right: 0;">
+        <div class="toast-header">
+            @*<img src="..." class="rounded mr-2" alt="...">*@
+            <strong class="mr-auto">Message</strong>
+            @*<small>11 mins ago</small>*@
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            Hello, world! This is a toast message.
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="previewPdfModal" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTopicModalHeader">Preview upload</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="embed-responsive " id="pdfAttachmentContainer" style="display:none">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    (function () {
+        'use strict';
+        onpageshow = init();
+    })();
+    function stopCourseSpinner()
+    {
+        $("#courseSpinner").hide();
+        $(".course-spinner").hide();
+    }
+    function startCourseSpinner()
+    {
+        $("#courseSpinner").show();
+        $(".course-spinner").show();
+    }
+    function callGetIndexDetails(id, topicContainerId) {
+        debugger
+        var elem = $("#collapseSingleIndex".concat(topicContainerId));
+        if (elem.children.length > 2)
+        {
+            return;
+        }
+        startCourseSpinner();
+        $.ajax({
+
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchIndexProgress?IndexId=".concat(id),
+            success: function (data) {
+                debugger
+                stopCourseSpinner();
+                if (data != null && data.response_code == 1) {
+                    var topicDetails = data.topic_details;
+                    if (topicDetails != null && topicDetails.length > 0) {
+                        var htmlData = '';
+                        for (var i = 0; i < topicDetails.length; i++) {
+                            var id=topicDetails[i].topic_id;
+                            var data={
+                                id: topicDetails[i]
+                            };
+                            if (topicDetails[i].is_compelted == true)
+                            {
+                                var icon="fas fa-fw fa-check-square text-success";
+                            }
+                            else
+                            {
+                                var icon = "fas fa-fw fa-square";
+                            }
+                            topicContentDetails[id] = topicDetails[i];
+                            htmlData += '<div class="dynamicChapter custom-white" onclick="getTopicDetails(' + topicDetails[i].topic_id + ')"><i class="' + icon + '"></i>' + topicDetails[i].topic_name + '</div>';
+                        }
+                        $(elem).html(htmlData);
+                    }
+                    else {
+                        $(elem).html('<div class="dynamicChapter">No data</div>');
+                    }
+                }
+            }
+        });
+    }
+   
+    function getTopicDetails(topicId) {
+        debugger
+        $("#videoContainer").empty();
+        $("#aboutAssignmentContainer").hide();
+        $("#aboutTestContainer").hide();
+        $("#extraContainer").fadeOut();
+        $("#extraContainer").html("");
+        $("#attachmentContainer").html("");
+        $("#courseDetails").text(topicContentDetails[topicId].topic_description);
+        $("#courseHeading").text(topicContentDetails[topicId].topic_name);
+        if (topicContentDetails[topicId].file_path != null && topicContentDetails[topicId].file_path!="") {
+            var videoId = topicContentDetails[topicId].file_path.split("/").pop();
+            if (videoId != null && videoId != "") {
+                $("#videoContainer").show();
+                $("#videoContainer player").remove();
+                if (topicContentDetails[topicId].file_path.includes("youtu")) {
+                    $('<iframe class="embed-responsive-item" allowfullscreen></iframe>')
+                   .attr("src", "https://www.youtube.com/embed/" + videoId)
+                   .appendTo("#videoContainer");
+                }
+
+                else {
+                    //  $('<iframe class="embed-responsive-item" allowfullscreen></iframe>')
+                    //.attr("src", topicContentDetails[topicId].file_path)
+                    //.appendTo("#videoContainer");
+                    $("#videoContainer").append('<video class="embed-responsive-item" allowfullscreen id="player" playsinline controls data-poster="/path/to/poster.jpg"  loop muted preload="auto" >'
+                     + '<source src="' + topicContentDetails[topicId].file_path + '" type="video/mp4" /><source src="' + topicContentDetails[topicId].file_path + '" type="video/webm" /></video>");');
+                }
+            }
+        }
+        else {
+            $("#videoContainer").empty();
+            $("#videoContainer").hide();
+        }
+        if (topicContentDetails[topicId].file_attachment_path != null && topicContentDetails[topicId].file_attachment_path != "") {
+
+            //PDFObject.embed(topicContentDetails[topicId].file_attachment_path, "#pdfAttachmentContainer");
+            $("#attachmentContainer").append('<a download="attachment" download class="btn btn-primary" target="_blank" href="' + topicContentDetails[topicId].file_attachment_path + '"><i class="fa fa-download" aria-hidden="true"></i>download attachment</a>');
+            $("#attachmentContainer").show();
+        }
+        else {
+            $("#attachmentContainer").hide();
+        }
+        if (topicContentDetails[topicId].is_compelted != true) {
+            markTopicFinished(topicId);
+        }
+    }
+    var currentTestId = 0;
+   
+    function getTestDetails(Id) {
+        debugger;
+        $("#attachmentContainer").hide();
+        startCourseSpinner();
+        $("#courseHeading").text("");
+        $("#courseDetails").text("");
+        $("#aboutAssignmentContainer").hide();
+        $("#extraContainer").html("");
+        $("#videoContainer").empty();
+        $("#videoContainer").hide();
+        currentTestId = Id;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchStudentTestprogress?id=".concat(Id),
+
+            success: function (data) {
+                debugger;
+                stopCourseSpinner();
+                if (data != null && data.response_code == 1) {
+                    $("#testName").text(data.test_name);
+                    $("#testDescription").text(data.test_description);
+                    $("#noOfQuestionsInTest").text(data.total_no_of_questions);
+                    $("#testType").text("Multiple choice question");
+                    var date = new Date(null);
+                    date.setSeconds(data.max_time_allowed_for_test);
+                    $("#timeForTest").text(date.toISOString().substr(11, 8));
+                    $("#marksForTest").text(data.marks);
+                    $("#aboutTestContainer").show();
+                    if (data.submission_id!=null) {
+
+                        $("#testAttemptStatus").text("attempted");
+                        $("#startTestButton").text("Resubmit");
+                        $("#closeTestButton").show();
+                        currentTestSubmissionId = data.submission_id;
+                    }
+                    else {
+                        $("#testResponse").empty();
+                        $("#testAttemptStatus").text("unattempted");
+                        $("#startTestButton").text("start");
+                        $("#closeTestButton").hide();
+                        $("#startTestButton").show();
+                    }
+                }
+            }
+        });
+    }
+    
+    var testDetails = {};
+    function startTest()
+    {
+        startCourseSpinner();
+        $("#startTestButton").hide();
+        $("#extraContainer").show();
+        $("#testProgress").show();
+        $("#aboutTestContainer").hide();
+        $("#videoContainer").empty();
+        $("#videoContainer").hide();
+        $.ajax({
+
+            url: "PreviewTest?id=".concat(currentTestId),
+            type: 'GET',
+            success: function (data) {
+                stopCourseSpinner();
+                $("#extraContainer").html(data);
+                runTestTimer();
+                $(".breadcrumb").remove();
+            }
+        });
+    }
+    var currentTestSubmissionId;
+    function callTestResponse() {
+        startCourseSpinner();
+        $("#extraContainer").show();
+        $("#aboutTestContainer").hide();
+        $.ajax({
+
+            url: "TestResponse?id=".concat(currentTestSubmissionId),
+            type: 'GET',
+            success: function (data) {
+                stopCourseSpinner();
+                $("#extraContainer").html(data);
+                runTestTimer();
+                $(".breadcrumb").remove();
+            }
+        });
+    }
+    function callAssignemntResponse() {
+        startCourseSpinner();
+        $("#startTestButton").hide();
+        $("#extraContainer").show();
+        $("#aboutAssignmentContainer").hide();
+        $.ajax({
+
+            url: "AssignmentResponse?id=".concat(currentAssignmentSubmissionId),
+            type: 'GET',
+            success: function (data) {
+                stopCourseSpinner();
+                $("#extraContainer").html(data);
+                runTestTimer();
+                $(".breadcrumb").remove();
+            }
+        });
+    }
+    function closeTest() {
+        disposeVariables();
+        $("#extraContainer").fadeOut();
+        $("#extraContainer").html("");
+        $("#startTestButton").show();
+        $("#closeTestButton").hide();
+        showToast("assignment closed");
+    }
+
+    function runTestTimer() {
+        debugger
+        assignmentInterval = setInterval(function () {
+            if (isAssignmentSubmitted) {
+                $("#closeTestButton").show();
+                $("#testProgress").hide();
+                //pieChartContainers
+                $("#courseHeading").text("test resposne submitted successfully");
+                $("#testResponse").html($("#pieChartContainers").html());
+                testResponses[currentTestId] = $("#pieChartContainers").html();
+                $("#testAttemptStatus").text("attempted");
+                clearInterval(assignmentInterval);
+                return;
+            }
+        }, 1000);
+    }
+    var currentAssignmentSubmissionId;
+    function getAssignmentDetails1(Id) {
+        debugger;
+        $("#attachmentContainer").hide();
+        $("#extraContainer").html("");
+        $("#aboutTestContainer").hide();
+        $("#courseHeading").text("");
+        $("#courseDetails").text("");
+        startCourseSpinner();
+        $("#videoContainer").empty();
+        $("#videoContainer").hide();
+        //startSpinner();
+        currentAssignmentId = Id;
+
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchStudentAssignmentProgress?AssignmentId=".concat(Id),
+            success: function (data) {
+                //stopSpinner();
+                debugger;
+                stopCourseSpinner();
+                if (data != null && data.response_code == 1) {
+
+                    $("#assignmentName").text(data.assignment_name);
+                    $("#assignmentDescription").text(data.assignment_description);
+                    $("#noOfQuestionsInAssignment").text(data.total_of_question);
+                    $("#assignmentType").text(data.assignment_type);
+                    $("#aboutAssignmentContainer").show();
+                    if (data.submission_id != null)
+                    {
+                        $("#assignmentResponseObject").html(assignmentResponses[Id]);
+                        $("#assignmentAttemptStatus").text("attempted");
+                        $("#startAssignmentButton").text("Resubmit");
+                        $("#closeAssignmentButton").show();
+                        currentAssignmentSubmissionId=data.submission_id;
+                    }
+                    else {
+                        $("#assignmentResponseObject").empty();
+                        $("#assignmentAttemptStatus").text("unattempted");
+                        $("#startAssignmentButton").text("Start");
+                        $("#closeAssignmentButton").hide();
+                    }
+                }
+
+            }
+        });
+    }
+    var currentAssignmentId = 0;
+    function startAssignment(id) {
+        startCourseSpinner();
+        $("#startAssignmentButton").hide();
+        $("#closeAssignmentButton").show();
+        $("#extraContainer").show();
+        $("#assignmentProgress").show();
+        $.ajax({
+            url: "PreviewAssignment?id=".concat(currentAssignmentId),
+            type: 'GET',
+            success: function (data) {
+                stopCourseSpinner();
+                $("#aboutAssignmentContainer").hide();
+                $("#extraContainer").html(data);
+                runAssignmentTimer();
+                $(".breadcrumb").remove();
+            }
+        });
+    }
+
+    function showToast(message)
+    {
+        $("#toastMessage").text(message);
+        $("#toast").toast('show');
+    }
+    function closeAssignment()
+    {
+        disposeVaribales();
+        $("#extraContainer").fadeOut();
+        $("#extraContainer").html("");
+        $("#startAssignmentButton").show();
+        $("#closeAssignmentButton").hide();
+        $("#assignmentProgress").hide();
+        showToast("assignment closed");
+    }
+    function runAssignmentTimer() {
+        assInterval = setInterval(function () {
+            if (isAssignmentSubmitted) {
+                debugger
+                $("#startAssignmentButton").show();
+                $("#closeAssignmentButton").hide();
+                $("#courseHeading").text("assignment resposne submitted successfully");
+                $("#assignmentProgress").hide();
+                assignmentResponses[currentAssignmentId] = $("#assignmentResponseContainer").html();
+                $("#assignmentResponseObject").html($("#assignmentResponseContainer").html());
+                $("#assignmentResponse").show();
+                $("#assignmentAttemptStatus").text("attempted");
+                clearInterval(assInterval);
+                return;
+            }
+        }, 1000);
+    }
+    var topicContentDetails = {};
+    var assignmentResponses = {};
+    var testResponses = {};
+    function init() {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/FetchAboutCourse?id=".concat(@ViewBag.CourseId),
+            success: function (data) {
+                debugger;
+                stopCourseSpinner();
+                if (data != null && data.response_code == 1) {
+                    $("#courseName").text(data.course_name);
+                    $("#courseDetails").text(data.course_description);
+                    $("#aboutCourseDescription").text(data.course_description);
+                    $("#aboutCourseName").text(data.course_name);
+                    $("#courseCreationsDate").text(data.course_creation_date);
+                    $("#noOfAssignments").text(data.assignment_count);
+                    $("#noOfTests").text(data.test_count);
+                    $("#noOfIndexes").text(data.index_count);
+                    var indexes = data.index_details;
+                    var sideHeaderContents='';
+                    if(indexes!=null&&indexes.length>0)
+                    {
+                        var count = 0;
+                        for (var i = 0; i < indexes.length; i++) {
+                            sideHeaderContents += ''
+                            + '<div className="wrappingTogether" onclick="callGetIndexDetails(' + indexes[i].index_id + ',' + i + ')">'
+                            + '<div class="singleIndex custom-green" data-toggle="collapse" href="#collapseSingleIndex'.concat(i) + '" aria-expanded="false">'
+                                    + '<label>'
+                                    + indexes[i].index_name
+                                    + '</label>'
+                        + '<span onclick="callGetIndexDetails(' + indexes[i].index_id + ',' + i + ')"><i class="fa fa-angle-down singleIndex-fa float-right"></i></span>'
+                        + '</div>'
+                            + '<div id="collapseSingleIndex'.concat(i) + '" class="dynamicContent collapse">'
+
+                           + '</div>'
+                        + '</div>';
+                        }
+                    }
+                    var assignmentsdetails = data.assignment_details;
+                    if (assignmentsdetails != null && assignmentsdetails.length > 0)
+                    {
+                        sideHeaderContents += ''
+                        + '<div className="wrappingTogether">'
+                        + '<div class="singleIndex custom-green" data-toggle="collapse" href="#collapseSingleAssignment'.concat(i) + '" aria-expanded="false">'
+                                + '<label >Assignments</label>'
+                    + '<span ><i class="fa fa-angle-down singleIndex-fa float-right"></i></span>'
+                    + '</div>'
+                        + '<div id="collapseSingleAssignment'.concat(i) + '" class="dynamicContent  collapse">'
+                        for (var i = 0; i < assignmentsdetails.length; i++) {
+                            sideHeaderContents += '<div class="dynamicChapter custom-white form-inline" onclick="getAssignmentDetails1(' + assignmentsdetails[i].assignment_id + ')"><div class="icon-circle bg-primary mr-2"><i class="fas fa-pen text-white"></i></div></i>' + assignmentsdetails[i].assignment_name + '</div>';
+                        }
+                        sideHeaderContents += '</div>'
+                        + '</div>';
+                    }
+                    var testDetails = data.test_details;
+                    if (testDetails != null && testDetails.length > 0) {
+                        sideHeaderContents += ''
+                        + '<div className="wrappingTogether">'
+                        + '<div class="singleIndex custom-green" data-toggle="collapse" href="#collapseSingleTest'.concat(i) + '" aria-expanded="false">'
+                                + '<label >Tests</label>'
+                    + '<span ><i class="fa fa-angle-down singleIndex-fa float-right"></i></span>'
+                    + '</div>'
+                        + '<div id="collapseSingleTest'.concat(i) + '" class="dynamicContent collapse">'
+                        for (var i = 0; i < testDetails.length; i++) {
+                            sideHeaderContents += '<div class="dynamicChapter custom-white form-inline" onclick="getTestDetails(' + testDetails[i].test_id + ')"><div class="icon-circle bg-primary mr-2"><i class="fas fa-pen text-white"></i></div></i>' + testDetails[i].test_name + '</div>';
+                        }
+                        sideHeaderContents += '</div>'
+                        + '</div>';
+                    }
+                    $("#allIndexAndContent").html(sideHeaderContents);
+                }
+                $("#spinner").hide();
+                $("#spinnerBody").hide();
+
+            },
+            error:function(data)
+                {
+                    $("#spinner").hide();
+                }
+    });
+    }
+    function requestPreviewUploadedAttachment() {
+        $("#previewPdfModal").modal("show");
+        $("#pdfAttachmentContainer").show();
+    }
+</script>
+

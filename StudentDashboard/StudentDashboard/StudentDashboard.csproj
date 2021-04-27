@@ -1,0 +1,1272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C763009B-A4BF-46D1-AEE4-24D9100674FE}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StudentDashboard</RootNamespace>
+    <AssemblyName>StudentDashboard</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.Core.3.3.107.20\lib\net45\AWSSDK.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AWSSDK.S3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.S3.3.3.111.21\lib\net45\AWSSDK.S3.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FluentValidation, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentValidation.8.6.2\lib\net45\FluentValidation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Magick.NET-Q16-AnyCPU, Version=7.22.2.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\Magick.NET-Q16-AnyCPU.7.22.2.1\lib\net40\Magick.NET-Q16-AnyCPU.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Magick.NET.Core, Version=5.2.1.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\Magick.NET.Core.5.2.1\lib\net40\Magick.NET.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.DependencyCollector, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.0.0\lib\net45\Microsoft.AI.DependencyCollector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.0.0\lib\net45\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.ServerTelemetryChannel, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.0.0\lib\net45\Microsoft.AI.ServerTelemetryChannel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Web.2.0.0\lib\net45\Microsoft.AI.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AI.WindowsServer, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.2.0.0\lib\net45\Microsoft.AI.WindowsServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.0.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=6.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.6.6.0\lib\net45\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=6.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.6.6.0\lib\net45\Microsoft.IdentityModel.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.6.6.0\lib\net45\Microsoft.IdentityModel.Tokens.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.7.0\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Razorpay, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Razorpay.3.0.0\lib\net45\Razorpay.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SendGrid, Version=9.21.0.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\SendGrid.9.21.0\lib\net452\SendGrid.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="StarkbankEcdsa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\starkbank-ecdsa.1.2.0\lib\net452\StarkbankEcdsa.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=6.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.6.6.0\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="Twilio, Version=5.43.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.5.43.0\lib\net451\Twilio.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http.Formatting">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.3.0.1\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Twitter">
+      <HintPath>..\packages\Microsoft.Owin.Security.Twitter.3.0.1\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
+      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.3.0.1\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlertManager\InstructorAlertManager.cs" />
+    <Compile Include="AlertManager\StudentAlertManager.cs" />
+    <Compile Include="API\CourseApiController.cs" />
+    <Compile Include="API\DocumentApiController.cs" />
+    <Compile Include="API\InstructorApiController.cs" />
+    <Compile Include="API\SchoolApiController.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="BusinessLayer\InstructorBusinessLayer.cs" />
+    <Compile Include="BusinessLayer\LiveClassBusinessLayer.cs" />
+    <Compile Include="BusinessLayer\StudentBusinessLayer.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Controllers\AboutUsController.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountManagerController.cs" />
+    <Compile Include="Controllers\AndroidAppController.cs" />
+    <Compile Include="Controllers\AssignmentController.cs" />
+    <Compile Include="Controllers\AuthServiceController.cs" />
+    <Compile Include="Controllers\BecomeInstructorController.cs" />
+    <Compile Include="Controllers\ClassroomController.cs" />
+    <Compile Include="Controllers\CourseController.cs" />
+    <Compile Include="Controllers\CreateMeetingController.cs" />
+    <Compile Include="Controllers\HelpController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InstructorController.cs" />
+    <Compile Include="Controllers\InstructorDetailsController.cs" />
+    <Compile Include="Controllers\JoinLiveClassController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MAEGAwardController.cs" />
+    <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MobileController.cs" />
+    <Compile Include="Controllers\PrivacyController.cs" />
+    <Compile Include="Controllers\SchoolController.cs" />
+    <Compile Include="Controllers\StudentApiController.cs" />
+    <Compile Include="Controllers\StudentController.cs" />
+    <Compile Include="Controllers\StudentDetailsController.cs" />
+    <Compile Include="Controllers\TermsAndConditionsController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="DTO\PaymentRequestDTO.cs" />
+    <Compile Include="DTO\ClassroomScheduleDTO.cs" />
+    <Compile Include="DTO\DocumentDTO.cs" />
+    <Compile Include="DTO\HomeDTO.cs" />
+    <Compile Include="DTO\InstructorAcademicRecordDTO.cs" />
+    <Compile Include="DTO\InstructorDTO.cs" />
+    <Compile Include="DTO\SchoolDTO.cs" />
+    <Compile Include="DTO\StudentDTO.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="HttpRequest\ActivateClassroomRequest.cs" />
+    <Compile Include="HttpRequest\ActivateCourseHttpRequest.cs" />
+    <Compile Include="HttpRequest\AssignmentQuestionResponse.cs" />
+    <Compile Include="HttpRequest\AssignmentSubmissionRequest.cs" />
+    <Compile Include="HttpRequest\ClassroomAttachmentRequest.cs" />
+    <Compile Include="HttpRequest\ClassroomFeedbackRequest.cs" />
+    <Compile Include="HttpRequest\ClassroomNotificationMasterDetails.cs" />
+    <Compile Include="HttpRequest\ContactUsApiRequest.cs" />
+    <Compile Include="HttpRequest\ContentSearchRequest.cs" />
+    <Compile Include="HttpRequest\Document\AddEmailSubscriberRequest.cs" />
+    <Compile Include="HttpRequest\FileUploadTypeRequest.cs" />
+    <Compile Include="HttpRequest\GetClassroomMeetingDetailsForStudentRequest.cs" />
+    <Compile Include="HttpRequest\GetAllStudentFollowedByStudentRequest.cs" />
+    <Compile Include="HttpRequest\GetJoinedCourseRequest.cs" />
+    <Compile Include="HttpRequest\GetLiveClassroomDetailsForInstructorRequest.cs" />
+    <Compile Include="HttpRequest\GetStudentRequestDetailsModel.cs" />
+    <Compile Include="HttpRequest\GetStudentsToFollowRequest.cs" />
+    <Compile Include="HttpRequest\InsertCourseV2Request.cs" />
+    <Compile Include="HttpRequest\InsertInstructorMessageToClassroom.cs" />
+    <Compile Include="HttpRequest\InsertStudentMessageToClassroom.cs" />
+    <Compile Include="HttpRequest\InsertTestSeriesRequest.cs" />
+    <Compile Include="HttpRequest\InstructorAcademicRecordUpdateRequest.cs" />
+    <Compile Include="HttpRequest\InstructorBioUpdateHttpRequest.cs" />
+    <Compile Include="HttpRequest\InstructorFileUploadRequest.cs" />
+    <Compile Include="HttpRequest\InstructorProfileChangeRequest.cs" />
+    <Compile Include="HttpRequest\InstructorSearchRequest.cs" />
+    <Compile Include="HttpRequest\IntructorContactUsRequest.cs" />
+    <Compile Include="HttpRequest\MasterSearchRequest.cs" />
+    <Compile Include="HttpRequest\ProfileUploadRequest.cs" />
+    <Compile Include="HttpRequest\SearchInstructorByUserIdRequest.cs" />
+    <Compile Include="HttpRequest\SerchCourseRequest.cs" />
+    <Compile Include="HttpRequest\StudentClassroomJoinRequest.cs" />
+    <Compile Include="HttpRequest\StudentCourseDetailsRequestModel.cs" />
+    <Compile Include="HttpRequest\StudentCourseJoinRequest.cs" />
+    <Compile Include="HttpRequest\StudentProfileChangeRequest.cs" />
+    <Compile Include="HttpRequest\StudentsJoinedToClassroomRequestForStudent.cs" />
+    <Compile Include="HttpRequest\StudentToFollowRequest.cs" />
+    <Compile Include="HttpRequest\TestSubmissionRequest.cs" />
+    <Compile Include="HttpRequest\UpdateClassroomBackgroundImageRequest.cs" />
+    <Compile Include="HttpRequest\UpdateClassroomVideoUrlRequest.cs" />
+    <Compile Include="HttpRequest\UpdateCourseBackgroundImageRequest.cs" />
+    <Compile Include="HttpResponse\AboutCourseResponse.cs" />
+    <Compile Include="HttpResponse\AddAssgnmentResponse.cs" />
+    <Compile Include="HttpResponse\AddeNewTestSeriesResponse.cs" />
+    <Compile Include="HttpResponse\AddTestResponse.cs" />
+    <Compile Include="HttpResponse\AllInstructorAssignmentsApiResponse.cs" />
+    <Compile Include="HttpResponse\AllInstructorTestsApiResponse.cs" />
+    <Compile Include="HttpResponse\AllQuestionAskedByStudentForCourse.cs" />
+    <Compile Include="HttpResponse\APIDefaultResponse.cs" />
+    <Compile Include="HttpResponse\APIObjectInfoResponse.cs" />
+    <Compile Include="HttpResponse\AssignmentsSubmissionModal.cs" />
+    <Compile Include="HttpResponse\AssignmentSubmissionOfStudnetResponse.cs" />
+    <Compile Include="HttpResponse\AssignmentSubmissionResponse.cs" />
+    <Compile Include="HttpResponse\AssignmentSubmissionResponseModal.cs" />
+    <Compile Include="HttpResponse\BasicAssignmentDetails.cs" />
+    <Compile Include="HttpResponse\BasicCourseDetails.cs" />
+    <Compile Include="HttpResponse\BasicIndexDetails.cs" />
+    <Compile Include="HttpResponse\BasicLiveClassDetails.cs" />
+    <Compile Include="HttpResponse\BasicTestDetails.cs" />
+    <Compile Include="HttpResponse\ClassroomAcceptPaymentResponse.cs" />
+    <Compile Include="HttpResponse\ClassroomReviewsResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\ClassroomAttachmentDetailsResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\ClassroomBasicDetailsModal.cs" />
+    <Compile Include="HttpResponse\ClassRoom\ClassroomDetailsResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\ClassroomInsertResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\ClassroomInstructorMessageModal.cs" />
+    <Compile Include="HttpResponse\ClassRoom\ClassroomMeetingModal.cs" />
+    <Compile Include="HttpResponse\ClassRoom\ClassroomMeetingResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\ClassroomStudentMessageModal.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetAllClassroomAssignmentResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetAllClassroomAttachmentResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetAllClassroomForInstructorResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetAllClassroomMeetingResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetAllClassroomTestResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetAllStudentClassroomAssignment.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetAllStudentClassroomtTest.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetAllStudentJoinedToClassroomResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetAllStudentJoinedTomMeetingResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetClassroomAllMessageResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetClassroomAllMessageResponseForStudent.cs" />
+    <Compile Include="HttpResponse\ClassRoom\GetClassroomSheduleResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\StudentClassroomResponse.cs" />
+    <Compile Include="HttpResponse\ClassRoom\StudentClassrromJoinModal.cs" />
+    <Compile Include="HttpResponse\ClassRoom\StudentMeetingJoinedResponse.cs" />
+    <Compile Include="HttpResponse\CourseAcceptPaymentResponse.cs" />
+    <Compile Include="HttpResponse\CourseDetailsModel.cs" />
+    <Compile Include="HttpResponse\CourseIndexDetails.cs" />
+    <Compile Include="HttpResponse\CourseJoinedResponse.cs" />
+    <Compile Include="HttpResponse\CoursesJoinedResponseModal.cs" />
+    <Compile Include="HttpResponse\Document\GetAllClassroomCategoryResponse.cs" />
+    <Compile Include="HttpResponse\Document\GetClassroomsForHomePageResponse.cs" />
+    <Compile Include="HttpResponse\FileUploadResponse.cs" />
+    <Compile Include="HttpResponse\GetAllAlertForInstructorResponse.cs" />
+    <Compile Include="HttpResponse\GetAllCourseDetailsForInstructorResponseModel.cs" />
+    <Compile Include="HttpResponse\GetAllLiveClassMeetingDetailsForStudentResponse.cs" />
+    <Compile Include="HttpResponse\GetAllStudentsFollowedByStudentResponse.cs" />
+    <Compile Include="HttpResponse\GetAllStudentsToJoinRespone.cs" />
+    <Compile Include="HttpResponse\GetAssignmentDetailsResponse.cs" />
+    <Compile Include="HttpResponse\GetAssignmentSubssionDetials.cs" />
+    <Compile Include="HttpResponse\GetCityResponse.cs" />
+    <Compile Include="HttpResponse\GetClassroomMeetingDetailsForStudentResponse.cs" />
+    <Compile Include="HttpResponse\GetClassroomSyllabusDetailsResponse.cs" />
+    <Compile Include="HttpResponse\GetClassroomSyllabusResponse.cs" />
+    <Compile Include="HttpResponse\GetCourseDetailsApiResponse.cs" />
+    <Compile Include="HttpResponse\GetInstructorActivityResponse.cs" />
+    <Compile Include="HttpResponse\GetLiveClassDetailsResponseForInstructor.cs" />
+    <Compile Include="HttpResponse\GetPublicClassroomsResponse.cs" />
+    <Compile Include="HttpResponse\GetStateResponse.cs" />
+    <Compile Include="HttpResponse\GetStudentLiveClassScheduleResponse.cs" />
+    <Compile Include="HttpResponse\GetStudentResponseModel.cs" />
+    <Compile Include="HttpResponse\GetStudentSelfProfileDetailsResponse.cs" />
+    <Compile Include="HttpResponse\GetStudentToStudentConnectionResponse.cs" />
+    <Compile Include="HttpResponse\GetTestDetailsResponseWithAccessCode.cs" />
+    <Compile Include="HttpResponse\GetTestResultsForStudentResponse.cs" />
+    <Compile Include="HttpResponse\GetTestSubmissionDetailsResponse.cs" />
+    <Compile Include="HttpResponse\GetWebsiteHomeDetailsResponse.cs" />
+    <Compile Include="HttpResponse\ImageUploadMasterResponse.cs" />
+    <Compile Include="HttpResponse\InsertCourseV2Response.cs" />
+    <Compile Include="HttpResponse\InsertNewCourseResponse.cs" />
+    <Compile Include="HttpResponse\InsertNewIndexResponse.cs" />
+    <Compile Include="HttpResponse\InstructorFileUploadResponse.cs" />
+    <Compile Include="HttpResponse\InstructorProfileDetailsModal.cs" />
+    <Compile Include="HttpResponse\InstructorSearchResponse.cs" />
+    <Compile Include="HttpResponse\MasterApiResponse.cs" />
+    <Compile Include="HttpResponse\ObjectInfoDetailsResponse.cs" />
+    <Compile Include="HttpResponse\SearchAssignmentResponse.cs" />
+    <Compile Include="HttpResponse\SearchCourseHttpResponse.cs" />
+    <Compile Include="HttpResponse\SearchCourseResponse.cs" />
+    <Compile Include="HttpResponse\SearchForTestResponse.cs" />
+    <Compile Include="HttpResponse\SearchForAssignmentsApiResponse.cs" />
+    <Compile Include="HttpResponse\SearchInstructorByUserIdResponse.cs" />
+    <Compile Include="HttpResponse\SearchInstructorResponse.cs" />
+    <Compile Include="HttpResponse\SearchInstructorResponseModal.cs" />
+    <Compile Include="HttpResponse\SearchStudentPublicClassroomResponse.cs" />
+    <Compile Include="HttpResponse\SearchTestResponse.cs" />
+    <Compile Include="HttpResponse\StudentJoinedCoursesResponse.cs" />
+    <Compile Include="HttpResponse\StudentJoinedCoursesResponseModal.cs" />
+    <Compile Include="HttpResponse\StudentsJoinedToClassroomDetailsForStudent.cs" />
+    <Compile Include="HttpResponse\StudentsJoinedToClassroomDetailsForStudentResponse.cs" />
+    <Compile Include="HttpResponse\SubmitAssignmentResponse.cs" />
+    <Compile Include="HttpResponse\TestQuestionResponse.cs" />
+    <Compile Include="HttpResponse\TestSubmissionOfStudentResponse.cs" />
+    <Compile Include="Interfaces\IInstructorApiService.cs" />
+    <Compile Include="JsonSerializableObject\AssignmentSubmissionResponseJsonSerializable.cs" />
+    <Compile Include="JsonSerializableObject\TestSubmissionResponseJsonSerializable.cs" />
+    <Compile Include="Models\Account\SignInWithGoogleProfileDetails.cs" />
+    <Compile Include="Models\ActivityModal.cs" />
+    <Compile Include="Models\Address\CityModel.cs" />
+    <Compile Include="Models\Address\CountryModel.cs" />
+    <Compile Include="Models\Address\StateModel.cs" />
+    <Compile Include="Models\Alert\AlertDetailsModal.cs" />
+    <Compile Include="Models\Alert\InstructorAlertModal.cs" />
+    <Compile Include="Models\Alert\StudentAlertModal.cs" />
+    <Compile Include="Models\AssignmentMcqModel.cs" />
+    <Compile Include="Models\AssignmentSubjectiveModel.cs" />
+    <Compile Include="Models\AwsFileUploadRequest.cs" />
+    <Compile Include="Models\Base\AvgReviewModel.cs" />
+    <Compile Include="Models\Base\RatingNormal.cs" />
+    <Compile Include="Models\Base\ReviewModel.cs" />
+    <Compile Include="Models\Category\GetAllClassroomCategory.cs" />
+    <Compile Include="Models\Classroom\ClassroomAssignmentModal.cs" />
+    <Compile Include="Models\Classroom\ClassroomDayWiseScheduleModal.cs" />
+    <Compile Include="Models\Classroom\ClassroomScheduleDetails.cs" />
+    <Compile Include="Models\Classroom\ClassroomSyllabusDetailsModal.cs" />
+    <Compile Include="Models\Classroom\ClassroomTestModal.cs" />
+    <Compile Include="Models\Classroom\GetLiveClassDetailsForInstructor.cs" />
+    <Compile Include="Models\Classroom\StudentLiveClassMeetingDetails.cs" />
+    <Compile Include="Models\CouponDetailsModal.cs" />
+    <Compile Include="Models\Course\AssignmentDetailsModel.cs" />
+    <Compile Include="Models\Course\AssignmentModel.cs" />
+    <Compile Include="Models\Course\ContentModel.cs" />
+    <Compile Include="Models\Course\CourseModel.cs" />
+    <Compile Include="Models\Course\IndexModel.cs" />
+    <Compile Include="Models\Course\McqQuestion.cs" />
+    <Compile Include="Models\Course\ObjectiveQuestion.cs" />
+    <Compile Include="Models\Course\ObjectiveTestModel.cs" />
+    <Compile Include="Models\Course\SubjectiveQuestion.cs" />
+    <Compile Include="Models\Course\SubjectiveTestModel.cs" />
+    <Compile Include="Models\Course\TestDetailsModel.cs" />
+    <Compile Include="Models\Course\TestModel.cs" />
+    <Compile Include="Models\Course\TopicModel.cs" />
+    <Compile Include="Models\Document\ClassroomBasicDetailsModalForHome.cs" />
+    <Compile Include="Models\Files\FileModal.cs" />
+    <Compile Include="Models\ImageUploadDetailsModal.cs" />
+    <Compile Include="Models\Instructor\ClassRoomModal.cs" />
+    <Compile Include="Models\Instructor\ClassroomPostModal.cs" />
+    <Compile Include="Models\Instructor\InstrucorEarningDetailsModal.cs" />
+    <Compile Include="Models\Instructor\InstructorAcadmeicsPublicationModal.cs" />
+    <Compile Include="Models\Instructor\InstructorCertificateModal.cs" />
+    <Compile Include="Models\Instructor\InstructorClassroomEarningModal.cs" />
+    <Compile Include="Models\Instructor\InstructorConferencesAttendsModal.cs" />
+    <Compile Include="Models\Instructor\InstructorCourseEarningDetailsModal.cs" />
+    <Compile Include="Models\Instructor\InstructorProjectsDetailsModal.cs" />
+    <Compile Include="Models\Instructor\InstructorSchoolDetailsModal.cs" />
+    <Compile Include="Models\Instructor\InstructorTestSeriesModal.cs" />
+    <Compile Include="Models\Instructor\InstructorUserIdSearchResponse.cs" />
+    <Compile Include="Models\Instructor\JitsiMeetingModal.cs" />
+    <Compile Include="Models\Instructor\MasterInstructorDetails.cs" />
+    <Compile Include="Models\MasterFeedback.cs" />
+    <Compile Include="Models\MasterSearchRequestModel.cs" />
+    <Compile Include="Models\OAuth\GoogleSignInRequest.cs" />
+    <Compile Include="Models\RazorPay\RazorPayCustomerData.cs" />
+    <Compile Include="Models\RazorPay\RazorPayPaymentDataModal.cs" />
+    <Compile Include="Models\RazorPay\RazorPayPaymentRequestModal.cs" />
+    <Compile Include="Models\RazorPay\RazorPayPaymentResponseModal.cs" />
+    <Compile Include="Models\SchoolRegisterModel.cs" />
+    <Compile Include="Models\SmsModal\MasterSmsModal.cs" />
+    <Compile Include="Models\Social\StudentDetailToFolllow.cs" />
+    <Compile Include="Models\Social\StudentFollowerDetails.cs" />
+    <Compile Include="Models\Social\StudentToStudentFollowDetails.cs" />
+    <Compile Include="Models\StudentDetailsModel.cs" />
+    <Compile Include="HttpRequest\UserLoginRequest.cs" />
+    <Compile Include="HttpRequest\UserRegisterRequest.cs" />
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\InstructorRegisterModel.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\RegisterModel.cs" />
+    <Compile Include="Models\StudentPublicProfileResponse.cs" />
+    <Compile Include="Models\StudentToStudentConnectionDetails.cs" />
+    <Compile Include="Models\Student\AssignmentAccessModal.cs" />
+    <Compile Include="Models\Student\ClassroomJoinDetailsModal.cs" />
+    <Compile Include="Models\Student\CourseAccessModal.cs" />
+    <Compile Include="Models\Student\StudentAssignmentProgressModal.cs" />
+    <Compile Include="Models\Student\StudentBasicAssignmentDettails.cs" />
+    <Compile Include="Models\Student\StudentBasicClassroomDetails.cs" />
+    <Compile Include="Models\Student\StudentBasicCourseDetails.cs" />
+    <Compile Include="Models\Student\StudentBasicIndexDetails.cs" />
+    <Compile Include="Models\Student\StudentBasicTestDetails.cs" />
+    <Compile Include="Models\Student\StudentClassroomAssignmentModal.cs" />
+    <Compile Include="Models\Student\StudentClassroomHomeDetails.cs" />
+    <Compile Include="Models\Student\StudentClassroomModal.cs" />
+    <Compile Include="Models\Student\StudentClassroomTestModal.cs" />
+    <Compile Include="Models\Student\StudentCourseModal.cs" />
+    <Compile Include="Models\Student\StudentCourseQuestionModal.cs" />
+    <Compile Include="Models\Student\StudentFollowedByStudentDetails.cs" />
+    <Compile Include="Models\Student\StudentHomeModal.cs" />
+    <Compile Include="Models\Student\StudentIndexModal.cs" />
+    <Compile Include="Models\Student\StudentProfileDetails.cs" />
+    <Compile Include="Models\Student\StudentRegisterModal.cs" />
+    <Compile Include="Models\Student\StudentSearchRequestModal.cs" />
+    <Compile Include="Models\Student\StudentSearchResponse.cs" />
+    <Compile Include="Models\Student\StudentTestProgressModal.cs" />
+    <Compile Include="Models\Student\StudentTestSearchRequest.cs" />
+    <Compile Include="Models\Student\StudentTestSearchResultModal.cs" />
+    <Compile Include="Models\Student\StudentTopicModal.cs" />
+    <Compile Include="Models\Student\StudentUpdatePasswordRequestModal.cs" />
+    <Compile Include="Models\Student\TestAccessModal.cs" />
+    <Compile Include="Models\TimeScheduleDetails.cs" />
+    <Compile Include="Models\Utils\SmsNotificationModal.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Schedulers\ForgotPasswordScheduler.cs" />
+    <Compile Include="Schedulers\ForgotPasswordSchedulerService.cs" />
+    <Compile Include="Security\AddChallengeOnUnauthorizedResult.cs" />
+    <Compile Include="Security\AuthenticationFailureResult.cs" />
+    <Compile Include="Security\HttpAuthenticationChallengeContextExtensions.cs" />
+    <Compile Include="Security\Instrcutor\InstructorAuthenticationFilter.cs" />
+    <Compile Include="Security\Instrcutor\InstructorAuthorizationController.cs" />
+    <Compile Include="Security\JwtAuthenticationAttribute.cs" />
+    <Compile Include="Security\JwtManager.cs" />
+    <Compile Include="Security\SignInWithGoogleValidator.cs" />
+    <Compile Include="Security\Student\StudentAuthenticationFilter.cs" />
+    <Compile Include="Security\UserProvider.cs" />
+    <Compile Include="Service References\CPDataService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceLayer\ClassroomPaymentRequestDTO.cs" />
+    <Compile Include="ServiceLayer\DocumentService.cs" />
+    <Compile Include="ServiceLayer\HomeService.cs" />
+    <Compile Include="ServiceLayer\InstructorService.cs" />
+    <Compile Include="ServiceLayer\SchoolService.cs" />
+    <Compile Include="ServiceLayer\SMSServiceManager.cs" />
+    <Compile Include="ServiceLayer\StudentService.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\ActivityManager.cs" />
+    <Compile Include="Utilities\ImageCompressionUtilities.cs" />
+    <Compile Include="Utilities\MainLogger.cs" />
+    <Compile Include="Utilities\MasterUtilities.cs" />
+    <Compile Include="Utilities\PriceUtils.cs" />
+    <Compile Include="Utilities\RazorPayPaymentIntegration.cs" />
+    <Compile Include="Utilities\SHA256Encryption.cs" />
+    <Compile Include="Models\Student\TestSubmissionModal.cs" />
+    <Compile Include="Utilities\SmsManger.cs" />
+    <Compile Include="Utilities\TempClass.cs" />
+    <Compile Include="Utilities\TinyUrlService.cs" />
+    <Compile Include="ValidationHandler\InstructorAccountRegisterValidator.cs" />
+    <Compile Include="ValidationHandler\InstructorLoginValidator.cs" />
+    <Compile Include="ValidationHandler\StudentAccountRegisterValidator.cs" />
+    <Compile Include="ValidationHandler\StudentLoginValidator.cs" />
+    <Compile Include="Vendors\AWS\Concrete\AWSImageUpload.cs" />
+    <Compile Include="Vendors\AWS\Concrete\AWSS3ServiceManagerLayer.cs" />
+    <Compile Include="Vendors\AWS\Concrete\AWSS3ServiceManagerMaster.cs" />
+    <Compile Include="Vendors\AWS\Concrete\AWSServiceManager.cs" />
+    <Compile Include="Vendors\AWS\Concrete\AWSVideoUpload.cs" />
+    <Compile Include="Vendors\AWS\Entity\AWSS3ServiceEntity.cs" />
+    <Compile Include="Vendors\AWS\Entity\AWSS3ServiceRequestEntity.cs" />
+    <Compile Include="Vendors\AWS\Entity\AWSServiceEntity.cs" />
+    <Compile Include="Vendors\MagicDotNetDataCompression\MagicDotNetDataCompressionService.cs" />
+    <Compile Include="Vendors\RazorPay\RazorPayHelper.cs" />
+    <Compile Include="Vendors\SendGrid\SendEmailUsingSendGrid.cs" />
+    <Compile Include="Zoom\GenrateToke.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\jquery.datetimepicker.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\css\custom-css-cp.css" />
+    <Content Include="fonts\css\InstructorStyle.css" />
+    <Content Include="fonts\css\sb-admin-2.css" />
+    <Content Include="fonts\css\sb-admin-2.min.css" />
+    <Content Include="fonts\flaticon\backup.txt" />
+    <Content Include="fonts\flaticon\font\flaticon.css" />
+    <Content Include="fonts\flaticon\font\flaticon.html" />
+    <Content Include="fonts\flaticon\font\Flaticon.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="fonts\icomoon\icomoon.svg" />
+    <Content Include="fonts\ionicons\css\ionicons.min.css" />
+    <Content Include="fonts\ionicons\fonts\ionicons.svg" />
+    <Content Include="fonts\open-iconic\open-iconic.svg" />
+    <Content Include="fonts\vendors\img\flags%402x.png" />
+    <Content Include="fonts\vendors\img\flags.png" />
+    <Content Include="fonts\vendors\intl-tel-input-master\intlTelInput.css" />
+    <Content Include="fonts\vendors\intl-tel-input-master\intlTelInput.min.css" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Images\.DS_Store" />
+    <Content Include="Images\29_9430b2b4-6610-4955-a931-d415af1bbaa2.png_200x200_.png" />
+    <Content Include="Images\4035_13707cf6-0c98-4384-9244-30295549dcb1.jpg_200x200_.jpg" />
+    <Content Include="Images\add-course-logo.svg" />
+    <Content Include="Images\add-friend.svg" />
+    <Content Include="Images\add-user.svg" />
+    <Content Include="Images\arabilc-live-class-logo.jpg" />
+    <Content Include="Images\avatar-user.png" />
+    <Content Include="Images\bg_1.jpg" />
+    <Content Include="Images\bg_2.jpg" />
+    <Content Include="Images\bg_3.jpg" />
+    <Content Include="Images\bg_4.jpg" />
+    <Content Include="Images\bg_5.jpg" />
+    <Content Include="Images\classroom-bg.png" />
+    <Content Include="Images\classroom_bg.jpg" />
+    <Content Include="Images\contact-us.svg" />
+    <Content Include="Images\content-search.svg" />
+    <Content Include="Images\course-1.jpg" />
+    <Content Include="Images\course-2.jpg" />
+    <Content Include="Images\course-3.jpg" />
+    <Content Include="Images\course-4.jpg" />
+    <Content Include="Images\course-5.jpg" />
+    <Content Include="Images\course-6.jpg" />
+    <Content Include="Images\courses-bg.png" />
+    <Content Include="Images\course_bg %281%29.jpg" />
+    <Content Include="Images\dept-5.jpg" />
+    <Content Include="Images\google-play-logo.png" />
+    <Content Include="Images\henry-be-lc7xcWebECc-unsplash.jpg" />
+    <Content Include="Images\home-bg-login1.png" />
+    <Content Include="Images\home-bg-login12.png" />
+    <Content Include="Images\home-bg-login13.jpg" />
+    <Content Include="Images\home-lgin-back.jpg" />
+    <Content Include="Images\home-login-final.jpg" />
+    <Content Include="Images\home-login-final1.jpg" />
+    <Content Include="Images\home-page-bg-graphics.jpg" />
+    <Content Include="Images\home-page-bg-graphics.svg" />
+    <Content Include="Images\icon\favicon_io\android-chrome-192x192.png" />
+    <Content Include="Images\icon\favicon_io\android-chrome-512x512.png" />
+    <Content Include="Images\icon\favicon_io\apple-touch-icon.ico" />
+    <Content Include="Images\icon\favicon_io\favicon-16x16.png" />
+    <Content Include="Images\icon\favicon_io\favicon-32x32.png" />
+    <Content Include="Images\icon\favicon_io\favicon.ico" />
+    <Content Include="Images\icon\favicon_io\site.webmanifest" />
+    <Content Include="Images\icon\web_icons\accelerate.png" />
+    <Content Include="Images\icon\web_icons\book.png" />
+    <Content Include="Images\icon\web_icons\bulb.png" />
+    <Content Include="Images\icon\web_icons\certificate.png" />
+    <Content Include="Images\icon\web_icons\chat.png" />
+    <Content Include="Images\icon\web_icons\earnings.svg" />
+    <Content Include="Images\icon\web_icons\job-search.png" />
+    <Content Include="Images\icon\web_icons\learning.svg" />
+    <Content Include="Images\icon\web_icons\messenger.png" />
+    <Content Include="Images\icon\web_icons\video.png" />
+    <Content Include="Images\iit-indore-logo.png" />
+    <Content Include="Images\iit-madras-logo.png" />
+    <Content Include="Images\iit_mandi_logo.png" />
+    <Content Include="Images\image_1.jpg" />
+    <Content Include="Images\image_2.jpg" />
+    <Content Include="Images\image_3.jpg" />
+    <Content Include="Images\image_4.jpg" />
+    <Content Include="Images\image_5.jpg" />
+    <Content Include="Images\image_6.jpg" />
+    <Content Include="Images\jez-timms-8muUTAmcWU4-unsplash.jpg" />
+    <Content Include="Images\jitsi-logo.png" />
+    <Content Include="Images\jitsi-meeting.jpg" />
+    <Content Include="Images\join_as_instructor.svg" />
+    <Content Include="Images\join_course.svg" />
+    <Content Include="Images\join_new_live_class_graphics.jpg" />
+    <Content Include="Images\join_new_live_class_graphics.svg" />
+    <Content Include="Images\join_new_static_course_graphics.jpg" />
+    <Content Include="Images\join_new_static_course_graphics.svg" />
+    <Content Include="Images\live-class-bg.png" />
+    <Content Include="Images\live-class-readmycourse.png" />
+    <Content Include="Images\live.gif" />
+    <Content Include="Images\live_class_join.svg" />
+    <Content Include="Images\loader.svg" />
+    <Content Include="Images\loc.png" />
+    <Content Include="Images\matlab-data-science-logo.jpg" />
+    <Content Include="Images\matlab-datascience-live-class-logo.png" />
+    <Content Include="Images\matlab-live-class-logo.jpg" />
+    <Content Include="Images\matlab.png" />
+    <Content Include="Images\mnnit-allahabad-logo.png" />
+    <Content Include="Images\people-search.svg" />
+    <Content Include="Images\profile1.png" />
+    <Content Include="Images\python-bioinfo-live-class.jpg" />
+    <Content Include="Images\python-bioinfo-live-class.png" />
+    <Content Include="Images\python-data-science-live-class-logo.jpg" />
+    <Content Include="Images\python-for-begin-live-class-logo.jpg" />
+    <Content Include="Images\python_for_bioinfromatics-min.png" />
+    <Content Include="Images\python_for_bioinfromatics.png" />
+    <Content Include="Images\register_bg.jpg" />
+    <Content Include="Images\RMC Certificate webinar-05.svg" />
+    <Content Include="Images\RMC Certificate-03.svg" />
+    <Content Include="Images\rmc_certifcate_sample.jpg.jpg" />
+    <Content Include="Images\search-gen.svg" />
+    <Content Include="Images\site-background.png" />
+    <Content Include="Images\site-logo-pro.png" />
+    <Content Include="Images\site-logo-square.png" />
+    <Content Include="Images\site-logo-v2-full.png" />
+    <Content Include="Images\site-logo-v2.png" />
+    <Content Include="Images\site-logo.jpg" />
+    <Content Include="Images\site-logo.png" />
+    <Content Include="Images\spoken-english-live-class-logo.jpg" />
+    <Content Include="Images\student-login-page-img.jpg" />
+    <Content Include="Images\students-joined.jpg" />
+    <Content Include="Images\submit_new_assignment_graphics.jpg" />
+    <Content Include="Images\submit_new_assignment_graphics.svg" />
+    <Content Include="Images\submit_new_test_graphics.svg" />
+    <Content Include="Images\teacher.svg" />
+    <Content Include="Images\teaching-logo.svg" />
+    <Content Include="Images\team-anand.jpg" />
+    <Content Include="Images\team-anand.png" />
+    <Content Include="Images\team-farhan-2.jpg" />
+    <Content Include="Images\team-farhan.jpg" />
+    <Content Include="Images\team-farhan.png" />
+    <Content Include="Images\team-simran.jpg" />
+    <Content Include="Images\testimonial1.jpg" />
+    <Content Include="Images\testimonial2.jpg" />
+    <Content Include="Images\valentin-antonini-0eTLk6dA_Ds-unsplash.jpg" />
+    <Content Include="Images\web graphic renewed-04.svg" />
+    <Content Include="Images\will-van-wingerden-dsvJgiBJTOs-unsplash.jpg" />
+    <Content Include="Scripts\AboutScripts\aos.js" />
+    <Content Include="Scripts\AboutScripts\bootstrap.min.js" />
+    <Content Include="Scripts\AboutScripts\google-map.js" />
+    <Content Include="Scripts\AboutScripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\AboutScripts\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\AboutScripts\jquery-migrate-3.0.1.min.js" />
+    <Content Include="Scripts\AboutScripts\jquery.animateNumber.min.js" />
+    <Content Include="Scripts\AboutScripts\jquery.easing.1.3.js" />
+    <Content Include="Scripts\AboutScripts\jquery.magnific-popup.min.js" />
+    <Content Include="Scripts\AboutScripts\jquery.min.js" />
+    <Content Include="Scripts\AboutScripts\jquery.stellar.min.js" />
+    <Content Include="Scripts\AboutScripts\jquery.waypoints.min.js" />
+    <Content Include="Scripts\AboutScripts\main.js" />
+    <Content Include="Scripts\AboutScripts\owl.carousel.min.js" />
+    <Content Include="Scripts\AboutScripts\popper.min.js" />
+    <Content Include="Scripts\AboutScripts\scrollax.min.js" />
+    <Content Include="Scripts\ai.0.22.9-build00167.js" />
+    <Content Include="Scripts\ai.0.22.9-build00167.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Properties\DataSources\System.Data.DataSet.datasource" />
+    <Content Include="NLog.config" />
+    <Content Include="fonts\.DS_Store" />
+    <Content Include="fonts\flaticon\.DS_Store" />
+    <Content Include="fonts\flaticon\font\.DS_Store" />
+    <Content Include="fonts\flaticon\font\Flaticon.eot" />
+    <Content Include="fonts\flaticon\font\Flaticon.ttf" />
+    <Content Include="fonts\flaticon\font\Flaticon.woff" />
+    <Content Include="fonts\flaticon\font\Flaticon.woff2" />
+    <Content Include="fonts\flaticon\font\_flaticon.scss" />
+    <Content Include="fonts\flaticon\license\license.pdf" />
+    <Content Include="fonts\icomoon\icomoon.eot" />
+    <Content Include="fonts\icomoon\icomoon.ttf" />
+    <Content Include="fonts\icomoon\icomoon.woff" />
+    <Content Include="fonts\ionicons\css\_ionicons.scss" />
+    <Content Include="fonts\ionicons\fonts\.DS_Store" />
+    <Content Include="fonts\ionicons\fonts\ionicons.eot" />
+    <Content Include="fonts\ionicons\fonts\ionicons.ttf" />
+    <Content Include="fonts\ionicons\fonts\ionicons.woff" />
+    <Content Include="fonts\ionicons\fonts\ionicons.woff2" />
+    <Content Include="fonts\open-iconic\open-iconic.eot" />
+    <Content Include="fonts\open-iconic\open-iconic.otf" />
+    <Content Include="fonts\open-iconic\open-iconic.ttf" />
+    <Content Include="fonts\open-iconic\open-iconic.woff" />
+    <Content Include="AppSetting.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Properties\PublishProfiles\ %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\ %283%29.pubxml" />
+    <None Include="Properties\PublishProfiles\.pubxml" />
+    <None Include="Properties\PublishProfiles\codepathshala.pubxml" />
+    <None Include="Properties\PublishProfiles\StudentDashboard.pubxml" />
+    <Content Include="Scripts\AboutScripts\.DS_Store" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Classroom\ClassroomDashboard.js" />
+    <Content Include="Scripts\Classroom\ClassroomDashboardActive.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.datetimepicker.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\js\city.js" />
+    <Content Include="Scripts\js\demo\chart-area-demo.js" />
+    <Content Include="Scripts\js\demo\chart-bar-demo.js" />
+    <Content Include="Scripts\js\demo\chart-pie-demo.js" />
+    <Content Include="Scripts\js\demo\datatables-demo.js" />
+    <Content Include="Scripts\js\sb-admin-2.js" />
+    <Content Include="Scripts\js\sb-admin-2.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\vendor\chart.js\Chart.bundle.js" />
+    <Content Include="Scripts\vendor\chart.js\Chart.bundle.min.js" />
+    <Content Include="Scripts\vendor\chart.js\Chart.js" />
+    <Content Include="Scripts\vendor\chart.js\Chart.min.js" />
+    <Content Include="Scripts\vendor\datatables\dataTables.bootstrap4.css" />
+    <Content Include="Scripts\vendor\datatables\dataTables.bootstrap4.js" />
+    <Content Include="Scripts\vendor\datatables\dataTables.bootstrap4.min.css" />
+    <Content Include="Scripts\vendor\datatables\dataTables.bootstrap4.min.js" />
+    <Content Include="Scripts\vendor\datatables\jquery.dataTables.js" />
+    <Content Include="Scripts\vendor\datatables\jquery.dataTables.min.js" />
+    <Content Include="Scripts\vendor\intl-tel-input-master\data.js" />
+    <Content Include="Scripts\vendor\intl-tel-input-master\data.min.js" />
+    <Content Include="Scripts\vendor\intl-tel-input-master\intlTelInput-jquery.js" />
+    <Content Include="Scripts\vendor\intl-tel-input-master\intlTelInput-jquery.min.js" />
+    <Content Include="Scripts\vendor\intl-tel-input-master\intlTelInput.js" />
+    <Content Include="Scripts\vendor\intl-tel-input-master\intlTelInput.min.js" />
+    <Content Include="Scripts\vendor\intl-tel-input-master\utils.js" />
+    <Content Include="Scripts\_references.js" />
+    <None Include="Service References\CPDataService\CpDataService.disco" />
+    <None Include="Service References\CPDataService\configuration91.svcinfo" />
+    <None Include="Service References\CPDataService\configuration.svcinfo" />
+    <None Include="Service References\CPDataService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="site-logo.ico" />
+    <Content Include="Style\ajax-loader.gif" />
+    <Content Include="Style\animate.css" />
+    <Content Include="Style\aos.css" />
+    <Content Include="Style\bootstrap.min.css" />
+    <Content Include="Style\bootstrap\bootstrap-grid.css" />
+    <Content Include="Style\bootstrap\bootstrap-reboot.css" />
+    <Content Include="Style\bootstrap\bootstrap-theme.css" />
+    <Content Include="Style\bootstrap\bootstrap-theme.min.css" />
+    <Content Include="Style\css\bootstrap-grid.css" />
+    <Content Include="Style\css\bootstrap-reboot.css" />
+    <Content Include="Style\css\mixins\_text-hide.css" />
+    <Content Include="Style\flaticon.css" />
+    <Content Include="Style\flaticon\backup.txt" />
+    <Content Include="Style\flaticon\font\flaticon.css" />
+    <Content Include="Style\flaticon\font\flaticon.html" />
+    <Content Include="Style\flaticon\font\Flaticon.svg" />
+    <Content Include="Style\fonts\flaticon\backup.txt" />
+    <Content Include="Style\fonts\flaticon\font\flaticon.css" />
+    <Content Include="Style\fonts\flaticon\font\flaticon.html" />
+    <Content Include="Style\fonts\flaticon\font\Flaticon.svg" />
+    <Content Include="Style\fonts\icomoon\icomoon.svg" />
+    <Content Include="Style\fonts\ionicons\css\ionicons.min.css" />
+    <Content Include="Style\fonts\ionicons\fonts\ionicons.svg" />
+    <Content Include="Style\fonts\open-iconic\open-iconic.svg" />
+    <Content Include="Style\icomoon.css" />
+    <Content Include="Style\icomoon\icomoon.svg" />
+    <Content Include="Style\ionicons.min.css" />
+    <Content Include="Style\ionicons\css\ionicons.min.css" />
+    <Content Include="Style\ionicons\fonts\ionicons.svg" />
+    <Content Include="Style\magnific-popup.css" />
+    <Content Include="Style\open-iconic-bootstrap.min.css" />
+    <Content Include="Style\open-iconic\open-iconic.svg" />
+    <Content Include="Style\owl.carousel.min.css" />
+    <Content Include="Style\owl.theme.default.min.css" />
+    <Content Include="Style\readmycourse-css\bootstrap-datetimepicker.css" />
+    <Content Include="Style\readmycourse-css\bootstrap-datetimepicker.min.css" />
+    <Content Include="Style\style.css" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\Home.cshtml" />
+    <Content Include="Views\Shared\Lockout.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_Header.cshtml" />
+    <Content Include="Views\Shared\_Test.cshtml" />
+    <Content Include="Views\Shared\_Assignment.cshtml" />
+    <Content Include="Views\Shared\_TestQuestion.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Register.cshtml" />
+    <Content Include="Views\Home\ForgotPassword.cshtml" />
+    <Content Include="Views\Instructor\Index.cshtml" />
+    <Content Include="Views\Instructor\Join.cshtml" />
+    <Content Include="Views\Instructor\ForgotPassword.cshtml" />
+    <Content Include="Views\Instructor\Register.cshtml" />
+    <Content Include="Views\Instructor\RegistrationSuccessful.cshtml" />
+    <Content Include="Views\Instructor\Home.cshtml" />
+    <Content Include="Views\Contact.cshtml" />
+    <Content Include="Views\School\Index.cshtml" />
+    <Content Include="Views\School\Join.cshtml" />
+    <Content Include="Views\Shared\_StudentLayout.cshtml" />
+    <Content Include="Views\Shared\_SchoolLayout.cshtml" />
+    <Content Include="Views\Shared\_InstructorLayout.cshtml" />
+    <Content Include="Views\School\Home.cshtml" />
+    <Content Include="Views\Instructor\NewCourse.cshtml" />
+    <Content Include="Views\Instructor\NewCourse1.cshtml" />
+    <Content Include="Views\Instructor\CreateTest.cshtml" />
+    <Content Include="Views\Instructor\CreateAssignment.cshtml" />
+    <Content Include="Views\Instructor\ViewAssignment.cshtml" />
+    <Content Include="Views\Instructor\ViewTest.cshtml" />
+    <Content Include="Views\Instructor\Courses.cshtml" />
+    <Content Include="Views\Instructor\Assignments.cshtml" />
+    <Content Include="Views\Instructor\Tests.cshtml" />
+    <Content Include="Views\Instructor\Account.cshtml" />
+    <Content Include="Views\Instructor\Contact.cshtml" />
+    <Content Include="Views\Instructor\EditAccount.cshtml" />
+    <Content Include="Views\Instructor\ChangePassword.cshtml" />
+    <Content Include="Views\Instructor\Activity.cshtml" />
+    <Content Include="Views\Instructor\ViewCourse.cshtml" />
+    <Content Include="Views\Instructor\PreviewCourse.cshtml" />
+    <Content Include="Views\Index.cshtml" />
+    <Content Include="Views\Shared\_AboutLayout.cshtml" />
+    <Content Include="Views\Shared\_MenuAbout.cshtml" />
+    <Content Include="Style\.DS_Store" />
+    <Content Include="Style\bootstrap\.DS_Store" />
+    <Content Include="Style\css\.DS_Store" />
+    <Content Include="Style\flaticon\.DS_Store" />
+    <Content Include="Style\flaticon\font\.DS_Store" />
+    <Content Include="Style\flaticon\font\Flaticon.eot" />
+    <Content Include="Style\flaticon\font\Flaticon.ttf" />
+    <Content Include="Style\flaticon\font\Flaticon.woff" />
+    <Content Include="Style\flaticon\font\Flaticon.woff2" />
+    <Content Include="Style\flaticon\font\_flaticon.scss" />
+    <Content Include="Style\flaticon\license\license.pdf" />
+    <Content Include="Style\fonts\.DS_Store" />
+    <Content Include="Style\fonts\flaticon\.DS_Store" />
+    <Content Include="Style\fonts\flaticon\font\.DS_Store" />
+    <Content Include="Style\fonts\flaticon\font\Flaticon.eot" />
+    <Content Include="Style\fonts\flaticon\font\Flaticon.ttf" />
+    <Content Include="Style\fonts\flaticon\font\Flaticon.woff" />
+    <Content Include="Style\fonts\flaticon\font\Flaticon.woff2" />
+    <Content Include="Style\fonts\flaticon\font\_flaticon.scss" />
+    <Content Include="Style\fonts\flaticon\license\license.pdf" />
+    <Content Include="Style\fonts\icomoon\icomoon.eot" />
+    <Content Include="Style\fonts\icomoon\icomoon.ttf" />
+    <Content Include="Style\fonts\icomoon\icomoon.woff" />
+    <Content Include="Style\fonts\ionicons\css\_ionicons.scss" />
+    <Content Include="Style\fonts\ionicons\fonts\.DS_Store" />
+    <Content Include="Style\fonts\ionicons\fonts\ionicons.eot" />
+    <Content Include="Style\fonts\ionicons\fonts\ionicons.ttf" />
+    <Content Include="Style\fonts\ionicons\fonts\ionicons.woff" />
+    <Content Include="Style\fonts\ionicons\fonts\ionicons.woff2" />
+    <Content Include="Style\fonts\open-iconic\open-iconic.eot" />
+    <Content Include="Style\fonts\open-iconic\open-iconic.otf" />
+    <Content Include="Style\fonts\open-iconic\open-iconic.ttf" />
+    <Content Include="Style\fonts\open-iconic\open-iconic.woff" />
+    <Content Include="Style\icomoon\icomoon.eot" />
+    <Content Include="Style\icomoon\icomoon.ttf" />
+    <Content Include="Style\icomoon\icomoon.woff" />
+    <Content Include="Style\ionicons\css\_ionicons.scss" />
+    <Content Include="Style\ionicons\fonts\.DS_Store" />
+    <Content Include="Style\ionicons\fonts\ionicons.eot" />
+    <Content Include="Style\ionicons\fonts\ionicons.ttf" />
+    <Content Include="Style\ionicons\fonts\ionicons.woff" />
+    <Content Include="Style\ionicons\fonts\ionicons.woff2" />
+    <Content Include="Style\open-iconic\open-iconic.eot" />
+    <Content Include="Style\open-iconic\open-iconic.otf" />
+    <Content Include="Style\open-iconic\open-iconic.ttf" />
+    <Content Include="Style\open-iconic\open-iconic.woff" />
+    <Content Include="Views\Instructor\AssignmentSubmissions.cshtml" />
+    <Content Include="Views\Instructor\TestSubmissions.cshtml" />
+    <Content Include="Views\Instructor\StudentsJoined.cshtml" />
+    <Content Include="Views\Instructor\TestResponse.cshtml" />
+    <Content Include="Views\Instructor\AssignmentResponse.cshtml" />
+    <Content Include="Views\Instructor\CreateInterativeCourse.cshtml" />
+    <Content Include="Views\Instructor\Search.cshtml" />
+    <Content Include="Views\Shared\__BackLayout.cshtml" />
+    <Content Include="Views\Assignment\Details.cshtml" />
+    <Content Include="Views\Assignment\ViewResponse.cshtml" />
+    <Content Include="Views\Assignment\StartAssignment.cshtml" />
+    <Content Include="Views\Assignment\Submissions.cshtml" />
+    <Content Include="Views\Test\Index.cshtml" />
+    <Content Include="Views\Test\Details.cshtml" />
+    <Content Include="Views\Test\StartTest.cshtml" />
+    <Content Include="Views\AuthService\Index.cshtml" />
+    <Content Include="Views\AboutUs\Index.cshtml" />
+    <Content Include="Views\Instructor\PasswordAuthRequest.cshtml" />
+    <Content Include="Views\Instructor\PasswordUpdatedSuccessfully.cshtml" />
+    <Content Include="Views\Course\Details.cshtml" />
+    <Content Include="Views\Course\Index.cshtml" />
+    <Content Include="Views\Instructor\CreateClassRoom.cshtml" />
+    <Content Include="Views\Instructor\Classrooms.cshtml" />
+    <Content Include="Views\Instructor\ViewClassroom.cshtml" />
+    <Content Include="Views\Instructor\ClassroomDashboard.cshtml" />
+    <Content Include="Views\Instructor\StartMetting.cshtml" />
+    <Content Include="Views\Instructor\StartMeeting.cshtml" />
+    <Content Include="Views\Classroom\Details.cshtml" />
+    <Content Include="Views\CreateMeeting\Index.cshtml" />
+    <Content Include="Views\Shared\UnAuthorizedAccess.cshtml" />
+    <Content Include="Views\Instructor\ClassroomDashboardV2.cshtml" />
+    <Content Include="Views\Instructor\CreateClassroomAssignment.cshtml" />
+    <Content Include="Views\Instructor\ViewClassroomAssignment.cshtml" />
+    <Content Include="Views\Instructor\CreateClassroomTest.cshtml" />
+    <Content Include="Views\Instructor\ViewClassroomTest.cshtml" />
+    <Content Include="Views\Student\Account.cshtml" />
+    <Content Include="Views\Student\AssignmentResponse.cshtml" />
+    <Content Include="Views\Student\AssignmentSubmissions.cshtml" />
+    <Content Include="Views\Student\ChangePassword.cshtml" />
+    <Content Include="Views\Student\Contact.cshtml" />
+    <Content Include="Views\Student\EditAccount.cshtml" />
+    <Content Include="Views\Student\ForgotPassword.cshtml" />
+    <Content Include="Views\Student\GiveAssignment.cshtml" />
+    <Content Include="Views\Student\Home.cshtml" />
+    <Content Include="Views\Student\Index.cshtml" />
+    <Content Include="Views\Student\Instructors.cshtml" />
+    <Content Include="Views\Student\Join.cshtml" />
+    <Content Include="Views\Student\JoinClassroom.cshtml" />
+    <Content Include="Views\Student\JoinClassroomMeeting.cshtml" />
+    <Content Include="Views\Student\JoinCourse.cshtml" />
+    <Content Include="Views\Student\JoinInstructor.cshtml" />
+    <Content Include="Views\Student\JoinMeeting.cshtml" />
+    <Content Include="Views\Student\JoinNewClassroom.cshtml" />
+    <Content Include="Views\Student\JoinNewCourse.cshtml" />
+    <Content Include="Views\Student\LearnCourse.cshtml" />
+    <Content Include="Views\Student\LearnCourseV2.cshtml" />
+    <Content Include="Views\Student\MyAssignments.cshtml" />
+    <Content Include="Views\Student\MyClassrooms.cshtml" />
+    <Content Include="Views\Student\MyCourses.cshtml" />
+    <Content Include="Views\Student\NewAssignment.cshtml" />
+    <Content Include="Views\Student\NewTest.cshtml" />
+    <Content Include="Views\Student\PasswordAuthRequest.cshtml" />
+    <Content Include="Views\Student\PasswordUpdatedSuccessfully.cshtml" />
+    <Content Include="Views\Student\Register.cshtml" />
+    <Content Include="Views\Student\RegistrationSuccessful.cshtml" />
+    <Content Include="Views\Student\StartTest.cshtml" />
+    <Content Include="Views\Student\TeacherProfile.cshtml" />
+    <Content Include="Views\Student\TestResponse.cshtml" />
+    <Content Include="Views\Student\TestSubmissions.cshtml" />
+    <Content Include="Views\Student\ViewAssignment.cshtml" />
+    <Content Include="Views\Student\ViewClassroom.cshtml" />
+    <Content Include="Views\Instructor\StartTeaching.cshtml" />
+    <Content Include="Views\Student\Activity.cshtml" />
+    <Content Include="Views\Classroom\Index.cshtml" />
+    <Content Include="Views\AndroidApp\Index.cshtml" />
+    <Content Include="Views\Privacy\Index.cshtml" />
+    <Content Include="Views\TermsAndConditions\Index.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Mobile\Index.cshtml" />
+    <None Include="Service References\CPDataService\CpDataService.wsdl" />
+    <None Include="Service References\CPDataService\CpDataService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\CPDataService\CpDataService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\CPDataService\CpDataService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\CPDataService\CpDataService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.CompositeType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.GetInstructorIdByAssignmentIdResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.GetInstructorIdByCourseIdResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.GetInstructorIdByTestIdResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.GetInstructorIdFromUserIdResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.GetStudentIdFromUserIdResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InertNewCourseIndexResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InsertAssignmentResponseResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InsertNewAssignmentResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InsertNewCourseResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InsertNewCourseV2Response.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InsertNewIndependentAssignmentResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InsertNewIndependentTestResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InsertNewIndexToV2CourseResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InsertNewTestResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InsertTestResponseResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.ValidateStudentLoginResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Views\Student\JoinPrivateClassroom.cshtml" />
+    <Content Include="Views\Student\PreviewClassroom.cshtml" />
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.GetInstructorIdByClassroomIdResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.GetCoursePriceResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Views\Assignment\Index.cshtml" />
+    <Content Include="Views\Instructor\MyEarnings.cshtml" />
+    <Content Include="Views\Classroom\JoinNewClassroom.cshtml" />
+    <Content Include="Views\Instructor\CreateTestSeries.cshtml" />
+    <Content Include="Views\Instructor\ViewAllTestSeries.cshtml" />
+    <Content Include="Views\Instructor\ViewTestSeries.cshtml" />
+    <Content Include="Service References\CPDataService\StudentDashboard.CPDataService.InsertNewTestSeriesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Views\Student\FetchTests.cshtml" />
+    <Content Include="Views\Instructor\PreviewAssignment.cshtml" />
+    <Content Include="Views\Instructor\PreviewTest.cshtml" />
+    <Content Include="Views\JoinLiveClass\index.cshtml" />
+    <Content Include="Views\InstructorDetails\Index.cshtml" />
+    <Content Include="Views\InstructorDetails\Details.cshtml" />
+    <Content Include="Views\JoinLiveClass\Details.cshtml" />
+    <Content Include="Views\Student\Search.cshtml" />
+    <Content Include="Views\Student\JoinedStudents.cshtml" />
+    <Content Include="Views\Student\JoinNewStudent.cshtml" />
+    <Content Include="Views\Student\StudentProfile.cshtml" />
+    <Content Include="Views\Student\StudentFriend.cshtml" />
+    <Content Include="Views\ClassroomPayNow.cshtml" />
+    <Content Include="Views\Student\ClassroomPayNow.cshtml" />
+    <Content Include="Views\BecomeInstructor\Index.cshtml" />
+    <Content Include="Views\Student\VarifyPhoneNo.cshtml" />
+    <Content Include="Views\Student\SavePhoneNoStep.cshtml" />
+    <Content Include="Views\Instructor\ClassroomDashoardVarificationPending.cshtml" />
+    <Content Include="Views\Instructor\ClassroomViewStatusCreated.cshtml" />
+    <Content Include="Views\MAEGAward\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AmazonAWSServices\" />
+    <Folder Include="App_Data\" />
+    <Folder Include="Message\" />
+    <Folder Include="Scripts\vendor\bootstrap\" />
+    <Folder Include="Scripts\vendor\fontawesome-free\" />
+    <Folder Include="Scripts\vendor\jquery-easing\" />
+    <Folder Include="Scripts\vendor\jquery\" />
+    <Folder Include="Uploads\Instructor\Custom\" />
+    <Folder Include="Uploads\Instructor\Images\" />
+    <Folder Include="Uploads\Instructor\Pdfs\" />
+    <Folder Include="Uploads\Instructor\Videos\" />
+    <Folder Include="Uploads\Student\Images\" />
+    <Folder Include="Uploads\Student\Pdfs\" />
+    <Folder Include="Uploads\Student\Videos\" />
+    <Folder Include="Vendors\AWS\Abstract\" />
+    <Folder Include="Views\Help\" />
+    <Folder Include="Views\StudentDetails\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="packages.config" />
+    <None Include="Project_Readme.html" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\AWSSDK.S3.3.3.111.21\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\CPDataService\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:65310/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

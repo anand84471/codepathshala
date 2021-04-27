@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "Activity Details";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+@using StudentDashboard.Models;
+@model InstructorRegisterModel
+<div class="container-fluid">
+    <div class="card shadow mb-4 border-left-primary">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Activity Details</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400" onload="getActivityDetails()"></i>
+                </a>
+            </div>
+            
+               
+        </div>
+        <!-- Card Body -->
+        <div class="card-body" id="activityContainer">
+            <div class=""> No Activity details found</div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = getActivityDetails();
+    })();
+    function getActivityDetails() {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/getactivity/s",
+            success: function (data) {
+                debugger;
+                var container = document.getElementById("activityContainer");
+                if (data != null && data.response_code == 1) {
+                    var activity = data.activity;
+                    var date = activity[0].creation_date;
+                    var row = '<div class="card border-success"><div class="card-body"><h5 class="card-title">' + activity[0].creation_date + '</h5><ul class="list-group list-group-flush">';
+                    for (var i = 0; i < activity.length; i++) {
+                        if (activity[i].creation_date == date) {
+                            row += '<li class="list-group-item">' + activity[i].message + '</li>';
+                        }
+                        else {
+                            row+='</ul></div></div><br/>';
+                            date = activity[i].creation_date;
+                            row +='<div class="card border-success"><div class="card-body"><h5 class="card-title">' + date + '</h5><ul class="list-group list-group-flush">';
+                        }
+                    }
+                    row+='</ul></div></div></div>';
+                    container.insertAdjacentHTML("beforeend",row );
+
+                }
+                else {
+
+                }
+            }
+    });
+    }
+
+</script>
+

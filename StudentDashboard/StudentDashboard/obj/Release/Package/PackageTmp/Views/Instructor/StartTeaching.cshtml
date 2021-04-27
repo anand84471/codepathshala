@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "Courses";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+<style type="text/css">
+    .my-icon {
+    }
+
+    .classrooms {
+        width: 100%;
+        border: 10px;
+        background: rgb(131,58,180);
+        background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+        padding: 3px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+</style>
+
+
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Start Teaching</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Start Teaching</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row">
+        <div class="input-group pl-lg-5 pr-lg-5">
+            <input type="text" class="form-control" id="classroomSearchBox" placeholder="Search for classrooms..." aria-label="Search">
+            <div class="input-group-append">
+                <button class="btn btn-primary" onclick="searhClassrooms()" type="button">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+        <div class="row col-sm-12 " id="coursesContainer"></div>
+            <div id="spinner" class="d-flex justify-content-center text-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div class="card text-center" id="footer" style="display:none">
+                <div class="card-body">
+                    <h6 class="card-title"> You have not created any courses</h6>
+                    @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+                    <div id="assignmentContainer" class="assignmentContainer"></div>
+                    <a id="addAssignmentButton" class="btn btn-primary" href="./CreateNewCourse">Add new course</a>
+                </div>
+                <div class="card-footer text-muted">
+                    Thank you!
+                </div>
+            </div>
+        </div>
+    
+</div>
+<!-- Button trigger modal -->
+
+<!-- Full Height Modal Right -->
+
+<script type="text/javascript">
+        (function () {
+            'use strict';
+            onpageshow = getCoursesDetails();
+            document.getElementById("classroomSearchBox").onkeypress    = searhClassrooms;
+        })();
+        var classrooms;
+        function getCoursesDetails() {
+        //debugger;
+            $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/classrooms",
+            success: function (data) {
+                debugger;
+
+                if (data != null && data.response_code == 1) {
+                    classrooms=data.classrooms;
+                    for (var i = 0; i < classrooms.length; i++) {
+                        if (classrooms[i].classroom_name.length > 30)
+                        {
+                            classrooms[i].classroom_name = classrooms[i].classroom_name.substring(0, 30) + "...";
+                        }
+                        $('#coursesContainer').append( getSingleClassroom(i));
+                    }
+                    $("#coursesContainer").show();
+                    $("#spinner").remove();
+                }
+                else {
+                    $("#footer").show();
+                    $("#spinner").remove();
+                }
+            }
+    });
+        }
+        function getSingleClassroom(i)
+        {
+            return ('<div class="card  col-sm-12 classrooms shadow   ml-2 mr-2 mb-2">'
+               + '<div class="card-body ">'
+                   + '<h1 class="text-white font-weight-bold"><a>' + classrooms[i].classroom_name + '</a></h1>'
+
+                     + '<span class="badge badge-pill badge-light" id="successbadge">Status: ' + classrooms[i].classroom_status + '</span>'
+                    + '<h6 class="card-title font-weight-light">Created on:' + classrooms[i].creation_date + '</h6>'
+                   + ' <div class="col mb-2">'
+
+                   + '<ul class="list-unstyled list-inline rating mb-0">'
+                      + '<li class="list-inline-item mr-0"><a  class="btn btn-outline-light" href="ClassroomDashboard?id=' + classrooms[i].classroom_id + '">Start Teaching</a></li>'
+                  + '</ul>'
+               + '</div></div>'
+           + '</div>');
+        }
+        function searhClassrooms()
+        {
+            var searchString = $("#classroomSearchBox").val();
+            if(classrooms!=null&&classrooms.length>0)
+            {
+                $('#coursesContainer').html("");
+                for(var i=0;i<classrooms.length;i++)
+                {
+                    if (classrooms[i].classroom_name.toLowerCase().includes(searchString.toLowerCase()))
+                    {   
+                        $('#coursesContainer').append(getSingleClassroom(i));
+                    }
+                }
+            }
+        }
+</script>

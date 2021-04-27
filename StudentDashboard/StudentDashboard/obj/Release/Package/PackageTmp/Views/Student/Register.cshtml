@@ -1,0 +1,212 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="CodePathshalaAdmin" content="">
+    <title>CodePatshahla Student Login</title>
+    <!-- Custom fonts for this template-->
+    <link href="../../Scripts/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="../../fonts/css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+<body class="bg-gradient-primary">
+
+    <div class="container">
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">CodePathshala Instructor Register</h1>
+                            </div>
+                            <form method="post" class="needs-validation" action="/Instructor/Register" novalidate>
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3 md-form">
+                                        <label for="validationCustom012">First name</label>
+                                        <input type="text" pattern="[a-zA-Z]{1,}" class="form-control" name="firstName" id="firstName" placeholder="First name" required>
+                                        <div class="invalid-feedback">
+                                            Please enter first name
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4 mb-3 md-form">
+                                        <label for="validationCustom022">Last name</label>
+                                        <input type="text" pattern="[a-zA-Z]{1,}" class="form-control" name="lastName" id="lastName" placeholder="Last name" required>
+                                        <div class="invalid-feedback">
+                                            Please enter last name
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3 md-form">
+                                        <label for="validationCustomUsername2">Phone No</label>
+                                        <input type="text" pattern=".{10,}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" maxlength="10" minsize="10" name="phoneNo" id="phoneNo" placeholder="Phone No" aria-describedby="inputGroupPrepend2"
+                                               required>
+                                        <div class="invalid-feedback" id="phoneNoError">
+                                            Please enter a valid phone no
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3 md-form">
+                                        <label for="validationCustom032">Email</label>
+                                        <input aria-describedby="emailHelp" type="email" class="form-control" name="email" id="email" placeholder="Email" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid Email
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3 md-form">
+                                        <label for="validationCustom042">Password</label>
+                                        <input pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" type="password" for="password1" class="form-control" name="password" id="password" placeholder="Password" required>
+                                        <div class="invalid-feedback">
+                                            Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3 md-form">
+                                        <label for="validationCustom052">Confirm Password</label>
+                                        <input type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" for="password2" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
+                                        <div class="invalid-feedback" id="passwordMatchError">
+                                            please enter password
+                                        </div>
+
+
+                                    </div>
+                                    <div class="spinner-border" id="spinner" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                                @if (ViewBag.IsRegistered != null)
+                                {
+                                    if (ViewBag.IsRegistered)
+                                    {
+                                        <div class="alert alert-success" role="alert">
+                                            Successfully Registered!
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-primary" role="alert">
+                                            Registration failed
+                                        </div>
+                                    }
+                                }
+                                <div class="form-group">
+                                    <div class="form-check pl-0">
+                                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck2" required>
+                                        <label class="form-check-label" for="invalidCheck2">
+                                            Agree to terms and conditions
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            You must agree before submitting.
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary btn-sm btn-rounded" type="submit" id="submitFormButton">Submit form</button>
+                            </form>
+
+                            <hr>
+                            <div class="text-center">
+                                <a class="small" href="/Instructor/ForgotPassword">Forgot Password?</a>
+                            </div>
+                            <div class="text-center">
+                                <a class="small" href="/Instructor">Already have an account? Login!</a>
+                            </div>
+                            <div class="text-center">
+                                <a class="small" href="/">Student Login?</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../../Scripts/vendor/jquery/jquery.min.js"></script>
+
+    <script src="../../Scripts/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../../Scripts/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="../../Scripts/js/sb-admin-2.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form)
+                {
+                    form.addEventListener('submit', function (event)
+                    {
+                        if (form.checkValidity() === false || $("#confirmPassword").val() != $("#password").val() || $("#phoneNo").val().length!=10) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                            form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
+    <script type="text/javascript">
+        document.onreadystatechange = function() {
+            if (document.readyState !== "complete") {
+                document.querySelector(
+                  "body").style.visibility = "hidden";
+                document.querySelector(
+                  "#spinner").style.visibility = "visible";
+            } else {
+                document.querySelector(
+                  "#spinner").style.display = "none";
+                document.querySelector(
+                  "body").style.visibility = "visible";
+            }
+        };
+    </script>
+    <script type="text/javascript">
+        (function () {
+            'use strict';
+            $("#phoneNo").on("keyup", function () {
+                if ($(this).val().length!=10) {
+                    $("#phoneNoError").show();
+                    $("#phoneNoError").text("Invalid phone no");
+                } else {
+                    $("#phoneNoError").hide();
+                }
+            });
+            $("#confirmPassword").on("keyup", function () {
+                if ($(this).val() != $("#password").val()) {
+                    $("#passwordMatchError").show();
+                    $("#passwordMatchError").text("Passwords should match");
+                } else {
+                    $("#passwordMatchError").hide();
+                }
+            });
+            $("#password").on("keyup", function () {
+                if ($(this).val() != $("#confirmPassword").val()) {
+                    $("#passwordMatchError").show();
+                    $("#passwordMatchError").text("Passwords should match");
+                } else {
+                    $("#passwordMatchError").hide();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

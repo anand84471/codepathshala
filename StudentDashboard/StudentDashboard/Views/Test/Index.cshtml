@@ -1,0 +1,167 @@
+﻿@{
+    ViewBag.Title = "Join course";
+    Layout = "~/Views/Shared/_AboutLayout.cshtml";
+}
+<style type="text/css">
+    .custom-blue {
+        background-image: linear-gradient(to right, rgba(51, 91, 255), rgba(51, 80, 210));
+    }
+
+    .custom-white {
+        background-image: linear-gradient(to right, rgba(253, 254, 254), rgba(253, 254, 254));
+    }
+
+    .custom-green {
+        color: white;
+        background-image: linear-gradient(to right, rgba(8, 254, 58, 0.84), rgba(27, 164, 26, 0.63));
+    }
+
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        border-radius: 5px;
+    }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+    .custom-join-button {
+        background: rgb(63,94,251);
+        background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+    }
+
+    .custom-color-desc {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        color: #655b5b;
+    }
+
+    .custom-dialog-header {
+        background: rgb(131,58,180);
+        color: turquoise;
+        background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+    }
+</style>
+
+<div class="container-fluid" id="addNewCourseContainer">
+    
+    <nav class="container-fluid col-sm-5 mt-2">
+        <div class="input-group col-sm-12">
+            <select class="input-group-prepend " style="width:70px" id="inlineFormCustomSelect">
+                <option selected value="1">Filter...</option>
+                <option value="1">Date of creation ascending</option>
+                <option value="2">Date of creation descending</option>
+                <option value="3">Popularity</option>
+                <option value="4">Rating</option>
+                @*<option value="php">Price high to low</option>
+                    <option value="plh">Price low to high</option>*@
+            </select>
+            <input type="text" class="form-control" id="testSearchBox" placeholder="Search for test..." aria-label="Search">
+            <div class="input-group-append">
+                <button class="btn btn-primary" onclick="searchForTest(true)" type="button">
+                    <i class="icon-search"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="text-center ml-3">
+
+            <hr class="mb-3" />
+        </div>
+        <div class="col p-1">
+            <div class="alert alert-danger p-2 m-3" role="alert" style="display:none" id="noTestsFound">
+                <h4 class="alert-heading">No tests found.</h4>
+            </div>
+            <div class="row pl-1" id="testsContainer">
+                <div class="text-center container-fluid" id="searcBoxImage">
+                    <h1 class="text-center center">Search for tests</h1>
+                    <img src="~/Images/content-search.svg" class="img-fluid" style="width:300px;height:300px;" />
+                </div>
+            </div>
+            <div class="col-sm-12" id="showMoreTestButton" style="display:none">
+                <button class="btn btn-block btn-outline-primary" onclick="searchForTest(false)">Load more</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        'use strict';
+        var input = document.getElementById("testSearchBox");
+        input.addEventListener("keyup", function (event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                searchForTest(true);
+            }
+        });
+        $("#testMenu").addClass("active");
+        $("#homeMenu").removeClass("active");
+        onpageshow = searchForTest(false);
+    })();
+    var lastTestIdFetched = 0;
+    function searchForTest(shouldempty)
+    {
+        $("#noTestsFound").hide();
+        var _data =
+            {
+                "search_string": $("#testSearchBox").val(),
+                "last_feched_content_id": lastTestIdFetched,
+            }
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/document/FetchFeeTests",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1 && data.test_details != null) {
+                    var tests= data.test_details;
+                    var coursesContainer = $("#testsContainer");
+                    coursesContainer.empty();
+                    if (shouldempty)
+                    {
+                       
+                        lastTestIdFetched = 0;
+                    }
+                    $("#searcBoxImage").remove();
+                    if (tests.length == 10)
+                    {
+                        $("#showMoreTestButton").show();
+                    }
+                    else {
+                        $("#showMoreTestButton").hide();
+                    }
+
+                    for (var i = 0; i < tests.length;i++)
+                    {
+                        
+                        lastTestIdFetched = tests[i].test_id;
+                       var rows=('<div class="col-xl-4 col-md-6 mb-4">'
+                    + '<div class="card ml-2 mr-2 mb-2">'
+                    + '<div class="card-header bg-secondary">'
+                    + '<h5 class="font-weight-bold text-white"><i class="fa fa-pencil-square" aria-hidden="true"> </i>  ' + tests[i].test_name + '</h5>'
+                    +'</div>'
+                    +'<div class="card-body text-center">'
+                        + '<h6 class="custom-color-desc font-weight-bold"><i class="fa fa-info-circle" aria-hidden="true"></i> ' + tests[i].test_description + '</h6>'
+                        + '<h6 class="text-info font-weight-bold"><i class="fa fa-calendar" aria-hidden="true"></i> ' + tests[i].creation_date + ' | <span class="h3 text-white badge badge-pill badge-success">Free</span></h6>'
+                        + ' <p class="text mr-3"><i class="fa fa-users mr-2"></i><b>Submissions:</b> ' + tests[i].no_of_submissions + '</p>'
+                        +'<ul class="list-unstyled list-inline rating mb-0">'
+                        + '<li class="list-inline-item mr-0"><a  class="btn lg btn-primary custom-join-button"  href="Test/Details?id=' + tests[i].test_id + '&access_code=' + tests[i].test_access_code + '">Practice Now</a></li>'
+                        +'</ul>'
+                    +'</div>'
+                +'</div>'
+            + '</div>');
+                       coursesContainer.append(rows);
+                    }
+                }
+                else {
+                    $("#noTestsFound").show();
+                }
+                window.scrollTo(0, 0);
+            }
+        });
+    }
+</script>

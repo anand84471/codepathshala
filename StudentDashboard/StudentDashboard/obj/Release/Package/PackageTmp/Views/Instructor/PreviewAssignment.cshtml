@@ -1,0 +1,669 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<style type="text/css">
+    .assignment-body {
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+</style>
+@*<nav class="navbar bg-dark ">
+
+        <a href="./MyCourses" class="btn navbar-item text-white nav-item active">
+            <i class="fa fa-arrow-left"></i>
+        </a>
+        <a class="navbar-brand " href="#">
+            <img src="~/Images/site-logo.png" width="160" height="40" class="align-top bg-white" alt="">
+
+        </a>
+    </nav>*@
+<div class="assignment-body container-fluid pt-4">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Assignment Attempt</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callNewAssignment()">New Assignment</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Assignment Attempt</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="card shadow mb-4 border-left-primary">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary" id="AssignmentName">Assignment Name</h6>
+            <ul class="list-inline m-0">
+                @*<li class="list-inline-item m-0"><button type="button" class="btn btn-outline-primary m-0" id="testRemainigTimeHH">03</button></li>
+                    <li class="list-inline-item m-0 ml-1 font-weight-bolder">:</li>*@
+                <li class="list-inline-item m-0"><button type="button" class="btn btn-outline-primary m-0" id="minutes">00</button></li>
+                <li class="list-inline-item m-0 ml-1 font-weight-bolder">:</li>
+                <li class="list-inline-item m-0"><button type="button" class="btn btn-outline-primary m-0" id="seconds">00</button>
+            </ul>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <button class="dropdown-item beforesubmit" id="submitResponseButton" onclick="requestSubmitAssignment()">Submit</button>
+                    <button class="dropdown-item beforesubmit" id="viewResponseButton" onclick="createAssignmentResponse()">View final response</button>
+                    <button class="dropdown-item afterSubmit" id="giveFeedBack" onclick="requestAssignmentFeedback()" style="display:none">Download Response</button>
+                    <button class="dropdown-item afterSubmit" id="giveFeedBack" onclick="requestAssignmentFeedback()" style="display:none">Give Feedback</button>
+                    <div class="dropdown-divider"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Card Body -->
+        <div class="row">
+            <div class="card-body  col-sm-6" id="pieChartContainer" style="display:none">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="pieChartBody"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-primary"></i> Not attempted
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-success"></i>  Correct
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-info"></i> Incorrect
+                    </span>
+                </div>
+            </div>
+            <div class="card-body col-sm-6 mt-4" id="assignmentResponseContainer" style="display:none">
+                <h4 class="small font-weight-bold">Correct answers <span class="float-right" id="correctAnswers">00</span></h4>
+                <h4 class="small font-weight-bold">Incorrect answers <span class="float-right" id="incorrectAnswers">00</span></h4>
+                <h4 class="small font-weight-bold">Total No of question <span class="float-right" id="totalQuestions">00</span></h4>
+                <h4 class="small font-weight-bold">Percentage Score <span class="float-right" id="percentageScore">00%</span></h4>
+                <div class="progress mb-4">
+                    <div id="progressbarScore" class="progress-bar bg-danger" role="progressbar" style="width: 50%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <h4 class="small font-weight-bold">Time taken <span class="float-right" id="timeTaken"></span></h4>
+                <div class="progress mb-4">
+                    <div id="progressbarTime" class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" id="assignmentContainer">
+
+
+            <div class="glyphicon-question-sign buttons">
+                <ul class="list-inline" id="questionButton"></ul>
+                <hr />
+            </div>
+            <!-- Default unchecked -->
+            <div class="question_sections mt-0" id="assignmentQuestionSection" style="display:none">
+                <h4 class="m-0 font-weight-bold text-primary" id="mcq_question_statement"></h4>
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input" id="option1" name="options" value="1">
+                    <label class="custom-control-label" for="option1" id="optionlabel1"></label>
+                </div>
+
+                <!-- Group of default radios - option 2 -->
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input" id="option2" name="options" value="2">
+                    <label class="custom-control-label" for="option2" id="optionlabel2"></label>
+                </div>
+
+                <!-- Group of default radios - option 3 -->
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input" id="option3" name="options" value="3">
+                    <label class="custom-control-label" for="option3" id="optionlabel3"></label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input" id="option4" name="options" value="4">
+                    <label class="custom-control-label" for="option4" id="optionlabel4"></label>
+                </div>
+                <nav aria-label="Page navigation example" class="mt-2">
+                    <ul class="pagination justify-content-start">
+                        <li class="page-item">
+                            <button class="page-link" onclick="showPreviousQuestion()" id="previousButton"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link" tabindex="-1" onclick="markQuestionToReview()">Review</button>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link" onclick="showNextQuestion()" id="nextButton"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+                        </li>
+                    </ul>
+                </nav>
+                <p>Total No of Questions:<b id="totalNoOfQuestions"></b> | Total Answered questions: <b id="totalAnsweredQuestions">0</b></p>
+                <button id="courseAddNewCourseButton" type="button" class="btn btn-primary  btn-block" onclick="requestSubmitAssignment()">Submit response</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="assignmentResponseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assignmentName">Assignment Name</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="assignmentResponse">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade " id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Confirm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="confirmModalMessage">Are you sure to want to submit the assignment?</h3>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmModalYes" type="button" class="btn btn-primary" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        'use strict';
+        onpageshow = getAssignmentDetails();
+
+    })();
+    var mcq_questions;
+    var currentQuestionNo = -1;
+    var currentQuestion;
+    var previousButton;
+    var nextButton;
+    var questionStatement;
+    var option1;
+    var option2;
+    var option3;
+    var option4;
+    var option1Value;
+    var option2Value;
+    var option3Value;
+    var option4Value;
+    var listQuestionButtons;
+    var toalAnsweredQuestions = 0;
+    var isAssignmentSubmitted = false;
+    var correctOptionCount;
+    var inCorrectOptionCount;
+    var notAttemptedQuestionCount;
+    var assignmentInterval;
+    var timeTakenToSolveAssignment = 0;
+    var answerResponse;
+    var submissionId;
+    var StartTime;
+    function disposeVaribales()
+    {
+        clearInterval(assignmentInterval);
+        mcq_questions = null;
+        currentQuestionNo =null;
+        currentQuestion=null;
+        previousButton=null;
+        nextButton=null;
+        questionStatement=null;
+        option1=null;
+        option2=null;
+        option3=null;
+        option4=null;
+        option1Value=null;
+        option2Value=null;
+        option3Value=null;
+        option4Value=null;
+        listQuestionButtons=null;
+        toalAnsweredQuestions = null;
+        isAssignmentSubmitted = null;
+        correctOptionCount=null;
+        inCorrectOptionCount=null;
+        notAttemptedQuestionCount=null;
+        assignmentInterval=null;
+        timeTakenToSolveAssignment=null;
+        answerResponse=null;
+        submissionId=null;
+        StartTime=null;
+    }
+    function getAssignmentDetails() {
+        initialize();
+        debugger
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchAssignmentDetails?AssignmentId=".concat(@ViewBag.id),
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    if (data.mcq_questions==null||data.mcq_questions.length==0)
+                    {
+                        $("#assignmentQuestionSection").show();
+                        $("#assignmentQuestionSection").html('<div class="alert alert-warning" role="alert">Sorry! No questions present</div>');
+                        return;
+                    }
+                    $("#assignmentQuestionSection").show();
+                    $("#AssignmentName").text(data.assignment_name);
+                    var date = new Date();
+                    StartTime = date.toLocaleDateString();
+                    var questions = data.mcq_questions;
+                    mcq_questions = questions;
+                    var questionButtons = '';
+                    for(var i=0;i<questions.length;i++)
+                    {
+                        var questionNo = i + 1;
+                        if (questionNo < 10) {
+                            var questionNo = '0' + questionNo;
+                        }
+                        var row = '<li class="list-inline-item"><button type="button" class="btn btn-secondary" name="questionButtons">' + questionNo + '</button></li>';
+                        questionButtons += row;
+                    }
+                    document.getElementById("questionButton").insertAdjacentHTML("beforeend", questionButtons);
+                    listQuestionButtons = $('button[name ="questionButtons"]');
+                    showNextQuestion();
+                    setOnClickForButtons();
+                    $("#totalNoOfQuestions").html(mcq_questions.length)
+                    runTimer();
+                }else
+                {
+                    $("#assignmentQuestionSection").html('<div class="alert alert-warning" role="alert">Sorry! No questions present</div>');
+                    $("#assignmentQuestionSection").show();
+                }
+            }
+        });
+    }
+    function setOnClickForButtons()
+    {
+        debugger
+        for (var i = 0; i < listQuestionButtons.length;i++)
+        {
+            listQuestionButtons[i].onclick = function () {
+                debugger
+                changeStatusOfButton();
+                currentQuestionNo = parseInt($(this).text())-1;
+                setQuestion();
+            }
+        }
+    }
+    function changesQuestionStatus(status,elem)
+    {
+        debugger
+        switch(status)
+        {
+            case 1:{
+                //Active
+
+                $(elem).addClass("btn-primary");
+                break;
+            }
+            case 2:{
+                //Mark for review
+                $(elem).addClass("btn-danger");
+                break;
+            }
+            case 3:{
+                //Submitted
+                $(elem).addClass("btn-success");
+                break;
+            }
+        }
+    }
+
+    function initialize()
+    {
+        questionStatement=$("#mcq_question_statement");
+        option1 = $("#optionlabel1");
+        option2 = $("#optionlabel2");
+        option3 = $("#optionlabel3");
+        option4 = $("#optionlabel4");
+        previousButton=$("#previousButton");
+        nextButton=$("#nextButton");
+    }
+    function showPreviousQuestion()
+    {
+        changeStatusOfButton();
+        currentQuestionNo--;
+        if(currentQuestionNo<=0)
+        {
+            previousButton.prop('disabled', true);
+        }
+        nextButton.prop('disabled', false);
+        setQuestion();
+    }
+
+    function setQuestion()
+    {
+        debugger
+        preChangeStatusOfButton();
+        currentQuestion = mcq_questions[currentQuestionNo];
+        var qNo = currentQuestionNo + 1;
+        questionStatement.html('<h4 class="mb-2 font-weight-bold text-primary" id="mcq_question_statement"><span class="mr-2">' + qNo + '. </span>' + currentQuestion.question_statement + '</h4>');
+        //questionStatement.text(currentQuestion.question_statement);
+        option1.text(currentQuestion.option1);
+        option2.text(currentQuestion.option2);
+        option3.text(currentQuestion.option3);
+        option4.text(currentQuestion.option4);
+        if (currentQuestion.answer!= null) {
+            document.getElementsByName("options")[currentQuestion.answer-1].checked = true;
+        }
+        else {
+            var optionRadioButtons = document.getElementsByName("options");
+            for(var i=0;i<optionRadioButtons.length;i++)
+            {
+                optionRadioButtons[i].checked = false;
+            }
+        }
+
+    }
+    var optionRadioButtons="";
+    function showNextQuestion()
+    {
+        debugger
+        changeStatusOfButton();
+        currentQuestionNo++;
+        if(currentQuestionNo==mcq_questions.length-1)
+        {
+            nextButton.prop('disabled', true);
+            nextButton.addClass("disabled")
+        }
+        previousButton.prop('disabled', false);
+        setQuestion();
+    }
+    function selectQuestion(elem,questionno)
+    {
+        changesQuestionStatus(1,this);
+        currentQuestionNo = questionno;
+        setQuestion();
+    }
+
+    function changeStatusOfButton()
+    {
+        debugger
+        var radioValue = $("input[name='options']:checked").val();
+        if (radioValue != null && radioValue != 0) {
+            mcq_questions[currentQuestionNo]["answer"] = radioValue;
+            if (mcq_questions[currentQuestionNo]["status"] != null)
+            {
+
+            } else {
+                mcq_questions[currentQuestionNo]["status"] = 2;
+
+                toalAnsweredQuestions++;
+                $("#totalAnsweredQuestions").text(toalAnsweredQuestions);
+            }
+            $(listQuestionButtons[currentQuestionNo]).removeClass("btn-outline-primary");
+            changesQuestionStatus(3, listQuestionButtons[currentQuestionNo]);
+        }
+        else {
+            changesQuestionStatus(1, listQuestionButtons[currentQuestionNo]);
+        }
+    }
+    function preChangeStatusOfButton()
+    {
+        $(listQuestionButtons[currentQuestionNo]).removeClass("btn-secondary");
+        $(listQuestionButtons[currentQuestionNo]).removeClass("btn-outline-primary");
+    }
+    function markQuestionToReview()
+    {
+        $(listQuestionButtons[currentQuestionNo]).removeClass("btn-outline-primary");
+        changesQuestionStatus(2, listQuestionButtons[currentQuestionNo]);
+    }
+
+    function runTimer()
+    {
+        var sec = 0;
+        function pad(val) { return val > 9 ? val : "0" + val; }
+        assignmentInterval = setInterval(function () {
+            timeTakenToSolveAssignment++;
+            if (isAssignmentSubmitted) {
+                return;
+            }
+            $("#seconds").html(pad(++sec % 60));
+            $("#minutes").html(pad(parseInt(sec / 60, 10)));
+        }, 1000);
+    }
+    function returnFinalResponse()
+    {
+        debugger
+        correctOptionCount = 0;
+        inCorrectOptionCount = 0;
+        notAttemptedQuestionCount = 0;
+        changeStatusOfButton();
+        var response = '';
+        var optionNo = 0;
+        answerResponse = [];
+        for (var i = 0; i < mcq_questions.length; i++) {
+            var currentAnswer = {};
+            currentAnswer["question_statement"] = mcq_questions[i].question_statement;
+            currentAnswer["questions_id"] = mcq_questions[i].question_id;
+            currentAnswer["option1"] = mcq_questions[i].option1;
+            currentAnswer["option2"] = mcq_questions[i].option2;
+            currentAnswer["option3"] = mcq_questions[i].option3;
+            currentAnswer["option4"] = mcq_questions[i].option4;
+            currentAnswer["question_id"] = mcq_questions[i].question_id;
+            currentAnswer["correct_option"] = mcq_questions[i].correct_option;
+
+            optionNo++;
+            var qNo = i + 1;
+            var row = '<h4 class="m-0 font-weight-bold text-primary"><span class="mr-2">' + qNo + '. </span>' + mcq_questions[i].question_statement + '</h4>';
+            row +=
+                '<div class="custom-control custom-radio">'
+                    + '<input type="radio" class="custom-control-input" name="responseoptions'+i+'" id="' + optionNo + '" disabled>'
+                    + '<label class="custom-control-label"  for="' + optionNo + '">' + mcq_questions[i].option1 + '</label>'
+                + '</div>';
+            optionNo++;
+            row +=
+                '<div class="custom-control custom-radio">'
+                    + '<input type="radio" class="custom-control-input"  name="responseoptions' + i + '" id="' + optionNo + '" disabled>'
+                    + '<label class="custom-control-label"  for="' + optionNo + '">' + mcq_questions[i].option2 + '</label>'
+                + '</div>';
+            optionNo++;
+            row +=
+               '<div class="custom-control custom-radio">'
+                   + '<input type="radio" class="custom-control-input"  name="responseoptions' + i + '" id="' + optionNo + '" disabled>'
+                   + '<label class="custom-control-label" for="' + optionNo + '">' + mcq_questions[i].option3 + '</label>'
+               + '</div>';
+            optionNo++;
+            row +=
+                '<div class="custom-control custom-radio">'
+                    + '<input type="radio" class="custom-control-input"  name="responseoptions' + i + '" id="' + optionNo + '" disabled>'
+                    + '<label class="custom-control-label"  for="' + optionNo + '">' + mcq_questions[i].option4 + '</label>'
+                + '</div>';
+
+            if (mcq_questions[i]["answer"] == null) {
+                row += '<div class="alert alert-dark" role="alert">No option selected</div>';
+                notAttemptedQuestionCount++;
+                currentAnswer["option_selected"] = -1;
+                currentAnswer[""]
+            }
+            else {
+                currentAnswer["option_selected"] = mcq_questions[i]["answer"];
+                if (mcq_questions[i]["answer"].toString() != mcq_questions[i]["correct_option"]) {
+                    row += '<div class="alert alert-danger" role="alert">Wrong</div>';
+                   inCorrectOptionCount++;
+                }
+                else {
+                    row += '<div class="alert alert-success" role="alert">Correct</div>';
+                    correctOptionCount++;
+                }
+
+                row += '<p>Option selected: ' + mcq_questions[i]["answer"] + '</p>'
+
+            }
+
+            response += row;
+            answerResponse.push(currentAnswer);
+        }
+        return response;
+    }
+    function markSuccess() {
+        for (var i = 0; i < mcq_questions.length; i++) {
+            if (mcq_questions[i]["correct_option"] != null) {
+                var corrcetAnswer = 4 * i + mcq_questions[i]["correct_option"];
+                document.getElementById(corrcetAnswer.toString()).checked = true;
+            }
+
+        }
+    }
+    function createAssignmentResponse()
+    {
+        $("#assignmentResponse").html("");
+        changeStatusOfButton();
+        var response = '';
+        var optionNo = 0;
+        for(var i=0;i<mcq_questions.length;i++)
+        {
+            optionNo++;
+            var qNo=i+1;
+            var row = '<h4 class="m-0 font-weight-bold text-primary"><span class="mr-2">' + qNo + '. </span>' + mcq_questions[i].question_statement + '</h4>';
+            row+=
+                '<div class="custom-control custom-radio">'
+                    + '<input type="radio" class="custom-control-input" name="responseoptions id="' + optionNo + '">'
+                    + '<label class="custom-control-label"  for="' + optionNo + '">' + mcq_questions[i].option1 + '</label>'
+                + '</div>';
+            optionNo++;
+            row +=
+                '<div class="custom-control custom-radio">'
+                    + '<input type="radio" class="custom-control-input" name="responseoptions" id="' + optionNo + '">'
+                    + '<label class="custom-control-label"  for="' + optionNo + '">' + mcq_questions[i].option2 + '</label>'
+                + '</div>';
+            optionNo++;
+            row +=
+               '<div class="custom-control custom-radio">'
+                   + '<input type="radio" class="custom-control-input" name="responseoptions" id="' + optionNo + '">'
+                   + '<label class="custom-control-label" for="' + optionNo + '">' + mcq_questions[i].option3 + '</label>'
+               + '</div>';
+            optionNo++;
+            row +=
+                '<div class="custom-control custom-radio">'
+                    + '<input type="radio" class="custom-control-input" name="responseoptions" id="' + optionNo + '">'
+                    + '<label class="custom-control-label"  for="' + optionNo + '">' + mcq_questions[i].option4 + '</label>'
+                + '</div>';
+
+            if (mcq_questions[i]["answer"] == null) {
+                row += '<p><b>Option selected: </b>No options selected</p>'
+            }
+            else {
+                row += '<p><b>Option selected: </b>' + mcq_questions[i]["answer"] + '</p>'
+            }
+            response += row;
+        }
+
+        $("#assignmentResponse").append(response);
+        $('#assignmentResponseModal').modal('show');
+    }
+    function requestSubmitAssignment() {
+        var AssignmentId = 0;
+        $("#confirmModalMessage").text("Are you sure to want to submit the assignment?");
+        $("#confirmModalYes").attr("onclick", "submitAssignment(" + AssignmentId + ")");
+        $("#confirmModal").modal('show');
+    }
+    function submitAssignment()
+    {
+        changeStatusOfButton();
+        isAssignmentSubmitted = true;
+        $("#submitResponseButton").remove();
+        $("#viewResponseButton").remove();
+        $("#giveFeedBack").show();
+        $("#assignmentContainer").html("");
+        response = returnFinalResponse();
+        clearInterval(assignmentInterval);
+        $("#assignmentContainer").append(response);
+        markSuccess();
+        createPieChart();
+        $("#assignmentResponseContainer").show();
+        $("#timeTaken").html(timeTakenToSolveAssignment + " Secs");
+        $("#correctAnswers").html(correctOptionCount);
+        $("#incorrectAnswers").html(inCorrectOptionCount);
+        $("#percentageScore").html(Math.floor((correctOptionCount/mcq_questions.length)*100)+"%");
+        document.getElementById("progressbarScore").style.width = Math.floor((correctOptionCount / mcq_questions.length) * 100) + "%";
+        callSubmitAssignmentResponse();
+    }
+
+    function createPieChart()
+    {
+        $("#pieChartContainer").show();
+        // Set new default font family and font color to mimic Bootstrap's default styling
+        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#858796';
+        // Pie Chart Example
+        var ctx = document.getElementById("pieChartBody");
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ["Not attempted", "Correct", "Incorrect"],
+                datasets: [{
+                    data: [notAttemptedQuestionCount,correctOptionCount, inCorrectOptionCount],
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    caretPadding: 10,
+                },
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 80,
+            },
+        });
+    }
+
+    function callSubmitAssignmentResponse(AssignmentId) {
+        debugger
+        var _data = extractresponseData();
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/InsertAssignmentResponse",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    submissionId = data.submission_id;
+                    //$("#successResponseMessage").text("question added successfully");
+                    //$("#successDelete").modal('show');
+                }
+                else {
+                    //$("#errorAlertMessageBody").text("question could not be added");
+                    //$("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+
+
+    function extractresponseData() {
+        debugger
+        var date = new Date();
+        var finishTime = date.toLocaleDateString();
+        var _data = {
+            "assignment_id": parseInt(@ViewBag.id),
+            "time_taken": timeTakenToSolveAssignment,
+            "response":answerResponse
+        }
+        return _data;
+    }
+
+</script>

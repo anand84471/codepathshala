@@ -1,0 +1,315 @@
+﻿@{
+    ViewBag.Title = "Courses";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+
+
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Courses</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Courses</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+   
+    <div class="card " >
+        <div class="card-body" >
+            <div class="table-responsive">
+                <table id="coursesTable" class="table-responsive table-hover" style="display:none" >
+                    <thead class="thead-dark">
+                        <tr>
+                            <th >Course Name</th>
+                            <th >Creation Date</th>
+                            <th >Indexes</th>
+                            <th >Status</th>
+                            <th >No Of Students joined</th>
+                            <th >Actions</th>
+                        </tr>
+                    </thead>
+                   
+                    <tbody id="tableBody">
+                    
+                    </tbody>
+                </table>
+                <div id="spinner" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card text-center" id="footer" style="display:none">
+                <div class="card-body">
+                    <h6 class="card-title"> You have not created any courses</h6>
+                    @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+                    <div id="assignmentContainer" class="assignmentContainer"></div>
+                    <a id="addAssignmentButton" class="btn btn-primary" href="./CreateNewCourse">Add new course</a>
+                </div>
+                <div class="card-footer text-muted">
+                    Thank you!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Button trigger modal -->
+<div class="modal fade top" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 " id="myModalLabel"> <b>Course Details:</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9" id="courseName"></dd>
+                    <dt class="col-sm-3">Description:</dt>
+                    <dd class="col-sm-9" id="courseDescription"></dd>
+                    <dt class="col-sm-3">Created on:</dt>
+                    <dd class="col-sm-9" id="insertDate">
+                    </dd>
+                    <dt class="col-sm-3">Assignments:</dt>
+                    <dd class="col-sm-9"id="assignments"></dd>
+                    <dt class="col-sm-3" >Tests:</dt>
+                    <dd class="col-sm-9" id="tests"></dd>
+                    <dt class="col-sm-3" >Indexes:</dt>
+                    <dd class="col-sm-9" id="indexes"></dd>
+                </dl>
+                <ul class="list-group z-depth-0" id="indexContainer">
+                </ul>
+
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Confirm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="infoMessage">Are you sure to want to delete the course?</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteCourse()">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="successDelete" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+ 
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="card border-success modal-content">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="infoTitle">Confirm</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 id="infoMessage">Course deleted successfully</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Close</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+<div class="modal fade" id="failDelete" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="courseIdGenerated">Course could not be deleted</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Full Height Modal Right -->
+
+<script type="text/javascript">
+        (function () {
+            'use strict';
+            onpageshow = getCoursesDetails();
+        })();
+        function getCourseIndexDetails(Id) {
+            debugger;
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/api/v1/instructor/getcoursedetails?CourseId=".concat(Id),
+                success: function (data) {
+                    debugger;
+                    if (data != null && data.response_code == 1) {
+                        $("#courseDescription").text(data.course_description);
+                        $("#courseName").text(data.course_name);
+                        $("#insertDate").text( data.course_creation_date);
+                        $("#indexes").text(data.indexes.length);
+                        $('#fullHeightModalRight').modal('show');
+                        var assignments = 0;
+                        var tests = 0;
+                        $("#indexContainer").empty();
+                        if (data.indexes.length > 0)
+                        {
+                            $("#indexContainer").append(
+                               '<li class="list-group-item justify-content-between">'
+                                   + '<b class="mr-2">Indexes:  </b>'
+                                   + '<span class="badge badge-primary badge-pill">Topics</span>'
+                                   + '<span class="badge badge-primary badge-pill">Assignments</span>'
+                                   + '<span class="badge badge-primary badge-pill">Tests</span>'
+
+                               + '</li>'
+                               );
+                        }
+
+                        for(var i=0;i<data.indexes.length;i++)
+                        {
+                            var x = 0; y = 0;
+                            if(data.indexes[i].assignment_name!=null&&data.indexes[i].assignment_name!="")
+                            {
+                                x++;
+                                assignments++;
+                            }
+                            if (data.indexes[i].test_name != null && data.indexes[i].test_name != "") {
+                                y++;
+                                tests++;
+                            }
+
+                            $("#indexContainer").append(
+                                '<li class="list-group-item justify-content-between">'
+                                    +data.indexes[i].index_name
+                                    +'  <span class="badge badge-primary badge-pill">'+data.indexes[i].topic_count+'</span>'
+                                    +'<span class="badge badge-primary badge-pill">'+x+'</span>'
+                                    +'<span class="badge badge-primary badge-pill">'+y+'</span>'
+                                +'</li>'
+                                );
+                        }
+                        $("#tests").text(tests);
+                        $("#assignments").text(assignments);
+                    }
+                    else
+                    {
+                        $("#footer").show();
+                    }
+                }
+            });
+        }
+        var deleteId = 0;
+        function requestDelete(id)
+        {
+            deleteId = id;
+        }
+        function getFullCourseDetails(id) {
+            debugger;
+            $.ajax({
+                url: '@Url.Action("ViewCourse", "Instructor")',
+                data: {"id": id},
+                type: 'GET',
+                success: function (data) {
+                    $("#body").html(data);
+                    window.history.pushState({ "html": data, "pageTitle": "Instructor" }, "", "ViewCourse?id=".concat(id));
+                }
+            });
+        }
+        function deleteCourse()
+        {
+            debugger;
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/deletecourse?id=" + deleteId,
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#failDelete").modal('show');
+                }
+            }
+        });
+        }
+
+        function getCoursesDetails() {
+        //debugger;
+            $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/courses",
+            success: function (data) {
+                debugger;
+                
+                if (data != null && data.response_code == 1) {
+                    var courses=data.courses;
+                    for (var i = 0; i < courses.length; i++) {
+                        if (courses[i].course_name.length > 30)
+                        {
+                            courses[i].course_name = courses[i].course_name.substring(0,30)+"...";
+                        }
+                        var rows = '<tr><td scope="row" ><button type="button" class="btn btn-link font-weight-bold" onclick="getCourseIndexDetails('.concat(courses[i].course_id) + ')">' + courses[i].course_name + '</button></td>'
+                        + '<td>' + courses[i].insertion_date + '</td><td>' + courses[i].no_of_indexes + '</td>'
+                        + '<td>' + courses[i].course_status + '</td><td>' + courses[i].no_of_students_joined + '</td>'
+                       
+                        +'<td>'
+                            + '<button type="button" class="btn btn-link" class="list-group-horizontal"  onclick="getFullCourseDetails(' + courses[i].course_id + ')">'
+                                +'<i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                            +'</button>'
+                            + '<button type="button" class="btn btn-link" class="list-group-horizontal" onclick="requestDelete(' + courses[i].course_id + ')" data-toggle="modal" data-target="#confirmDelete">'
+                                +'<i class="fas fa-trash fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                            + '</button>'
+                        +'</td>'
+                        +'</tr>';
+                        $('#tableBody').append(rows);
+                        $("#spinner").remove();
+                        $("#coursesTable").show();
+                    }
+                    $('#coursesTable').DataTable();
+                   
+                }
+                else {
+                    $("#footer").show();
+                    $("#spinner").remove();
+                }
+            }
+    });
+    }
+</script>

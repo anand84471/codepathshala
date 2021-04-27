@@ -1,0 +1,322 @@
+﻿@{
+    ViewBag.Title = "Join classroom";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_AboutLayout.cshtml";
+}
+@using StudentDashboard.Models.Student;
+@model ClassroomJoinDetailsModal
+<style type="text/css">
+    .classroom-background-container {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .classroom-background-image {
+        max-height: 300px;
+        height: 300px;
+        z-index: -1;
+    }
+
+    .classroom-background-mask {
+        width: 100%;
+        border: 10px;
+        z-index: 10;
+        background: rgb(3,0,237);
+        background: linear-gradient(360deg, rgba(3,0,237,0.969625350140056) 5%, rgba(11,33,196,0.7063200280112045) 77%);
+        backdrop-filter: blur(12px);
+        padding: 20px;
+        margin-top: 140px;
+        margin-bottom: 20px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+
+    .classroom-background {
+        padding-top: 10px;
+        align-items: center;
+        overflow-y: no-display;
+        background: #f8f8f8;
+        margin-bottom: 10px;
+        text-align: center;
+        border: 3px solid #eee;
+        box-shadow: 2px;
+        border-radius: 8px;
+    }
+
+        .classroom-background:hover {
+            border: 2px solid red;
+        }
+
+    .upload-icon {
+        font-size: 72px;
+        align-items: center;
+    }
+
+    .ui-input-container {
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    .ui-form-input-container {
+        position: relative;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .ui-input-container h2 {
+        font-family: sans-serif;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .ui-form-input {
+        padding: 13px 15px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 100%;
+        min-height: 200px;
+    }
+
+    #zmmtg-root {
+        background-color: aquamarine;
+    }
+    @@media (max-width:800px) {
+        h1#classroomName {
+            font-size: 20px;
+        }
+        .live-class-info-root
+        {
+            padding:0px;
+        }
+    }
+</style>
+<div class="course-demo-card container-fluid mt-2">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Join Live Class</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="~/" onclick="">Home</a></li>
+                <li class="breadcrumb-item"><a href="~/JoinLiveClass" onclick="">JoinLiveClass</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Join classroom</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row" id="live-class-info-root">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4 border-bottom-success live-class-info-root">
+                <div class="card-body classroom-background-container" style="background-image:url(@Model.m_strClassroomBackgroundImage)">
+                    <div class="classroom-background-mask">
+                        <h1 class="text-white font-weight-bold text-gray-100 " id="classroomName">@Model.m_strClassroomName</h1>
+                        <h6 class="mb-0 font-weight-bold" id="classroomDescription">@Model.m_strClassroomDescription</h6>
+                       
+                        <h4 class="text-white" id="classroomJoiningText">Joining Fee &#8377  <span class="badge badge-pill badge-light" id="classroomJoiningFee">@Model.m_iClassroomCharge</span> </h4>
+                        <p class="text-white h6 font-weight-bolder" id="classroomCreationDate">Live class start from: @Model.m_strClassroomCreationDate</p>
+                        <span class="badge badge-pill badge-light" id="successbadge" style="display:none">Joined Successfully</span>
+                        <span><a class="btn btn-outline-primary custom-green text-white font-weight-bold" href="@ViewBag.ReturnUrl">Join now</a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="card border-danger modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-danger">
+                    <h3 id="infoMessageFail">Classroom could not be joined</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row p-1 col-auto" id="classroomContaintProgressDetails">
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-1">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Live classes</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfLiveClass +</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas icon-play-circle fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Assignments and Tests</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfPracticeMaterials +</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="icon-pencil fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Study materials</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfStudyMaterials +</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas icon-book fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pending Requests Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Students joined</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfStudentsJoined +</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas icon-users fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row d-md-flex align-items-center justify-content-center">
+        <div class="col-md-12 text-center heading-section heading-section-black ftco-animate">
+            <h4 class="mb-1 font-weight-bolder"><span>Features available in our live classes</span> </h4>
+            <h6 class="mb-1"><span> “who knows, does it live” </span> </h6>
+            <div class="row">
+                <div class="col-lg-3 text-center p-3">
+                    <div class="card-body">
+                        <img src="~/Images/icon/web_icons/certificate.png" style="height:100px;width:100px;" />
+                        <h4>Certificate of completion</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 text-center p-3">
+                    <div class="card-body">
+                        <img src="~/Images/icon/web_icons/video.png" style="height:100px;width:100px;" />
+                        <h4>Life time study material access</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 text-center p-3">
+                    <div class="card-body">
+                        <img src="~/Images/icon/web_icons/messenger.png" style="height:100px;width:100px;" />
+                        <h4>Doubt solving at any time</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3 text-center p-3">
+                    <div class="card-body">
+                        <img src="~/Images/icon/web_icons/job-search.png" style="height:100px;width:100px;" />
+                        <h4>Job opportunities</h4>
+                        <h6></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="accordion p-2 bg-white" id="accordionExample">
+        <h1 class="text-center mb-1 font-weight-bolder text-primary"><span>FAQs</span> </h1>
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button class="btn btn-link font-weight-bolder" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        What if I miss the class?
+                    </button>
+                </h2>
+            </div>
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                    If you miss the class you can attent in any other session. You can view recorded sessions also.
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed font-weight-bolder" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Can I attend demo session?
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                <div class="card-body">
+                    Yes you can attend demo session for free. Before the final class will be started you can attend demo live classes.
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="headingThree">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed font-weight-bolder" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Can I cancel my memebership and get refund?
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                <div class="card-body">
+                    Yes you are eligible for refund in the period of thress classes.
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="headingFour">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed font-weight-bolder" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseThree">
+                        When will I get the certificate?
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
+                <div class="card-body">
+                    You will get the certificate after completion of all the live sessions and study materials.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = init();
+    })();
+    function getAboutCourse() {
+        $("#courseBody").html(aboutCourseDetails);
+    }
+    var aboutCourseDetails;
+    function showSpinner()
+    {
+       $("#spinner").show();
+    }
+    function hideSpinner()
+    {
+        $("#spinner").fadeOut();
+    }
+
+</script>

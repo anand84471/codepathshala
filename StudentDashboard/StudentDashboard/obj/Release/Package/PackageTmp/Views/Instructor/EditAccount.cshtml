@@ -1,0 +1,470 @@
+﻿@{
+    ViewBag.Title = "Edit Account";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+@using StudentDashboard.Models;
+@model InstructorRegisterModel
+<style type="text/css">
+    .my-icon {
+    }
+
+    .classrooms {
+        width: 100%;
+        border: 10px;
+        background: rgb(131,58,180);
+        background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+        padding: 3px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+</style>
+<div class="container-fluid p-1">
+    <div class="card shadow mb-4 border-primary">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Edit Account Details</h6>
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="pills-basic-details-tab" data-toggle="pill" href="#pills-basic-details" role="tab" aria-controls="pills-home" aria-selected="true">Basic details</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-academic-records-tab" data-toggle="pill" href="#pills-academic-records" role="tab" aria-controls="pills-contact" aria-selected="false">Academic records</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-bio-data-tab" data-toggle="pill" href="#pills-bio-data" role="tab" aria-controls="pills-bio-data" aria-selected="false">Short Bio</a>
+                </li>
+
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-basic-details" role="tabpanel" aria-labelledby="pills-basic-details-tab">
+                    <section class="update-basic-details">
+                        <form action="./UpdateDetails" method="post" class="needs-validation" novalidate>
+                            @Html.AntiForgeryToken()
+                            <div class="form-group row">
+                                <label for="firstName" class="col-sm-2 col-form-label text-success font-weight-bolder">First Name:</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control " id="firstName" name="firstName" value="@Model.m_strFirstName" placeholder="Enter first name..." required>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter  first name
+                                </div>
+                                <label for="lastName" class="col-sm-2 col-form-label text-success font-weight-bolder">Last Name:</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control " id="lastName" value="@Model.m_strLastName" name="lastName" placeholder="Enter last name..." required>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please  enter last name
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="staticPhone" class="col-sm-2 col-form-label text-success font-weight-bolder">Phone No:</label>
+                                <div class="col-sm-4">
+                                    <input type="tel" name="phoneNo" class="form-control" value="@Model.m_strPhoneNo" id="staticPhone" pattern=".{10,}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="10" size="10" placeholder="Enter phone no..." required>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter phone no
+                                </div>
+                                <label for="staticGender" class="col-sm-2 col-form-label text-success font-weight-bolder">Gender:</label>
+                                <div class="col-sm-4">
+                                    <select id="genderselect" name="gender" class="browser-default custom-select">
+                                        <option selected value="Not selected">@Model.m_strGender</option>
+                                        <option value="M">Male</option>
+                                        <option value="F">Female</option>
+                                        <option value="O">Other</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        please select state
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Address Line 1:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" value="@Model.m_strAddressLine1" name="address1" class="form-control" id="staticAddressLine1" placeholder="Enter address line 1..." required>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter address line 1
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="staticAddressLine2" class="col-sm-2 col-form-label text-success font-weight-bolder">Address Line 2:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" value="@Model.m_strAddressLine2" name="address2" class="form-control" id="staticAddressLine2" placeholder="Enter address line 2..." required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-4 mb-3 md-form">
+                                    <label for="validationCustom012" class="col-form-label text-success font-weight-bolder">State</label>
+                                    <select id="stateselect" name="state" onclick="getStates()" onchange="getCities()" class="browser-default custom-select" required>
+                                        <option selected value="@Model.m_iStateId">@Model.m_strState</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        please select state
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-4 mb-3 md-form">
+                                    <label for="validationCustom012" class="col-form-label text-success font-weight-bolder">City</label>
+                                    <select name="city" id="cityselect" class="browser-default custom-select" pattern="^\d+$">
+                                        <option selected value="@Model.m_iCityid">@Model.m_strCity</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        please select city
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4 mb-3 md-form">
+                                    <label for="validationCustom022" class="col-form-label text-success font-weight-bolder">Pin Code</label>
+                                    <input name="pinCode" type="tel" pattern=".{6,}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="6" size="6" class="form-control"
+                                           value="@Model.m_strPineCode" placeholder="Enter Pin Code.." required>
+                                    <div class="invalid-feedback">
+                                        Please enter a valid pin code
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <button id="submitFormButton" type="submit" class="btn btn-outline-primary  btn-block">Submit</button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+                
+                <div class="tab-pane fade" id="pills-academic-records" role="tabpanel" aria-labelledby="pills-academic-records-tab">
+                    <section class="update-basic-details">
+                        @Html.AntiForgeryToken()
+                        <h4>High school details</h4>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">High school Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" value="@Model.instructorSchoolDetailsModal.m_strHighSchoolName" name="address1" class="form-control" id="highSchoolName" placeholder="Enter high school name" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Date of passing</label>
+                            <div class="col-sm-4">
+                                <input type="date" value="@Model.instructorSchoolDetailsModal.m_strHighSchoolPassingDate" name="address1" class="form-control" id="highSchoolPassingDate" placeholder="Please select date of passing" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <h4>Intermediate details</h4>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">School Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" value="@Model.instructorSchoolDetailsModal.m_strIntermediateSchoolName" name="address1" class="form-control" id="inetermediateSchoolName" placeholder="Please enter school name" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Date of passing</label>
+                            <div class="col-sm-4">
+                                <input type="date" value="@Model.instructorSchoolDetailsModal.m_strIntermediatSchoolPassingDate" name="address1" class="form-control" id="intermediatePassingDate" placeholder="Please select date of passing" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <h4>Graduation details</h4>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">College Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" value="@Model.instructorSchoolDetailsModal.m_strGraduateSchoolName" name="address1" class="form-control" id="graduationCollegeName" placeholder="Please enter your college name" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Branch/Stream</label>
+                            <div class="col-sm-10">
+                                <input type="text" value="@Model.instructorSchoolDetailsModal.m_strGraduateBranch" name="address1" class="form-control" id="graduationBranchName" placeholder="Please enter your branch" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Date of passing</label>
+                            <div class="col-sm-4">
+                                <input type="date" value="@Model.instructorSchoolDetailsModal.m_strGrauateSchoolPassingDate" name="address1" class="form-control" id="graduationPassingDate" placeholder="Please select date of passing" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+
+                        <h4>Post graduation details</h4>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">College Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" value="@Model.instructorSchoolDetailsModal.m_strPostGraduateSchoolName" name="address1" class="form-control" id="postGraduationCollegeName" placeholder="Please enter your college name" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Branch/Stream</label>
+                            <div class="col-sm-10">
+                                <input type="text" value="@Model.instructorSchoolDetailsModal.m_strPosGraduateBranch" name="address1" class="form-control" id="postGraduationBranchName" placeholder="Please enter your branch" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter detaicityls
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Date of passing</label>
+                            <div class="col-sm-4">
+                                <input type="date" value="@Model.instructorSchoolDetailsModal.m_strPosGrauateSchoolPassingDate" name="address1" class="form-control" id="postGraduationPassingDate" placeholder="Please select date of passing" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <h4>Phd Details</h4>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">College Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" value="@Model.instructorSchoolDetailsModal.m_strPHdSchoolName" name="address1" class="form-control" id="phdCollegeName" placeholder="Please enter your college name" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Branch/Stream</label>
+                            <div class="col-sm-10">
+                                <input type="text" value="@Model.instructorSchoolDetailsModal.m_strPhdBranch" name="address1" class="form-control" id="phDBranchName" placeholder="Please enter your branch" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Date of passing</label>
+                            <div class="col-sm-4">
+                                <input type="date" value="@Model.instructorSchoolDetailsModal.m_strPhdSchoolPassingDate" name="address1" class="form-control" id="phdPassingDate" placeholder="Please select year of passing" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter details
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">LinkedIn id</label>
+                            <div class="col-sm-10">
+                                <input type="text" value="@Model.m_strLinkedInId" name="address1" class="form-control" id="linkedInId" placeholder="Please enter your linkedIn Id" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter address line 1
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Google scholar Id</label>
+                            <div class="col-sm-10">
+                                <input type="text" value="@Model.m_strGoogleScholarId" name="address1" class="form-control" id="googleScholarId" placeholder="Please enter your google scholar id" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter address line 1
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <button id="changeInstructorAcademicRecord" onclick="changeInstructorAcademicRecord()" class="btn btn-outline-primary  btn-block">Save</button>
+                        </div>
+                    </section>
+                </div>
+                <div class="tab-pane fade" id="pills-bio-data" role="tabpanel" aria-labelledby="pills-bio-data-tab">
+                    <section>
+                        <label for="staticAddressLine1" class="col-form-label text-success font-weight-bolder text-center">Enter short Bio</label>
+                        <div class="form-group row">
+
+                            <div class="col-sm-12">
+                                <textarea rows="4" type="" id="shortBio" name="address1" class="form-control" placeholder="tell students more about you" required>@Model.m_strInstructorBio</textarea>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter address line 1
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <button onclick="updateInstructorBio()" class="btn btn-outline-primary  btn-block">Save</button>
+                        </div>
+                    </section>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function getStates() {
+        var $dropdown = $("#stateselect");
+        if ($("#stateselect option").length > 1) {
+            return;
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            url: "../school/api/v1/GetStates",
+            success: function (data) {
+                $.each(data.states, function () {
+                    $dropdown.append($("<option />").val(this.state_id).text(this.state_name));
+                });
+            }
+        });
+    }
+    function getCities() {
+        var $dropdown = $("#cityselect");
+        $dropdown.empty();
+        if ($dropdown.val() == -1) {
+            $dropdown.append("<option selected value='-1'>select city</option>");
+        }
+        else {
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+                type: "POST",
+                url: "../school/api/v1/GetCities?StateId=".concat($("#stateselect").val()),
+                success: function (data) {
+                    $.each(data.cities, function () {
+                        $dropdown.append($("<option />").val(this.city_id).text(this.city_name));
+                    });
+                }
+            });
+        }
+
+    }
+</script>
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    debugger;
+                    if (form.checkValidity() === false || $("#cityselect").val() == '-1' || $("#stateselect").val() == '-1' || $("#genderselect").val() == '-1') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                    if ($("#cityselect").val() == '-1') {
+                        $("#cityselect").addClass("is-invalid");
+                    }
+                    else {
+                        $("#cityselect").removeClass("is-invalid");
+                        $("#cityselect").addClass("is-valid");
+                    }
+                    if ($("#stateselect").val() == '-1') {
+                        $("#stateselect").addClass("is-invalid");
+                    }
+                    else {
+                        $("#stateselect").removeClass("is-invalid");
+                        $("#stateselect").addClass("is-valid");
+                    }
+                    if ($("#genderselect").val() == '-1') {
+                        $("#genderselect").addClass("is-invalid");
+                    }
+                    else {
+                        $("#genderselect").removeClass("is-invalid");
+                        $("#genderselect").addClass("is-valid");
+                    }
+                }, false);
+            });
+        }, false);
+    })();
+
+</script>
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        window.addEventListener('load', getStates()
+        , false);
+    })();
+</script>
+<script>
+    function addNewCertificate() {
+        $("#certificateContainer").add();
+        var certificate = "";
+    }
+    function changeInstructorAcademicRecord() {
+        debugger
+        var _academicRecords = {
+            "high_school_name": $("#highSchoolName").val(),
+            "high_school_passing_date": $("#highSchoolPassingDate").val(),
+            "intermediate_school_name": $("#inetermediateSchoolName").val(),
+            "intermediate_passing_date": $("#intermediatePassingDate").val(),
+            "graduate_school_name": $("#graduationCollegeName").val(),
+            "graduate_school_joining_date": $("#graduationPassingDate").val(),
+            "graduate_branch": $("#graduationBranchName").val(),
+            "post_graduate_school_name": $("#postGraduationCollegeName").val(),
+            "post_graduate_school_passing_date": $("#postGraduationPassingDate").val(),
+            "post_graduate_branch": $("#postGraduationBranchName").val(),
+            "phd_school_name": $("#phdCollegeName").val(),
+            "phd_passing_date": $("#phdPassingDate").val(),
+            "phd_branch": $("#phDBranchName").val()
+        }
+        var _data = {
+            "school_details": _academicRecords,
+            "linkedin_id": $("#linkedInId").val(),
+            "google_scholar_id": $("#googleScholarId").val()
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/instructor/UpdateAcademicRecord",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#classroomScheduleUpdateMessage").addClass("text-sucess").removeClass("text-danger");
+                    $("#classroomScheduleUpdateMessage").text("classroom schedule updated successfully");
+                }
+                else {
+                    $("#classroomScheduleUpdateMessage").addClass("text-danger").removeClass("text-success");
+                    $("#classroomScheduleUpdateMessage").text("classroom schedule could not be updated");
+                }
+                $("#classroomScheduleUpdateAlert").show();
+            }
+        });
+    }
+    function updateInstructorBio() {
+        debugger
+
+        var _data = {
+            "bio": $("#shortBio").val()
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/instructor/UpdateInstructorShortBio",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#classroomScheduleUpdateMessage").addClass("text-sucess").removeClass("text-danger");
+                    $("#classroomScheduleUpdateMessage").text("classroom schedule updated successfully");
+                }
+                else {
+                    $("#classroomScheduleUpdateMessage").addClass("text-danger").removeClass("text-success");
+                    $("#classroomScheduleUpdateMessage").text("classroom schedule could not be updated");
+                }
+                $("#classroomScheduleUpdateAlert").show();
+            }
+        });
+    }
+</script>

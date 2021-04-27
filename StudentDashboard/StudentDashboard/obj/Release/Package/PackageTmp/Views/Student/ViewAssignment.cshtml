@@ -1,0 +1,179 @@
+﻿@{
+    ViewBag.Title = "Join new course";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<style type="text/css">
+     .custom-blue
+    {
+        color:white;
+       background: rgb(63,94,251);
+       background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(235,113,138,1) 95%);
+    }
+</style>
+@{
+    Layout = "";
+}
+<html lang="en">
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="CodePathshalaAdmin" content="">
+    <title>SB Admin 2 - Login</title>
+    <!-- Custom fonts for this template-->
+    <link href="../../Scripts/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="../../fonts/css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+<body style="background-image: url('../Images/bg_4.jpg');">
+    <div class="container">
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <div class="text-center">
+                            <a href="./"><img src="../Images/site-logo.png" class="img-fluid " alt="..." style="max-height:100px;"></a>
+                            <h4 class="text-gray-900 font-weight-bold mb-2"><span><i class="fa fa-edit"></i></span> Assignment</h4>
+                            <a class="text-gray-900 font-weight-bold mb-2" href="./Index">We request you to login to save your responses</a>
+                        </div>
+                        
+                    </div>
+                    <div id="aboutAssignmentContainer" class="p-3 rounded m-4 card p-4 custom-blue shadow-lg">
+
+                        <dl class="row">
+                            <dt class="col-sm-3">Assignment Name:</dt>
+                            <dd class="col-sm-9" id="assignmentName"></dd>
+                            <dt class="col-sm-3">Description:</dt>
+                            <dd class="col-sm-9" id="assignmentDescription"></dd>
+                            <dt class="col-sm-3">No of questions:</dt>
+                            <dd class="col-sm-9" id="noOfQuestionsInAssignment">
+                            <dt class="col-sm-3">Assignment Type:</dt>
+                            <dd class="col-sm-9" id="assignmentType">
+                            <dt class="col-sm-3">Status:</dt>
+                            <dd class="col-sm-9" id="assignmentAttemptStatus">
+                                unattempted
+                            </dd>
+                        </dl>
+                        @*<h1 class="glow" id="assignmentProgress" style="display:none">Assignment is in progress</h1>*@
+                        <hr class="border border-info" />
+                        <div id="assignmentResponseObject"></div>
+                        <button id="startAssignmentButton" onclick="startAssignment()" type="button" class="btn btn-outline-success btn-sm btn-block text-white" style="width:50%">Start</button>
+                        @*<button id="closeAssignmentButton" onclick="closeAssignment()" type="button" class="btn btn-danger btn-sm btn-block text-white" style="width:50%;display:none">Close</button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../../Scripts/vendor/jquery/jquery.min.js"></script>
+    <script src="../../Scripts/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../../Scripts/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="../Scripts/js/sb-admin-2.min.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+    <script>
+        function disableButton()
+        {
+            var submitButton = document.getElementById("submitButton");
+            submitButton.disabled = true;
+            submitButton.innerText = 'Please wait'
+        }
+    </script>
+</body>
+</html>
+
+
+@*<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">View Assignment</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">View Assignment</li>
+                <li class="breadcrumb-item active" >Data</li>
+            </ol>
+        </nav>
+    </div>
+    <div id="aboutAssignmentContainer" class="p-3 rounded m-4 card p-4 custom-blue shadow-lg" >
+        <dl class="row">
+            <dt class="col-sm-3">Assignment Name:</dt>
+            <dd class="col-sm-9" id="assignmentName"></dd>
+            <dt class="col-sm-3">Description:</dt>
+            <dd class="col-sm-9" id="assignmentDescription"></dd>
+            <dt class="col-sm-3">No of questions:</dt>
+            <dd class="col-sm-9" id="noOfQuestionsInAssignment">
+            <dt class="col-sm-3">Assignment Type:</dt>
+            <dd class="col-sm-9" id="assignmentType">
+            <dt class="col-sm-3">Status:</dt>
+            <dd class="col-sm-9" id="assignmentAttemptStatus">unattempted
+            </dd>
+        </dl>
+        <h1 class="glow" id="assignmentProgress" style="display:none">Assignment is in progress</h1>
+        <hr class="border border-info" />
+        <div id="assignmentResponseObject"></div>
+        <button id="startAssignmentButton" onclick="startAssignment()" type="button" class="btn btn-outline-success btn-sm btn-block text-white" style="width:50%">Start</button>
+        <button id="closeAssignmentButton" onclick="closeAssignment()" type="button" class="btn btn-danger btn-sm btn-block text-white" style="width:50%;display:none">Close</button>
+    </div>
+</div>*@
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = getAssignmentDetails1(20133);
+    })();
+    function getAssignmentDetails1(Id) {
+        debugger;
+        
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchAssignmentDetails?AssignmentId=".concat(Id),
+            success: function (data) {
+                //stopSpinner();
+                debugger;
+                if (data != null && data.response_code == 1) {
+
+                    $("#assignmentName").text(data.assignment_name);
+                    $("#assignmentDescription").text(data.assignment_description);
+                    $("#noOfQuestionsInAssignment").text(data.total_no_of_questions);
+                    $("#assignmentType").text(data.assignment_type);
+                    $("#aboutAssignmentContainer").show();
+                    if (assignmentResponses[Id] != null) {
+                        $("#assignmentResponseObject").html(assignmentResponses[Id]);
+                        $("#assignmentAttemptStatus").text("attempted");
+                    }
+                    else {
+                        $("#assignmentResponseObject").empty();
+                        $("#assignmentAttemptStatus").text("unattempted");
+                    }
+                }
+
+            }
+        });
+    }
+</script>

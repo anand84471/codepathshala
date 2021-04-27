@@ -1,0 +1,826 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+@using StudentDashboard.Models.Instructor;
+@model ClassRoomModal
+<style type="text/css">
+    .classroom-background-container {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .classroom-background-image {
+        max-height: 300px;
+        height: 300px;
+        z-index: -1;
+    }
+
+    .classroom-background-mask {
+        width: 100%;
+        border: 10px;
+        z-index: 10;
+        background: rgb(3,0,237);
+        background: linear-gradient(360deg, rgba(3,0,237,0.969625350140056) 5%, rgba(11,33,196,0.7063200280112045) 77%);
+        backdrop-filter: blur(8px);
+        padding: 20px;
+        margin-top: 140px;
+        margin-bottom: 20px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+
+    .classroom-background {
+        padding-top: 10px;
+        align-items: center;
+        overflow-y: no-display;
+        background: #f8f8f8;
+        margin-bottom: 10px;
+        text-align: center;
+        border: 3px solid #eee;
+        box-shadow: 2px;
+        border-radius: 8px;
+    }
+
+        .classroom-background:hover {
+            border: 2px solid red;
+        }
+
+    .upload-icon {
+        font-size: 72px;
+        align-items: center;
+    }
+
+    .ui-input-container {
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    .ui-input-container-message {
+        background-color: #fff;
+        border-radius: 4px;
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+
+    .ui-form-input-container {
+        position: relative;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .ui-input-container h2 {
+        font-family: sans-serif;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .ui-form-input {
+        padding: 13px 15px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 100%;
+        max-height: 200px;
+    }
+
+    .ui-form-chat {
+        padding: 13px 15px;
+        margin-bottom: 0px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 70%;
+        float: right;
+    }
+
+    .ui-form-chat-instructor {
+        padding: 13px 8px;
+        margin-bottom: 0px;
+        border-radius: 8px;
+        background-color: #757575;
+        color: #fafafa;
+        outline: 0;
+        width: 70%;
+        float: left;
+    }
+
+    .time_date {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #747474;
+        display: block;
+        font-size: 12px;
+        width: 70%;
+        float: right;
+    }
+
+    .time_date_instructor {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #747474;
+        display: block;
+        font-size: 12px;
+        width: 70%;
+        float: left;
+    }
+
+    .messge-sender {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: rgba(3,0,237,0.969625350140056);
+        display: block;
+        font-size: 18px;
+        width: 70%;
+        float: left;
+    }
+
+    #zmmtg-root {
+        background-color: aquamarine;
+    }
+
+    .classroom-nav li a:hover {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a:active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a.active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav a.active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a active {
+        border-bottom: 3px solid red;
+    }
+
+    @@media only screen and (max-width: 600px) {
+        .container-classroom-section {
+            padding-left: 0rem;
+            padding-right: 0rem;
+        }
+    }
+
+
+
+    .classroom-time {
+        width: 60px;
+    }
+</style>
+<div class="container-classroom-section container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Classroom Dashboard</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callViewAllClassroom()">Classrooms</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@Model.m_strClassRoomName</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-lg-12">
+        @if (Model.m_strClassroomStatus == "active")
+        {
+            <nav class="navbar navbar-expand-lg  navbar-light font-weight-bold">
+                @*<a class="navbar-brand" href="#">@Model.m_strClassRoomName</a>*@
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto classroom-nav">
+                        <li class="nav-item active">
+                            <a class="nav-link active" href="#navHome" onclick="viewClassroomHome()"><span class="fa fa-home"></span> Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#navPreviousMeetings" onclick="showPreviousMeetings()"><span class="fa fa-play-circle"></span> Live class <span class="sr-only">(current)</span></a>
+                        </li>
+                        @*<li class="nav-item">
+                                <a class="nav-link" href="#navClassroomPost" onclick="viewClassroomPosts()">Posts<span class="sr-only">(current)</span></a>
+                            </li>*@
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#navMessagesContainer" onclick="showMessages()"><span class="fa fa-envelope"></span> Messages</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="nav-students-joined" href="#navStudentsJoined" onclick="showStudentsJoined()"><span class="fa fa-users"></span> Students Joined</a>
+                        </li>
+                        <li class="nav-item dropdown disabled">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-pencil-square"></span> Assignments
+                            </a>
+                            <div class="dropdown-menu disabled" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="CreateClassroomAssignment?id=@Model.m_llClassRoomId"><span class="fa fa-plus-circle"></span>  Add new assignment</a>
+                                <a class="dropdown-item" href="#navAllAssignments" onclick="viewAllClassroomAssignments()"><span class="fa fa-list"></span> View all assignment</a>
+
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-clock-o"></span> Tests
+                            </a>
+                            <div class="dropdown-menu disabled" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="CreateClassroomTest?id=@Model.m_llClassRoomId"><span class="fa fa-plus-circle"></span>  Add new test</a>
+                                <a class="dropdown-item" href="#navAllTests" onclick="viewAllClassroomTests()"><span class="fa fa-list"></span> View all tests</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-paperclip"></span> Study Materials
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item disabled" href="#navAddnewAttachment" onclick="viewAddNewAttachment()"><span class="fa fa-plus-circle"></span> Add new study material</a>
+                                <a class="dropdown-item disabled" href="#navAllAttachments" onclick="viewAllClassroomAttachments()"><span class="fa fa-list"></span> View all study materials</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-cogs"></span> Settings
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#navUpdateDetails" onclick="showUpdateMeeting()"><span class="fa fa-cog"></span> Update Details</a>
+                                <a class="dropdown-item" href="#navUpdateSchedulerDetails" onclick="showUpdateScheduleDetails()"><span class="fa fa-calendar"></span> Update Classroom Time-Table</a>
+                                @*<a class="dropdown-item" href="#">Delete Classroom</a>*@
+                                <a class="dropdown-item" href="#updateSyllabusDiv" onclick="viewUpdateClassroomSyallabus()"><span class="fa fa-pencil"></span> Update syllabus</a>
+                                <a class="dropdown-item" href="#shareModal" onclick="viewClassroomSharingDetails()"><span class="fa fa-share"></span> Share classroom</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" onclick="callHome()"><span class="fas fa-sign-out-alt"></span> Exit classroom</a>
+                            </div>
+                        </li>
+                    </ul>
+                    @*<form class="form-inline my-2 my-lg-0">
+                            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>*@
+                </div>
+            </nav>
+        }
+    </div>
+    <div class="row" id="classroomDetails">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4 border-bottom-success ">
+                @if (Model.m_strBackGroundImageUrl == null)
+                {
+                    Model.m_strBackGroundImageUrl = "../../Images/course-3.jpg";
+                }
+
+                <div class="card-body classroom-background-container" style="background-image:url(@Model.m_strBackGroundImageUrl)">
+                    <div class="classroom-background-mask">
+                        <h1 class="card-text font-weight-bold text-gray-100 ">@Model.m_strClassRoomName </h1>
+                        <label class="mb-0 font-weight-bold">
+                            @Model.m_strClassRoomDescription
+                        </label>
+                        <p class="text mr-3  text-white" id="courseCreationDate"><b>Creation date:</b> @Model.m_strCreationDate </p>
+                        <span class="badge badge-pill badge-light" id="successbadge">Status: @Model.m_strClassroomStatus</span>
+
+                        @if (Model.m_strClassroomStatus == "created")
+                        {
+                            <span><button class="btn btn-outline-light custom-green text-white font-weight-bold" id="enrollNowButton" onclick="requestActivateClassroom()">Activate</button></span>
+                        }
+                        else
+                        {
+
+                        }
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content Row -->
+    <div class="row" id="classroomContaintProgressDetails">
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-1">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Live classes taken</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfMeetings</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-play-circle fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Assignments added</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfAssignments</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-pen fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tests added</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfTests</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-pen fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pending Requests Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Students joined</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfStudentsJoined</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 mb-2" id="navHome">
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                <div class="add-items-container p-3 text-center ">
+                    <div class="control-buttons">
+                        <h3 class="text-primary font-weight-bolder">Classroom verification is pending. It will be public within 24 hours. </h3>
+                        <h4 class="text-danger">Current Status: <span class="font-weight-bolder">@Model.m_strAdminVarificationMessage</span> </h4>
+                        <p class="text-gray-700">Some feature will not work until the classroom is not verified. Incase if you need any help can contact us on <a href="mailto:contact@readmycourse.com">contact@readmycourse.com &rarr;</a> Or you can also use our help page <a href="Contact">Help &rarr;</a></p>
+                    </div>
+                </div>
+            </div>
+            <div id="secctionTest"></div>
+        </div>
+    </div>
+    <div class="col-lg-12 mb-2" id="navHome">
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                <div class="add-items-container p-3 ">
+                    <div class="control-buttons">
+                        <h6 class="font-weight-bolder">Please update classroom time-table <button class="btn btn-sm btn-primary" href="#" onclick="showUpdateScheduleDetails()">click here</button> and syllabus <button class="btn btn-sm btn-primary" onclick="viewUpdateClassroomSyallabus()">click here</button> to get more students registered for the course and more chances of course acceptence. </h6>
+                    </div>
+                </div>
+            </div>
+            <div id="secctionTest"></div>
+        </div>
+    </div>
+</div>
+<div class="col-lg-12 mb-2" id="navUpdateDetails" style="display:none">
+    <div class="card shadow-lg border-primary">
+        <div class="card-header">Update classroom details</div>
+        <div class="card-body">
+            <div class="form-group row">
+                <label for="inputPassword" class="col-sm-3 col-form-label">Name of Classroom</label>
+                <div class="col-sm-8">
+                    <input onchange="validateInputField(this)" type="text" name="courseName" class="form-control" id="classroomName" placeholder="Enter name of classroom" value="@Model.m_strClassRoomName">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputPassword" class="col-sm-3 col-form-label">Description of Classroom</label>
+                <div class="col-sm-8">
+                    <textarea type="text" onchange="validateInputField(this)" placeholder="Enter classroom description" id="classroomDescription" name="courseContents" rows="2" class="form-control md-textarea">@Model.m_strClassRoomDescription</textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputPassword" class="col-sm-3 col-form-label">No of demo classes</label>
+                <div class="col-sm-3">
+                    <input onchange="validateInputField(this)" type="number" name="noOfDemoClasses" class="form-control" id="noOfDemoClasses" placeholder="No of demo classes" value="@Model.m_iNoOfDemoSessions">
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Registration close date</label>
+                <div class="col-sm-6">
+                    <input type="date" onchange="validateInputField(this)" placeholder="registration close date" id="registrationCloseDate" name="registrationCloseDate" rows="2" class="form-control md-textarea" value="@Model.m_strClassroomRegistratioCloseDate">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Classroom start date</label>
+                <div class="col-sm-6">
+                    <input type="date" onchange="validateInputField(this)" placeholder="classroom start date" id="classroomStartDateSchedule" name="classroomStartDateSchedule" rows="2" class="form-control md-textarea" value="@Model.m_strClassroomStartDate">
+                </div>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="callUpdateClassroomDetails(this)">Update</button>
+        </div>
+        <br />
+        <hr />
+        <form class="card-img-top classroom-background" method="post" enctype="multipart/form-data">
+            <i class="fa fa-upload upload-icon" aria-hidden="true"></i>
+            <div class="form-group">
+                <label for="exampleFormControlFile1">Upload classroom back ground image</label>
+                <input type="file" id="fileUpload" name="file" accept="image/x-png,image/gif,image/jpeg" />
+                <button type="button" class="btn btn-primary" onclick="requestUpload()">Upload</button>
+                <div class="progress progress-sm mr-2">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="fileUploadProgressBar"></div>
+                </div>
+                <div class="alert alert-success" id="postUploadAlert" style="display:none" role="alert">
+                    file uploaded successfully
+                </div>
+            </div>
+        </form>
+        <button class="btn btn-sm btn-primary" onclick="updateClassroomBgImage()">Update Image</button>
+    </div>
+</div>
+<div class="col-lg-12 mb-2" id="navInstructors" style="display:none">
+    <div class="card shadow-lg border-primary">
+        <div class="card-header">Update classroom details</div>
+        <div class="card-body">
+
+        </div>
+    </div>
+</div>
+<div class="col-lg-12 mb-2" id="navUpdateSchedulerDetails" style="display:none">
+    <div class="card shadow-lg border-primary">
+        <div class="card-header">Update classroom classroom time-table</div>
+        <div class="card-body">
+            <table class="table table-responsive">
+                <thead class="thead-light">
+                    <tr>
+                        <td>Day</td>
+                        <td>Status</td>
+                        <td style="min-width:150px;">Start Time</td>
+                        <td style="min-width:150px;">Close Time</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Monday</td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="classroomCloseStatus1" onchange="changeClassroomOpenStatus(this)">
+                                <label class="custom-control-label text-danger" for="classroomCloseStatus1">Closed</label>
+                            </div>
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomStartTime1" disabled />
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomFinishTime1" disabled />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>Tuesday</td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="classroomCloseStatus2" onchange="changeClassroomOpenStatus(this)">
+                                <label class="custom-control-label text-danger" for="classroomCloseStatus2">Closed</label>
+                            </div>
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomStartTime2" disabled />
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomFinishTime2" disabled />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>Wednesday</td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="classroomCloseStatus3" onchange="changeClassroomOpenStatus(this)">
+                                <label class="custom-control-label text-danger" for="classroomCloseStatus3">Closed</label>
+                            </div>
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomStartTime3" disabled />
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomFinishTime3" disabled />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>Thursday</td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="classroomCloseStatus4" onchange="changeClassroomOpenStatus(this)">
+                                <label class="custom-control-label text-danger" for="classroomCloseStatus4">Closed</label>
+                            </div>
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomStartTime4" disabled />
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomFinishTime4" disabled />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>Friday</td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="classroomCloseStatus5" onchange="changeClassroomOpenStatus(this)">
+                                <label class="custom-control-label text-danger" for="classroomCloseStatus5">Closed</label>
+                            </div>
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomStartTime5" disabled />
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomFinishTime5" disabled />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>Saturday</td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="classroomCloseStatus6" onchange="changeClassroomOpenStatus(this)">
+                                <label class="custom-control-label text-danger" for="classroomCloseStatus6">Closed</label>
+                            </div>
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomStartTime6" disabled />
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomFinishTime6" disabled />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>Sunday</td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="classroomCloseStatus7" onchange="changeClassroomOpenStatus(this)">
+                                <label class="custom-control-label text-danger" for="classroomCloseStatus7">Closed</label>
+                            </div>
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomStartTime7" disabled />
+                        </td>
+                        <td>
+                            <input class="form-control" type='text' id="classroomFinishTime7" disabled />
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <div class="alert alert-success alert-dismissible fade show" style="display:none;" id="classroomScheduleUpdateAlert" role="alert">
+                <div class="classroomScheduleUpdateMessage">Classroom schedule updated successfully</div>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="callUpdateClassroomSchedule()">Update classroom time-table</button>
+        </div>
+    </div>
+
+</div>
+
+<div class="col-lg-12 mb-2" id="navStudentsJoined" style="display:none">
+    <div class="card shadow-lg border-primary">
+        <div class="card-header">Students Joined</div>
+        <div class="card-body">
+            <div class="table-responsive ">
+                <table id="studentDetailsTable" class="table-responsive table-hover" style="display:none">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>S.No.</th>
+                            <th>Student Name</th>
+                            <th>Joining Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBodyStudentDetails"></tbody>
+                </table>
+                <div id="spinnerStudentDetails" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card text-center" id="footerStudentsJoined" style="display:none">
+                <div class="card-body">
+                    <h6 class="card-title"> No students have joined.</h6>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="col-lg-12 mb-2" id="updateSyllabusDiv" style="display:none">
+    <div class="card shadow-lg border-primary">
+        <div class="card-header">Add topic to the week</div>
+        <div class="card-body">
+            <div id="spinnerClassroomClassroomSchedule" class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div class="accordion" id="classroom-syllabus-container">
+            </div>
+            <button class="btn btn-outline-primary btn-sm mt-1" onclick="addNewWeek()">Add new week</button>
+            <button class="btn btn-primary btn-sm mt-1" onclick="updateClassroomSyllabus()">Save</button>
+        </div>
+    </div>
+</div>
+<div class="col-lg-12 mb-2" id="navAllAssignments" style="display:none">
+    <div class="card shadow-lg border-primary">
+        <div class="card-header">View all assignments</div>
+        <div class="card-body">
+            <div class="table ">
+                <table id="studentAllAssignmentsTable" class="table-responsive table-hover" style="display:none">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th colspan="2">Assignment Name</th>
+                            <th class="mr-2">Creation Date</th>
+                            <th class="mr-2">Status</th>
+                            <th class="mr-2">No of submissions</th>
+                            <th class="mr-2">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tableAllAssignments"></tbody>
+                </table>
+                <div id="spinnerAllAssignments" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" id="footerAllAssignments" style="display:none">
+                <h6 class="card-title"> You have not created any assignment.</h6>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-lg-12 mb-2" id="navAllTests" style="display:none">
+    <div class="card shadow-lg border-primary">
+        <div class="card-header">View all tests</div>
+
+        <div class="card-body">
+            <div class="table-responsive ">
+                <table id="studentAllTestTable" class="table-responsive table-hover" style="display:none">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="p-2">Test Name</th>
+                            <th class="p-2">Creation Date</th>
+                            <th class="p-2">No of questions</th>
+                            <th class="p-2">No submissions</th>
+                            <th class="p-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableAllTests"></tbody>
+                </table>
+                <div id="spinnerAllTests" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" id="footerAllTests" style="display:none">
+                <h6 class="card-title"> You have not created any test</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modals start-->
+<div class="modal fade" id="classroomTopicModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Update classroom syllabus</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-6 col-form-label">Enter topic name</label>
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="currentWeekTopic" placeholder="please enter topic name" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-6 col-form-label">Enter topic preview url</label>
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="currentWeekTopicPreviewUrl" placeholder="please enter preview url" value="">
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="addTopicToWeek()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="classroomUpdateTopicModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Update classroom syllabus</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-6 col-form-label">Enter topic name</label>
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="updateCurrentWeekTopic" placeholder="please enter topic name" value="">
+                    </div>
+                </div>
+            
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="updateTopic()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="successModal1" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered border-success" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="infoMessage" class="text-success"><span><i class="fa fa-check"></i></span> details updated successfully</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="location.reload()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="errorModal1" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="courseIdGenerated"><span><i class="fa fa-warning"></i></span>Classroom details could not be updatd</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Sharing details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4>1. Use below link to join the classroom</h4>
+                <div class="control-buttons">
+                    <p>Share url: <input type="text" readonly="readonly" id="test-url-2" value="@Model.m_strShareUrl" /><span><button class="btn-sm btn-primary ml-2" onclick="copyText2()">copy<i class="ml-1 fa fa-copy"></i></button></span></p>
+                </div>
+                <h4>2. Please ask student to use below details to join classroom.</h4>
+                <p><b>Classroom Id:</b> @Model.m_llClassRoomId</p>
+                <p><b>Access code:</b> @Model.m_strShareCode</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modals end-->
+<script type="text/javascript">
+    localStorage.setItem("classroom_id", "@Model.m_llClassRoomId");
+</script>
+<script type="text/javascript" src="~/Scripts/Classroom/ClassroomDashboard.js"></script>

@@ -1,0 +1,289 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="CodePathshalaAdmin" content="">
+    <title>E-Pathshala School Login</title>
+    <!-- Custom fonts for this template-->
+    <link href="../../Scripts/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="../../fonts/css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+<body class="bg-gradient-primary">
+
+    <div class="container">
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">School Register</h1>
+                            </div>
+                            <form method="post" class="needs-validation" action="./RegisterNow" novalidate>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3 md-form">
+                                        <label for="validationCustom012">School Name</label>
+                                        <input type="text"  class="form-control" name="name" id="name" placeholder="School Name" required>
+                                        <div class="invalid-feedback">
+                                            Please enter school name
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3 md-form">
+                                        <label for="validationCustom012">Address Line 1</label>
+                                        <input type="text" pattern="[a-zA-Z]{1,}" class="form-control" name="address1" placeholder="Address Line 1" required>
+                                        <div class="invalid-feedback">
+                                            Please enter address line 1
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-3 md-form">
+                                        <label for="validationCustom012">Address Line 2</label>
+                                        <input type="text" pattern="[a-zA-Z]{1,}" class="form-control" name="address2" id="name" placeholder="Address Line 2" required>
+                                        <div class="invalid-feedback">
+                                            Please enter address line 2
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3 md-form">
+                                        <label for="validationCustom012">state</label>
+                                        <select id="stateselect" name="state" onclick="getStates()" onchange="getCities()" class="browser-default custom-select">
+                                            <option selected value="-1">select state</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            please select state
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-4 mb-3 md-form">
+                                        <label for="validationCustom012">city</label>
+                                        <select name="city" id="cityselect" class="browser-default custom-select">
+                                            <option selected value="-1">select city</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            please select city
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4 mb-3 md-form">
+                                        <label for="validationCustom022">PinCode</label>
+                                        <input name="pinCode" type="text" pattern=".{6,}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="6" size="6" class="form-control"  id="lastName" placeholder="Pin Code" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid pin code
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3 md-form">
+                                        <label for="validationCustomUsername2">Phone No</label>
+                                        <input type="text" pattern=".{10,}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" maxlength="10" minsize="10" name="phoneNo" id="phoneNo" placeholder="Phone No" aria-describedby="inputGroupPrepend2"
+                                               required>
+                                        <div class="invalid-feedback" id="phoneNoError">
+                                            Please enter a valid phone no
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 mb-3 md-form">
+                                        <label for="validationCustom032">Email</label>
+                                        <input aria-describedby="emailHelp" type="email" class="form-control" name="email" id="email" placeholder="Email" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid Email
+                                        </div>
+                                    </div>
+
+                                </div>
+                        <div class="form-row">
+                            <div class="col-md-9 mb-3 md-form">
+                                <label for="validationCustom032">Create a user name</label>
+                                <input onchange="isUserNameAvailable(this)" aria-describedby="emailHelp" pattern="[a-zA-Z0-9]{0,40}" type="text" class="form-control" name="userName" id="email" placeholder="Email" required>
+                                <div id="invalidUserName" class="invalid-feedback">
+                                    please enter a valid user name
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 md-form">
+                                <label for="validationCustom042">Password</label>
+                                <input pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" type="password" for="password1" class="form-control" name="password" id="password" placeholder="Password" required>
+                                <div class="invalid-feedback">
+                                    Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 md-form">
+                                <label for="validationCustom052">Confirm Password</label>
+                                <input type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" for="password2" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
+                                <div class="invalid-feedback" id="passwordMatchError">
+                                    please enter password
+                                </div>
+
+
+                            </div>
+                            <div class="spinner-border" id="spinner" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                        @if (ViewBag.IsRegistered != null)
+                        {
+                            if (ViewBag.IsRegistered)
+                            {
+                                <div class="alert alert-success" role="alert">
+                                    Successfully Registered!
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-primary" role="alert">
+                                    Registration failed
+                                </div>
+                            }
+                        }
+                        <div class="form-group">
+                            <div class="form-check pl-0">
+                                <input class="form-check-input" type="checkbox" value="" id="invalidCheck2" required>
+                                <label class="form-check-label" for="invalidCheck2">
+                                    Agree to terms and conditions
+                                </label>
+                                <div class="invalid-feedback">
+                                    You must agree before submitting.
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-sm btn-rounded" type="submit" id="submitFormButton">Submit form</button>
+                        </form>
+
+                        <hr>
+                        <div class="text-center">
+                            <a class="small" href="/Home/ForgotPassword">Forgot Password?</a>
+                        </div>
+                        <div class="text-center">
+                            <a class="small" href="/">Already have an account? Login!</a>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../../Scripts/vendor/jquery/jquery.min.js"></script>
+
+    <script src="../../Scripts/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../../Scripts/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="../../Scripts/js/sb-admin-2.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form)
+                {
+                    form.addEventListener('submit', function (event)
+                    {
+                        if (form.checkValidity() === false || $("#confirmPassword").val() != $("#password").val() || $("#phoneNo").val().length!=10) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                            form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
+    <script type="text/javascript">
+        document.onreadystatechange = function() {
+            if (document.readyState !== "complete") {
+                document.querySelector(
+                  "body").style.visibility = "hidden";
+                document.querySelector(
+                  "#spinner").style.visibility = "visible";
+            } else {
+                document.querySelector(
+                  "#spinner").style.display = "none";
+                document.querySelector(
+                  "body").style.visibility = "visible";
+            }
+        };
+    </script>
+   
+    <script type="text/javascript">
+        function getStates()
+        {
+            var $dropdown = $("#stateselect");
+            if ($("#stateselect option").length>1)
+            {
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:56068/school/api/v1/GetStates",
+                success: function (data) {
+                    $.each(data.states, function () {
+                        $dropdown.append($("<option />").val(this.state_id).text(this.state_name));
+                    });
+                }
+            });
+        }
+        function getCities() {
+            var $dropdown = $("#cityselect");
+            $dropdown.empty();
+            if ($dropdown.val() == -1) {
+                $dropdown.append("<option selected value='-1'>select city</option>");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:56068/school/api/v1/GetCities?StateId=".concat($("#stateselect").val()),
+                    success: function (data) {
+                        $.each(data.cities, function () {
+                            $dropdown.append($("<option />").val(this.city_id).text(this.city_name));
+                        });
+                    }
+                });
+            }
+
+        }
+        function isUserNameAvailable(username)
+        {
+            debugger;
+            $.ajax({
+                type: "POST",
+                
+                url: "http://localhost:56068/school/api/v1/ValidateUserId?SchoolId=".concat(username.value),
+                success: function (data) {
+                    debugger; 
+                    if (data != null && data.response_code != 1) {
+                        $("#invalidUserName").show();
+                        $("#invalidUserName").text("user name already exists");
+                    }
+                    else {
+                        $("#invalidUserName").hide();
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

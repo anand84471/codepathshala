@@ -1,0 +1,237 @@
+﻿@{
+    ViewBag.Title = "Edit Account";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+@using StudentDashboard.Models.Student;
+@model StudentRegisterModal
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Edit Account</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Account</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="card shadow mb-4 border-left-primary">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Edit Account Details</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    @*<div class="dropdown-header">Dropdown Header:</div>*@
+                    <a class="dropdown-item" href="./UpdateLoginDetails">Save</a>
+                    <a class="dropdown-item" href="./">Exit</a>
+                    @*<div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>*@
+                </div>
+            </div>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+            <form action="./UpdateDetails" method="post" class="needs-validation" novalidate>
+                @Html.AntiForgeryToken()
+                <div class="form-group row">
+                    <label for="firstName" class="col-sm-2 col-form-label text-success font-weight-bolder">First Name:</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control " id="firstName" value="@Model.m_strFirstName" name="firstName" placeholder="Enter first name..." required>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter  first name
+                    </div>
+                    <label for="lastName" class="col-sm-2 col-form-label text-success font-weight-bolder">Last Name:</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control " id="lastName" value="@Model.m_strLastName" name="lastName" placeholder="Enter last name..." required>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please  enter last name
+                    </div>
+                </div>
+                <input type="hidden" name="countryCode" id="countryCode" value="+91" />
+                <div class="form-group row">
+                    <label for="staticPhone" class="col-sm-2 col-form-label text-success font-weight-bolder">Phone No:</label>
+                    <div class="col-sm-4">
+                        <input type="tel" name="phoneNo" class="form-control" value="@Model.m_strPhoneNo" id="phoneNo" pattern=".{10,}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="10" size="10" placeholder="Enter phone no..." required>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter phone no
+                    </div>
+                    <label for="staticGender" class="col-sm-2 col-form-label text-success font-weight-bolder">Gender:</label>
+                    <div class="col-sm-4">
+                        <select id="genderselect" name="gender" class="browser-default custom-select">
+                            <option selected value="N">@Model.m_strGender</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                            <option value="O">Other</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            please select state
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+
+                </div>
+
+                <div class="form-group row">
+                    <label for="staticAddressLine1" class="col-sm-2 col-form-label text-success font-weight-bolder">Address Line 1:</label>
+                    <div class="col-sm-10">
+                        <input type="text" value="@Model.m_strAddressLine1" name="address1" class="form-control" id="staticAddressLine1" placeholder="Enter address line 1..." required>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter address line 1
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="staticAddressLine2" class="col-sm-2 col-form-label text-success font-weight-bolder">Address Line 2:</label>
+                    <div class="col-sm-10">
+                        <input type="text" value="@Model.m_strAddressLine2" name="address2" class="form-control" id="staticAddressLine2" placeholder="Enter address line 2..." required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-4 mb-3 md-form">
+                        <label for="validationCustom012" class="col-form-label text-success font-weight-bolder">State</label>
+                        <select id="stateselect" name="state" onclick="getStates()" onchange="getCities()" class="browser-default custom-select" required>
+                            <option selected value="@Model.m_iStateId">@Model.m_strState</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            please select state
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3 md-form">
+                        <label for="validationCustom012" class="col-form-label text-success font-weight-bolder">City</label>
+                        <select name="city" id="cityselect" class="browser-default custom-select" pattern="^\d+$">
+                            <option selected value="@Model.m_iCityId">@Model.m_strCity</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            please select city
+                        </div>
+
+                    </div>
+                    <div class="col-md-4 mb-3 md-form">
+                        <label for="validationCustom022" class="col-form-label text-success font-weight-bolder">Pin Code</label>
+                        <input name="pinCode" type="tel" value="@Model.m_strPinCode" pattern=".{6,}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="6" size="6" class="form-control" placeholder="Enter Pin Code.." required>
+                        <div class="invalid-feedback">
+                            Please enter a valid pin code
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <button id="submitFormButton" type="submit" class="btn btn-outline-primary  btn-block">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+        function getStates()
+        {
+            var $dropdown = $("#stateselect");
+            if ($("#stateselect option").length>1)
+            {
+                return;
+            }
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+                type: "POST",
+                url: "../school/api/v1/GetStates",
+                success: function (data) {
+                    $.each(data.states, function () {
+                        $dropdown.append($("<option />").val(this.state_id).text(this.state_name));
+                    });
+                }
+            });
+        }
+        function getCities() {
+            var $dropdown = $("#cityselect");
+            $dropdown.empty();
+            if ($dropdown.val() == -1) {
+                $dropdown.append("<option selected value='-1'>select city</option>");
+            }
+            else {
+                $.ajax({
+                    headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+                    type: "POST",
+                    url: "../school/api/v1/GetCities?StateId=".concat($("#stateselect").val()),
+                    success: function (data) {
+                        $.each(data.cities, function () {
+                            $dropdown.append($("<option />").val(this.city_id).text(this.city_name));
+                        });
+                    }
+                });
+            }
+
+        }
+</script>
+<script type="text/javascript">
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form)
+                {
+                    form.addEventListener('submit', function (event)
+                    {
+                        debugger;
+                        if (form.checkValidity() === false||$("#cityselect").val()=='-1'||$("#stateselect").val() == '-1'||$("#genderselect").val() == '-1') {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                        if($("#cityselect").val()=='-1')
+                        {
+                            $("#cityselect").addClass("is-invalid");
+                        }
+                        else {
+                            $("#cityselect").removeClass("is-invalid");
+                            $("#cityselect").addClass("is-valid");
+                        }
+                        if ($("#stateselect").val() == '-1') {
+                            $("#stateselect").addClass("is-invalid");
+                        }
+                        else {
+                            $("#stateselect").removeClass("is-invalid");
+                            $("#stateselect").addClass("is-valid");
+                        }
+                        if ($("#genderselect").val() == '-1') {
+                            $("#genderselect").addClass("is-invalid");
+                        }
+                        else {
+                            $("#genderselect").removeClass("is-invalid");
+                            $("#genderselect").addClass("is-valid");
+                        }
+                        $("#countryCode").val("+" + iti.s.dialCode);
+                    }, false);
+                });
+            }, false);
+
+        })();
+</script>
+<script type="text/javascript">
+        (function () {
+            'use strict';
+            window.addEventListener('load', getStates()
+            , false);
+        })();
+</script>
+<script src="../../Scripts/vendor/intl-tel-input-master/intlTelInput.min.js"></script>
+
+<script src="../../Scripts/vendor/intl-tel-input-master/intlTelInput-jquery.min.js"></script>
+<script src="../../Scripts/vendor/intl-tel-input-master/utils.js"></script>
+<script type="text/javascript">
+        var input = document.getElementById("phoneNo");
+        var iti=window.intlTelInput(input, ({
+            initialCountry: "in",
+        }));
+
+</script>

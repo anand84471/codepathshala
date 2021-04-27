@@ -1,0 +1,1150 @@
+﻿
+@{
+    ViewBag.Title = "View classroom";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+@using StudentDashboard.Models.Student;
+@model StudentClassroomHomeDetails
+<script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
+<script src="https://unpkg.com/plyr@3"></script>
+<style type="text/css">
+    /*Vertical Steps*/
+    .inside-body {
+        padding: 25px;
+    }
+    .live-classes-row {
+        cursor: pointer;
+    }
+ 
+    .list-group.vertical-steps .list-group-item {
+        border: none;
+        border-left: 3px solid #0052c2;
+        box-sizing: border-box;
+        border-radius: 0;
+        counter-increment: step-counter;
+        padding-left: 20px;
+        padding-right: 0px;
+        padding-bottom: 20px;
+        padding-top: 0px;
+    }
+
+        .list-group.vertical-steps .list-group-item.active {
+            background-color: transparent;
+            color: inherit;
+        }
+
+        .list-group.vertical-steps .list-group-item:last-child {
+            border-left: 3px solid transparent;
+            padding-bottom: 0;
+        }
+
+        .list-group.vertical-steps .list-group-item::before {
+            border-radius: 50%;
+            background-color: #0052c2;
+            color: #fff;
+            content: counter(step-counter);
+            display: inline-block;
+            float: left;
+            height: 25px;
+            line-height: 25px;
+            margin-left: -35px;
+            text-align: center;
+            width: 25px;
+        }
+
+        .list-group.vertical-steps .list-group-item span,
+        .list-group.vertical-steps .list-group-item a {
+            display: block;
+            overflow: hidden;
+            padding-top: 2px;
+        }
+    /* End of Vertical Step */
+
+    #how-to .panel-group .panel {
+        border-radius: 0px;
+        border: 0px;
+    }
+
+    #how-to .panel-group {
+        margin: 0px;
+    }
+
+    #how-to .container {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #how-to .panel-heading {
+        padding: 0px !important;
+        border-radius: 0px;
+    }
+
+    #how-to .parent a {
+        display: block;
+        text-decoration: none;
+        padding: 25px;
+    }
+
+    #how-to .child a {
+        display: block;
+        text-decoration: none;
+        padding: 25px;
+    }
+
+    #how-to .parent {
+        background-color: #fff !important;
+    }
+
+    #how-to .child {
+        background-color: #f2f2f2 !important;
+    }
+
+    #how-to .panel-body {
+        border: none;
+    }
+
+    #how-to .panel-body {
+        padding: 0px;
+    }
+
+    #how-to .panel-group .panel + .panel {
+        margin: 0px;
+    }
+
+    #how-to .panel-group .parent {
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    #how-to .panel-group .child {
+        border-bottom: 1px solid #FDFDFD;
+    }
+
+    #superaccordion {
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
+    }
+
+    .panel-heading a:after {
+        content: "";
+        position: relative;
+        top: 1px;
+        right: 10px;
+        display: inline-block;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14pt;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        float: right;
+        transition: transform .25s linear;
+        -webkit-transition: -webkit-transform .25s linear;
+        color: #333;
+    }
+
+    .panel-heading a[aria-expanded="true"]:after {
+        content: "\2212";
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+
+    .panel-heading a[aria-expanded="false"]:after {
+        content: "\002b";
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+
+    .parent a:after {
+        content: "";
+        position: relative;
+        top: -15px;
+        right: 10px;
+        display: inline-block;
+        line-height: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        float: right;
+        transition: transform .25s linear;
+        -webkit-transition: -webkit-transform .25s linear;
+        color: #333;
+    }
+</style>
+<style type="text/css">
+    .classroom-background-container {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .classroom-background-image {
+        max-height: 300px;
+        height: 300px;
+        z-index: -1;
+    }
+
+    .classroom-background-mask {
+        width: 100%;
+        border: 10px;
+        z-index: 10;
+        background: rgb(3,0,237);
+        background: linear-gradient(360deg, rgba(3,0,237,0.969625350140056) 5%, rgba(11,33,196,0.7063200280112045) 77%);
+        backdrop-filter: blur(8px);
+        padding: 20px;
+        margin-top: 140px;
+        margin-bottom: 20px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+
+    .classroom-background {
+        padding-top: 10px;
+        align-items: center;
+        overflow-y: no-display;
+        background: #f8f8f8;
+        margin-bottom: 10px;
+        text-align: center;
+        border: 3px solid #eee;
+        box-shadow: 2px;
+        border-radius: 8px;
+    }
+
+        .classroom-background:hover {
+            border: 2px solid red;
+        }
+
+    .upload-icon {
+        font-size: 72px;
+        align-items: center;
+    }
+
+    .ui-input-container {
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    .ui-form-input-container {
+        position: relative;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .ui-input-container h2 {
+        font-family: sans-serif;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .ui-form-input {
+        padding: 13px 15px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 100%;
+        max-height: 200px;
+    }
+
+    .ui-form-chat {
+        padding: 13px 15px;
+        margin-bottom: 0px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 70%;
+        float: right;
+    }
+
+    .ui-form-chat-instructor {
+        padding: 13px 8px;
+        margin-bottom: 0px;
+        border-radius: 8px;
+        background-color: #757575;
+        color: #fafafa;
+        outline: 0;
+        width: 70%;
+        float: left;
+    }
+
+    .time_date {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #747474;
+        display: block;
+        font-size: 12px;
+        width: 70%;
+        float: right;
+    }
+
+    .time_date_instructor {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #747474;
+        display: block;
+        font-size: 12px;
+        width: 70%;
+        float: left;
+    }
+
+    .ui-input-container-message {
+        background-color: #fff;
+        border-radius: 4px;
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+
+    .messge-sender {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: rgba(3,0,237,0.969625350140056);
+        display: block;
+        font-size: 18px;
+        width: 70%;
+        float: left;
+    }
+
+    #zmmtg-root {
+        background-color: aquamarine;
+    }
+
+    .classroom-nav li a:hover {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a:active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a.active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav a.active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-assignemnts {
+        width: 100%;
+        border: 10px;
+        background: rgb(58,180,60);
+        background: linear-gradient(90deg, rgba(58,180,60,1) 26%, rgba(253,29,29,1) 100%, rgba(252,176,69,1) 100%);
+        padding: 3px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+
+    .classroom-assignemnts-submitted {
+        width: 100%;
+        border: 10px;
+        background: rgb(58,180,60);
+        background: linear-gradient(130deg, rgba(58,180,60,1) 26%, rgba(226,210,210,1) 100%, rgba(252,176,69,1) 100%);
+        padding: 3px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+
+    @@media only screen and (max-width: 600px) {
+        .container-classroom-section {
+            padding-left: 0rem;
+            padding-right: 0rem;
+        }
+    }
+</style>
+<div class="course-demo-card container-fluid container-classroom-section ">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">View classroom</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callMyClassrooms()">Classrooms</a></li>
+                <li class="breadcrumb-item active" aria-current="page" id="currentBreadCumb"></li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-lg-12">
+        <nav class="navbar navbar-expand-lg  navbar-light font-weight-bold">
+            @*<a class="navbar-brand" href="#">@Model.m_strClassRoomName</a>*@
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto classroom-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#navHome" onclick="showHomeDetails()"><span class="fa fa-home"></span> Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#navPreviousClasses" onclick="viewAllPreviousLiveClasses()"><span class="fa fa-play-circle"></span> Demo Videos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#navMessagesContainer" onclick="showClassroomMessages()"><span class="fa fa-comments"></span>  Discussions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#navClassroomAttachments" onclick="getAllClassroomAttachments()"><span class="fa fa-book"></span> Study Materials</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#navPreviousClasses" onclick="viewAllPreviousLiveClasses()"><span class="fa fa-pencil"></span>Tests</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#navPreviousClasses" onclick="viewAllPreviousLiveClasses()"><span class="fa fa-pencil"></span> Assignments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#navPreviousClasses" onclick="viewAllPreviousLiveClasses()"><span class="fa fa-certificate"></span> Certificate</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-chevron-circle-down"></span> More
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#navClassroomSyllabus" onclick="showClassroomSyllabus()"><span class="fa fa-bookmark"></span>  Classroom syllabus</a>
+                            <a class="dropdown-item" href="#navClassroomSchedule" onclick="showClassroomSchedule()"><span class="fa fa-calendar"></span>  Classroom Schedule</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" onclick="callHome()"><span class="fa fa-sign-out"></span>  Exit classroom</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 mb-4" id="classroomHomeDetails">
+            <div class="card shadow mb-4 border-bottom-success ">
+
+                <div class="card-body classroom-background-container" style="background-image:url(../../Images/course-3.jpg)" id="backgroundUrl">
+                    <div class="classroom-background-mask">
+                        <h1 class="card-text font-weight-bold text-gray-100 " id="classroomName"></h1>
+
+                        <h6 class="mb-0 font-weight-bold" id="classroomDescription"></h6>
+
+
+                        <span class="badge badge-pill badge-light" id="classroomCreationDate"></span>
+                        <span class="badge badge-pill badge-light" id="successbadge" style="display:none">Joined Successfully</span>
+                        <h4 class="text-white" id="classroomJoiningText">Full course fee &#8377  <span class="badge badge-pill badge-light" id="classroomJoiningFee"></span> </h4>
+                        <span><button class="p-2 btn btn-outline-light custom-green text-white font-weight-bold" id="enrollNowButton" onclick="requestCoupon(1)">Pay now <i class="fa fa-arrow-circle-right mr-2" aria-hidden="true"></i></button></span>
+                        <span><button class="p-2 btn btn-outline-light custom-green text-white font-weight-bold" id="enrollNowButton" onclick="requestCoupon(2)">Pay in dollars <i class="fa fa-arrow-circle-right mr-2" aria-hidden="true"></i></button></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row" id="classroomContaintProgressDetails">
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-1">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Teaching sessions joined</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfMeetingJoined</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-play-circle fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Assignment submitted</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfAssignmentSubmitted</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-pen fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Test submitted</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfTestSubmitted</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tasks fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Projects completed</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-line-chart fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 mb-2" id="classroomMeetingStartSection">
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                <div class="add-items-container p-3 text-center ">
+                    <div class="control-buttons">
+                        <h2 id="isMeetingActive"></h2>
+                        <button class="btn mb-1  bg-primary text-white" onclick="viewAllPreviousLiveClasses()" data-toggle="tooltip" data-placement="top" title="time table"><span><i class="fa fa-play-circle p-1"></i></span>Previous class videos</button>
+                        <button class="btn mb-1 bg-primary text-white" onclick="showClassroomSchedule()" data-toggle="tooltip" data-placement="top" title="time table"><span><i class="fa fa-calendar p-1"></i></span> View time table</button>
+                        <button class="btn  mb-1 bg-primary text-white" id="meetingJoinLink" data-toggle="tooltip" data-placement="top" title="Start live" onclick="requestClassroomPayment(1)"><span><i class="fa fa-play-circle"></i></span> Join live class</button>
+                    </div>
+                </div>
+            </div>
+            <div id="secctionTest"></div>
+        </div>
+    </div>
+    <div class="col-lg-12 mb-2" id="classroomMeetingStartSection">
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                <div class="add-items-container p-3 text-center ">
+                    <div class="control-buttons">
+                        <h4 class="text-primary" id="isMeetingActive">This classroom's demo session has been expired. please pay the course fee to continue.</h4>
+                        <h6>if you faces any problem in payment please write to us at info@readmycourse.com</h6>
+                        <h6>if you want to apply for <strong>financial aid</strong>, please write to us at info@readmycourse.com</h6>
+                        <button class="btn  bg-primary text-white" onclick="requestCoupon(1)" data-toggle="tooltip" data-placement="top" title="time table"><span><i class="fa fa-arrow-circle-right mr-2" aria-hidden="true"></i></span>Pay Now</button>
+                        <button class="btn  bg-primary text-white" onclick="requestCoupon(2)" data-toggle="tooltip" data-placement="top" title="time table"><span><i class="fa fa-arrow-circle-right mr-2" aria-hidden="true"></i></span>Pay in $</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="secctionTest"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 mb-2" id="navMessagesContainer" style="display:none">
+        <div class="card shadow-lg border-primary">
+            <div class="card-header">Messages</div>
+            <div class="card-body">
+
+                <div class="ui-input-container-message " id="messagesContainer">
+                    <div class="question" id="questionContainer">
+                    </div>
+                </div>
+                <div class="add-items-container p-3">
+                    <div class="ui-input-container">
+
+                        <label class="ui-form-input-container">
+                            <textarea class="ui-form-input" id="classroomMessage" placeholder="Start asking doubts"></textarea>
+                        </label>
+                        <button type="button" onclick="callSubmitMessage(this)" class="btn btn-primary btn-sm">submit</button>
+                    </div>
+                </div>
+            </div>
+            <div id="secctionTest"></div>
+        </div>
+    </div>
+    <div class="col-lg-12 mb-2" id="navTeachingSessionsContainer" style="display:none">
+        <div class="card shadow-lg border-primary">
+            <div class="card-header">View all teaching sessions</div>
+            <div class="card-body">
+
+            </div>
+            <div id="secctionTest"></div>
+        </div>
+    </div>
+
+    <div class="row col-lg-12 mb-2 p-0 pr-sm-1 pl-3" id="navPreviousClasses" style="display:none">
+        <div class="col-lg-8 p-0 p-1">
+            <div class="card shadow-lg">
+                <p class="text-center"><img id="no_video_present_img" class="text-center img-fluid" src="~/Images/no_video_present.png" style="max-width:300px"></p>
+                <h5 id="no-video-data-present" class="p-2 text-center align-items-center">Recording might not present.</h5>
+                <video id="topic-video-palyer-container" playsinline controls class="videos" style="display:none;">
+                    <source src="" id="video-url" type="video/webm" style="display:none;">
+                    Your browser does not support HTML video.
+                </video>
+                <h5 class="font-weight-bolder p-2" id="topic-name"></h5>
+                @*<hr />
+                    <div class="video-more-info">
+                        <div class="left d-sm-inline-flex">
+                            <h6>98 Views <i class="fa fa-line-chart"></i><small>26 January,2020</small> </h6>
+                            <div class="right d-sm-inline-flex">
+                                <h4>98 Likes <i class="fa fa-line-chart"></i> </h4>
+                                <h4>98 Comments <i class="fa fa-line-chart"></i> </h4>
+                                <h4>98 Share <i class="fa fa-line-chart"></i> </h4>
+                            </div>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+        <div class="card p-0 col-lg-4  border-primary">
+            <div class="card-header">Live classes </div>
+            <div class="card-body">
+                <div class="table-responsive table-hover">
+                    <table id="coursesTable" class="table-responsive table-hover" style="display:none;max-height:60vh;">
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+                <div id="spinner" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <div class="text-center" id="footer" style="display:none">
+                    <div class="card-body">
+                        <h6 class="card-title"> Live class is not started.</h6>
+                        <div id="assignmentContainer" class="assignmentContainer"></div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Thank you!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 mb-2" id="navClassroomSchedule" style="display:none">
+        <div class="card shadow-lg border-primary">
+            <div class="card-header">Classroom Schedule</div>
+            <div class="card-body">
+                <div id="spinnerClassroomSchedule" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <h6>All the times are in IST(UTC +5:30).</h6>
+                <table class="table table-responsive">
+                    <thead class="thead-light">
+                        <tr>
+                            <td>Day</td>
+                            <td>Status</td>
+                            <td>Start Time</td>
+                            <td>Close Time</td>
+                        </tr>
+                    </thead>
+                    <tbody id="classroomScheduleContainer">
+                    </tbody>
+                </table>
+                <div id="footerClassroomSchedule" style="display:none">
+                    <h6 class="card-title"> No test found</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12 mb-2" id="navClassroomSyllabus" style="display:none">
+        <div class="card shadow-lg border-primary">
+            <div class="card-header">Classroom Syllabus</div>
+            <div class="card-body">
+                <div id="spinnerClassroomSyllabus" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <div class="panel-group">
+                    <div id="classroomSyllabusContainer"> </div>
+                </div>
+
+                <div id="footerClassroomSyllabus" style="display:none">
+                    <h6 class="card-title">No details found</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="couponModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Apply coupon</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="font-weight-bolder">Enter Coupon Code</label>
+                    <input type="email" class="form-control" id="coupon-code" aria-describedby="emailHelp" placeholder="please enter your coupon code here">
+                    <small id="emailHelp" class="form-text text-muted">Apply coupon code to avail the discount.</small>
+                    <br />
+                    <h3 class="text-danger font-weight-bolder">Coupons available for today only</h3>
+                    <h4 class="text-info">STUDENT30</h4>
+                    <small class="text-muted">Avail 30% instant discount on all course purchases.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="requestClassroomPayment()">Apply coupon</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel payment</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade border-success" id="successModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-success modal-content">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoTitle">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <h3 id="infoMessageSuccess">Classroom joined successfully</h3>
+                    <a class="btn btn-primary" href="ViewClassroom?classroom_id=@Model.m_llClassroomId">Visit Classroom</a>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="location.href='ViewClassroom?classroom_id=@Model.m_llClassroomId'" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="infoMessageFail">Classroom could not be joined</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = init();
+    })();
+    function getAboutCourse() {
+        $("#courseBody").html(aboutCourseDetails);
+    }
+    var aboutCourseDetails;
+    function showSpinner() {
+        $("#spinner").show();
+    }
+    function hideSpinner() {
+        $("#spinner").fadeOut();
+    }
+
+    //----------------Index Section-------------------------------------
+
+    var indexDetails = [];
+    var courseId = 0;
+    var classroomMeetingName;
+    //-----------------------Course section start----------------------
+    function init() {
+        debugger
+
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetClasroomDetails?id=".concat("@ViewBag.Id"),
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var classroomDetails = data.classroom_details;
+                    $("#currentBreadCumb").text(classroomDetails.classroom_name);
+                    $("#classroomName").text(classroomDetails.classroom_name);
+                    $("#classroomDescription").text(classroomDetails.classroom_description);
+                    $("#classroomJoiningFee").text(classroomDetails.classroom_joining_fee);
+                    if (classroomDetails.is_meeting_active) {
+                        $("#isMeetingActive").text("Live class started");
+                        $("#meetingJoinLink").show();
+                    }
+                    else {
+                        $("#isMeetingActive").text("Live class started.");
+                        $("#meetingJoinLink").remove();
+                    }
+                    if (classroomDetails.background_url != null && classroomDetails.background_url != "")
+                    {
+                        $('#backgroundUrl').css('background-image', 'url(' + classroomDetails.background_url + ')');
+                    }
+                    $("#classroomCreationDate").text("Joined since:" + classroomDetails.creation_date);
+                    classroomMeetingName = classroomDetails.classroom_meeting_name;
+                    hideSpinner();
+                }
+                hideSpinner();
+            }
+        });
+    }
+    var country_type;
+    function requestCoupon(country_type_code) {
+        country_type = country_type_code;
+        $("#couponModal").modal("show");
+    }
+     function requestClassroomPayment()
+     {
+         $("#couponModal").modal("hide");
+         _data = {
+             "classroom_id": "@ViewBag.id",
+             "country_code": country_type,
+             "coupon_code": $("#coupon-code").val()
+         }
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/Course/JoinClassroomPayNow?ClassroomId",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    if (data.is_free_course && data.is_joined)
+                    {
+                        triggerClassroomSuccess();
+                    }
+                    else {
+                        createRazroPayPayemntRequest(data.payment_data);
+                    }
+                }
+                else {
+
+                }
+            }
+        });
+    }
+    function triggerClassroomSuccess() {
+        $("#successModal").modal('show');
+        $("#enrollNowButton").remove();
+        $("#successbadge").show();
+        $("#goToCourse").show();
+        $("#classroomJoiningText").remove();
+    }
+    function createRazroPayPayemntRequest(data)
+    {
+    var options = {
+        "key": data.key, // Enter the Key ID generated from the Dashboard
+        "amount":data.payment_data.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": data.payment_data.currency,
+        "name": data.name,
+        "description": data.description,
+        "image": data.image,
+        "order_id": data.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response) {
+            var razorPayOrder = {
+                "razorpay_payment_id": response.razorpay_payment_id,
+                "razorpay_order_id": response.razorpay_order_id,
+                "razorpay_signature": response.razorpay_signature,
+            }
+            var pass = {
+                "order_id": data.order_id,
+                "classroom_id":"@ViewBag.id",
+                "payment_response": razorPayOrder
+            }
+            joinClassroom(pass);
+        },
+        "notes": {
+            "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+            "color": "#CE51F0"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+        rzp1.open();
+    }
+
+    function joinClassroom(razorPayResponse) {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(razorPayResponse),
+            url: "/api/v1/Course/MarkClassroomPaySuccess",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    triggerClassroomSuccess();
+                }
+                else {
+                    $("#failModal").modal('show');
+                    $("#infoMessageFail").test('Classroom could not be joined');
+                }
+            }
+        });
+    }
+
+    function hideAllClssroomDetails()
+    {
+        $(".nav-link").removeClass("active");
+        $("#classroomHomeDetails").hide();
+        $("#classroomContaintProgressDetails").hide();
+        $("#classroomMeetingStartSection").hide();
+        $("#navMessagesContainer").hide();
+        $("#navTeachingSessionsContainer").hide();
+        $("#navAllAssignments").hide();
+        $("#navAllAssignmentSubmissions").hide();
+        $("#navPractiveNewAssignment").hide();
+        $("#navAllClassroomTests").hide();
+        $("#navAllClassroomTestSubmissions").hide();
+        $("#navClassroomAttachments").hide();
+        $("#navPreviousClasses").hide();
+        $("#navClassroomSchedule").hide();
+        $("#navClassroomSyllabus").hide();
+    }
+
+    function showClassroomMessages()
+    {
+        hideAllClssroomDetails();
+        $("#navMessagesContainer").show();
+        getAllMessages();
+        runTimer();
+    }
+    function showTeachingSessions()
+    {
+        hideAllClssroomDetails();
+        $("#navTeachingSessionsContainer").show();
+    }
+    function showHomeDetails()
+    {
+        hideAllClssroomDetails();
+        $("#classroomHomeDetails").show();
+        $("#classroomContaintProgressDetails").show();
+        $("#classroomMeetingStartSection").show();
+    }
+
+
+
+
+    function viewAllPreviousLiveClasses()
+    {
+        hideAllClssroomDetails();
+        $("#navPreviousClasses").show();
+        getAllLiveClassMeetingDetailsForStudent();
+
+    }
+    function getAllLiveClassMeetingDetailsForStudent() {
+
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchAllTrailClassMeetingDetailForStudent?ClassroomId=@ViewBag.Id",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    var meetings = data.meetings;
+                    var isJoined = "absent";
+                    $('#tableBody').empty();
+                    var sNo = 0;
+                    var absentClass = "";
+                    for (var i = 0; i < meetings.length; i++) {
+                        sNo++;
+                        isJoined = "absent";
+                        absentClass = "danger";
+                        if (meetings[i].student_join_id != null) {
+                            isJoined = "present";
+                            absentClass = "info";
+                        }
+                        var rows = '<tr onclick="showClassroomMeetingContent(' + meetings[i].meeting_id + ')" class="live-classes-row active a d-sm-flex align-items-center justify-content-between"><td class="pr-2"><button class=btn btn-outline-primary" onclick="showClassroomMeetingContent(' + meetings[i].meeting_id + ')"><i class="fa fa-2x fa-play-circle text-primary"></i></button></td></td>'
+                        + '<td class="pr-2"></td><td class="pr-2">' + meetings[i].date + '</td>'
+                        + '<td class="pr-2"><div class="text-' + absentClass + '">' + isJoined + '</div></td>'
+                        + ''
+                        + '</tr>';
+                        $('#tableBody').append(rows);
+                        $("#spinner").remove();
+                        $("#coursesTable").show();
+                    }
+                    showClassroomMeetingContent(meetings[meetings.length-1].meeting_id);
+                    $("#startPreviousMeeting").fadeIn();
+                    $("#startPreviousMeeting").attr("href", "StartMeeting?ClassroomId=@ViewBag.Id");
+                }
+                else {
+                    $("#footer").show();
+                    $("#spinner").remove();
+                }
+            }
+        });
+    }
+
+
+
+    function callClassroomMeeting() {
+        debugger
+        try {
+            AndroidInterface.startClassroomMeeting($("#classroomName").val(), classroomMeetingName);
+        }
+        catch (ex) {
+
+        }
+    }
+
+     function showClassroomSchedule() {
+        hideAllClssroomDetails();
+        $("#navClassroomSchedule").show();
+         $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+             url: "/api/v1/Course/GetClassroomSchedule?ClassroomId=@ViewBag.Id",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    var row = '';
+                    $("#classroomScheduleContainer").empty();
+                    var scheduleDetails = data.classroom_schedule_details.schedule_details;
+                    for (var i = 0; i < scheduleDetails.length; i++) {
+                        if (scheduleDetails[i].is_open) {
+                            row += '<tr class="font-weight-bold"><td>' + scheduleDetails[i].day_name + '</td><td class="text-success font-weight-bold right">Open</td><td class="text-su    ccess font-weight-bold right">' + scheduleDetails[i].start_time + '</td><td class="text-success font-weight-bold right">' + scheduleDetails[i].close_time +'</td></tr>';
+                        }
+                        else {
+                            row += '<tr class="font-weight-bold"><td>' + scheduleDetails[i].day_name + '</td><td class="text-danger font-weight-bold right">Closed</td><td class="text-success font-weight-bold right">NA</td><td class="text-success font-weight-bold right">NA</td></tr>';
+                        }
+
+                    }
+
+                }
+                $("#classroomScheduleContainer").append(row);
+                $("#spinnerClassroomSchedule").remove();
+            }
+        });
+
+    }
+    function showClassroomSyllabus() {
+        debugger
+        hideAllClssroomDetails();
+         $("#navClassroomSyllabus").show();
+         $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+             url: "/api/v1/Course/GetClassroomSyllabus?ClassroomId=@ViewBag.Id",
+             success: function (data) {
+                 debugger
+                if (data != null && data.response_code == 1) {
+
+                    $("#classroomSyllabusContainer").empty();
+                    var scheduleDetails = data.syllabus.week_wise_schedule;
+                    for (var i = 0; i < scheduleDetails.length; i++) {
+                        var row = '';
+                        row += ' <div class="panel">'
+                            + '<div id="collapse1" class="panel-collapse ">'
+                            + '<div class="panel-body">'
+                            + '<div class="panel-group" id="week-body-' + i + '">'
+                            + '<div class="panel">'
+                            + '<div class="panel-heading child">'
+                            + '<h4 class="panel-title">'
+                            + '<a class="accordion-toggle" data-toggle="collapse" data-parent="#week-body-' + i + '" href="#week-header-' + i + '" aria-expanded="false">'
+                            + '' + scheduleDetails[i].week_name + ' </a>'
+                            + '</h4>'
+                            + '</div>'
+                            + '<div id="week-header-' + i + '" class="panel-collapse collapse">'
+                            + '<div class="panel-body">'
+                            + '<div class="inside-body">'
+                            + '<ol class="list-group vertical-steps">';
+                        var topics = scheduleDetails[i].topics_to_be_covered;
+                        for (var j = 0; j < topics.length; j++) {
+                            row += '<li class="list-group-item"><span>' + topics[j]+'</span></li>';
+                        }
+                        row += '</ol >'
+                                +'</div >'
+                                +'</div >'
+                                +'</div >'
+                                +'</div >'
+                                +'</div >'
+                                +'</div >'
+                                +'</div >'
+                            + '</div >';
+                        $("#classroomSyllabusContainer").append(row);
+                    }
+
+                }
+
+                $("#spinnerClassroomSyllabus").remove();
+            }
+        });
+    }
+    var player = null;
+ function showClassroomMeetingContent(meetingId) {
+        var _data =
+           {
+               "meeting_id": meetingId,
+               "classroom_id": "@ViewBag.Id"
+           }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/course/FetchLiveClassMeetingDetailForStudent",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    $("#no-data-present").hide();
+                    if (data.meeting_details.topic_name != null) {
+                        $("#topic-name").text(data.meeting_details.topic_name);
+                    }
+                    if (data.meeting_details.video_url != null) {
+                        $("#topic-video-palyer-container").show();
+                        if (player == null) {
+                            player = new Plyr("#topic-video-palyer-container", { captions: { active: true } });
+                            window.player = player;
+
+                        }
+
+                        player.source = {
+                            type: 'video',
+                            sources: [
+                                {
+                                    src: data.meeting_details.video_url,
+                                    type: 'video/mp4',
+                                }
+                            ],
+                        };
+
+                        $("#video-url").show();
+                        $("#no-video-data-present").hide();
+                        $("#no_video_present_img").hide();
+                    }
+
+                    else {
+                        $("#topic-video-palyer-container").hide();
+                        $("#no_video_present_img").show();
+                        $("#video-url").hide();
+                        $("#no-video-data-present").show();
+                    }
+                }
+                else {
+                    $("#no-data-present").show();
+                    //else part of ajax call
+                }
+
+            }
+        });
+    }
+</script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>

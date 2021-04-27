@@ -1,0 +1,1169 @@
+﻿@{
+    ViewBag.Title = "Create Course";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+<style type="text/css">
+    .classroom-background {
+        padding-top: 10px;
+        align-items: center;
+        overflow-y: no-display;
+        background: #f8f8f8;
+        margin-bottom: 10px;
+        text-align: center;
+        border: 3px solid #eee;
+        box-shadow: 2px;
+        border-radius: 8px;
+    }
+
+        .classroom-background:hover {
+            border: 2px solid red;
+        }
+
+    .upload-icon {
+        font-size: 72px;
+        align-items: center;
+    }
+</style>
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Course</h1>
+    </div>
+    <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Create New Course</h6>
+            <div class="dropdown no-arrow" style="display:none" id="courseMenuButton">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink" >
+                    <a class="dropdown-item" href="#" onclick="addNewIndex()" >Add New Index</a>
+                    @*<a class="dropdown-item" href="#" onclick="addNewAssignment()">Add New Assignment</a>
+                    <a class="dropdown-item" href="#" onclick="addNewTest()">Add New Test</a>*@
+                    <a class="dropdown-item" href="./Courses">Save</a>
+                    <a class="dropdown-item" href="#">Release</a>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#cancelModal">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Delete
+                    </a>
+                </div>
+                <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModal" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Ready to delete the course?</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">All the data of the current course will be gone.</div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
+                                <a class="btn btn-primary" href="./Home">Yes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="card-body">
+                <h5 class="card-title">Add Course Details</h5>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-3 col-form-label">Name of course</label>
+                    <div class="col-sm-8">
+                        <input onchange="validateInputField(this)" type="text" name="courseName" class="form-control" id="courseName" placeholder="Enter name of course">
+                    </div>
+                   
+                    <div class="col-sm-8">
+                        <input type="hidden" name="instructorId" class="form-control" id="courseId" >
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword"  class="col-sm-3 col-form-label">Description of course</label>
+                    <div class="col-sm-8">
+                        <textarea type="text" onchange="validateInputField(this)" placeholder="Enter course description" id="courseDescription" name="courseContents" rows="2" class="form-control md-textarea"></textarea>
+                    </div>
+                    <form class="card-img-top m-2  classroom-background" method="post" enctype="multipart/form-data">
+                        <i class="fa fa-upload upload-icon" aria-hidden="true"></i>
+                        <div class="form-group">
+                            <label for="exampleFormControlFile1">Upload classroom back ground image</label>
+                            <input type="file" id="fileUpload" name="file" accept="image/x-png,image/gif,image/jpeg" />
+                            <button type="button" class="btn btn-primary" onclick="requestUpload()">Upload</button>
+                            <div class="progress progress-sm mr-2">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="fileUploadProgressBar"></div>
+                            </div>
+                            <div class="alert alert-success" id="postUploadAlert" style="display:none" role="alert">
+                                file uploaded successfully
+                            </div>
+                        </div>
+                    </form> 
+                    <div class="alert alert-success" id="postsubmit" style="display:none" role="alert">
+                        course added successfully
+                    </div>
+                </div>
+                @*<script>
+    tinymce.init({
+      selector: 'mytextarea',
+      plugins: 'a11ychecker advcode preview linkchecker autolink lists checklist media mediaembed  permanentpen  table advtable tinycomments tinymcespellchecker',
+      toolbar: ' undo redo |print preview media fullpage | forecolor backcolor styleselect | bold italic | alignleft aligncenter alignright alignjustify |bullist numlist |checklist code table',
+      toolbar_mode: 'floating',
+      tinycomments_mode: 'embedded',
+      tinycomments_author: 'Author name',
+    });
+                </script>
+                <form method="post">
+                    <mytextarea id="mytextarea" name="mytextarea">
+                        Hello, World!
+                    </mytextarea>
+                </form>*@
+                <!--Section contents-->
+    
+                    <div class="course-content" id="addContent">
+                    </div>
+                    <button id="courseAddNewCourseButton" type="button"  class="btn btn-primary  btn-block" onclick="callAddNewCourseApi()">Create course</button>
+                    <button id="courseAddNewindexButton" style="display:none" type="button" class="btn btn-primary  btn-block" onclick="addNewIndex()">Add new index</button>
+                    <a id="courseSubmitButton" style="display:none" type="button" class="btn btn-outline-primary  btn-block" href="./Home">Submit</a>
+            </div>
+    </div>
+</div>
+<!--Modal course created success-->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="courseIdGenerated">Added successfully</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalIndexCreated" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="courseIdGenerated">Added successfully</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="previewUploadModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Upload preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img class="img-fluid" controls id="imagePreview" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="invalidSubmittion" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h5 id="course-creation-failed-msg">Some of the fields are empty</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+   
+    function removeDiv(elem) {
+        $(elem).parent('div').remove();
+    }
+    var indexCount = 0;
+    var collapseIdForIndex = "Index";
+    var courseAssignmentType = 0;
+    var courseTestType = 0;
+
+    function validateInputField(id)
+    {
+        if($(id).val()=="")
+        {
+            $(id).addClass("is-invalid");
+        }
+        else {
+            $(id).addClass("is-valid").removeClass("is-invalid");
+        }
+    }
+    function submitAssignment(indexcount) {
+        debugger;
+        var assignmentName = $("#assignmentName".concat(indexcount)).val();
+        var assignmentDescription = $("#assignmentDescription".concat(indexcount)).val();
+        var assignmentType = $("#selectAssignmentTypeId".concat(indexcount)).val();
+        var questions = [];
+        var indexId = $("#indexId".concat(indexcount)).val();
+        if(assignmentType=="mcq"){
+            var question = $("[name='questionStatementAssignment".concat(indexcount) + "']");
+            var option1 = $("[name='option1Assignment".concat(indexcount) + "']");
+            var option2 = $("[name='option2Assignment".concat(indexcount) + "']");
+            var option3 = $("[name='option3Assignment".concat(indexcount) + "']");
+            var option4 = $("[name='option4Assignment".concat(indexcount) + "']");
+            var correctOption = $("[name='correctOptionAssignment".concat(indexcount) + "']");
+            for (var i = 0; i < question.length; i++)
+            {
+                if (!question[i].disabled) {
+                    if (question[i].classList.contains("is-invalid") || option1[i].classList.contains("is-invalid") || option2[i].classList.contains("is-invalid") ||
+                        option3[i].classList.contains("is-invalid") || option4[i].classList.contains("is-invalid") ||
+                        question[i].value == "" || option1[i].value == "" || option2[i].value == "" || option3[i].value == "" || option4[i].value == "" || correctOption[i].value == "select..."
+                        ) {
+                        if (question[i].value == "") {
+                            question[i].classList.add("is-invalid");
+                        }
+                        else if (option1[i].value == "") {
+                            option1[i].classList.add("is-invalid");
+                        }
+                        else if (option2[i].value == "") {
+                            option2[i].classList.add("is-invalid");
+                        }
+                        else if (option3[i].value == "") {
+                            option3[i].classList.add("is-invalid");
+                        }
+                        else if (option4[i].value == "") {
+                            option4[i].classList.add("is-invalid");
+                        }
+                        else if (correctOption[i].value == "") {
+                            correctOption[i].classList.add("is-invalid");
+
+                        }
+                        $("#invalidSubmittion").modal('show');
+                        return;
+                    }
+                         
+                       
+                    var Question = {
+                        "question_statement": question[i].value,
+                        "option1": option1[i].value,
+                        "option2": option2[i].value,
+                        "option3": option3[i].value,
+                        "option4": option4[i].value,
+                        "correct_option": parseInt(correctOption.val())
+                    }
+                    questions.push(Question);
+                }
+            }
+        }
+        else if(assignmentType="sub")
+        {
+            var subjectiveTestQuestionStatement = $("[name='subjectiveAssignmentQuestionStatement".concat(indexcount) + "']");
+            var subjectiveTestQuestionHint = $("[name='subjectiveAssignmentQuestionHint".concat(indexcount) + "']");
+            for (var i = 0; i < subjectiveTestQuestionStatement.length; i++)
+            {
+                if (!subjectiveTestQuestionStatement[i].disabled) {
+                    var Question = {
+                        "question_statement": subjectiveTestQuestionStatement[i].value,
+                        "hint": subjectiveTestQuestionHint[i].value
+                    }
+                    questions.push(Question);
+                }
+            }
+        }
+        var _data =
+            {
+                "index_id": indexId,
+                "assignment_name": assignmentName,
+                "assignment_description": assignmentDescription,
+                "assignment_type":assignmentType,
+                "mcq_questions": questions,
+                "subjective_questions":questions
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/addassignment",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $('#modalIndexCreated').modal('show');
+                    $("#assignmentContainer".concat(indexcount)).fadeOut();
+                    $("#assignmentAdded".concat(indexcount)).show();
+                    $("#submitAssignmentButton".concat(indexcount)).hide();
+                    $("#editAssignmentButton".concat(indexcount)).show();
+                }
+                else {
+
+                }
+            }
+        });
+    }
+
+    //Region api start
+    function submitTest(indexcount) {
+        debugger;
+        var testName = $("#testName".concat(indexcount)).val();
+        var testDescription = $("#testDescription".concat(indexcount)).val();
+        var testType = $("#selectTestTypeId".concat(indexcount)).val();
+        var questions = [];
+        var indexId = $("#indexId".concat(indexcount)).val();
+        if (testType == "mcq") {
+            var question = $("[name='questionStatementTest".concat(indexcount) + "']");
+            var option1 = $("[name='option1Test".concat(indexcount) + "']");
+            var option2 = $("[name='option2Test".concat(indexcount) + "']");
+            var option3 = $("[name='option3Test".concat(indexcount) + "']");
+            var option4 = $("[name='option4Test".concat(indexcount) + "']");
+            var times = $("[name='timeTest".concat(indexcount) + "']");
+            var marks = $("[name='marksTest".concat(indexcount) + "']");
+            var correctOption = $("[name='correctOptionTest".concat(indexcount) + "']");
+            for (var i = 0; i < question.length; i++) {
+                if (!question[i].disabled) {
+                    if (question[i].classList.contains("is-invalid") || option1[i].classList.contains("is-invalid") || option2[i].classList.contains("is-invalid") ||
+                        option3[i].classList.contains("is-invalid") || option4[i].classList.contains("is-invalid") ||
+                        question[i].value == "" || option1[i].value == "" || option2[i].value == "" || option3[i].value == "" || option4[i].value == "" || correctOption[i].value == "select..."
+                        || times[i].classList.contains("is-invalid") || marks[i].classList.contains("is-invalid") || times[i].value==""||marks[i].value==""
+                        ) {
+                        if (question[i].value == "") {
+                            question[i].classList.add("is-invalid");
+                        }
+                        else if (option1[i].value == "") {
+                            option1[i].classList.add("is-invalid");
+                        }
+                        else if (option2[i].value == "") {
+                            option2[i].classList.add("is-invalid");
+                        }
+                        else if (option3[i].value == "") {
+                            option3[i].classList.add("is-invalid");
+                        }
+                        else if (option4[i].value == "") {
+                            option4[i].classList.add("is-invalid");
+                        }
+                        else if (correctOption[i].value == "") {
+                            correctOption[i].classList.add("is-invalid");
+
+                        } else if (times[i].value == "") {
+                            correctOption[i].classList.add("is-invalid");
+
+                        } else if (marks[i].value == "") {
+                            correctOption[i].classList.add("is-invalid");
+
+                        }
+                        $("#invalidSubmittion").modal('show');
+                        return;
+                    }
+                    var Question = {
+                        "question_statement": question[i].value,
+                        "option1": option1[i].value,
+                        "option2": option2[i].value,
+                        "option3": option3[i].value,
+                        "option4": option4[i].value,
+                        "question_time_in_seconds": parseInt(times[i].value),
+                        "marks":parseInt(marks[i].value),
+                        "correct_option": parseInt(correctOption.val())
+                    }
+                    questions.push(Question);
+                }
+            }
+        }
+        else if (assignmentType = "sub") {
+            var question = $("[name='subjectiveQuestionStatementTest".concat(indexcount) + "']");
+            for (var i = 0; i < question.length; i++) {
+                if (!question[i].disabled) {
+                    var Question = {
+                        "question_statement": question[i].value,
+                    }
+                    questions.push(Question);
+                }
+            }
+        }
+        var _data =
+            {
+                "index_id": indexId,
+                "test_name": testName,
+                "test_description": testDescription,
+                "test_type": testType,
+                "mcq_questions": questions,
+                "subjective_questions": questions
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/addtest",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $('#modalIndexCreated').modal('show');
+                    $("#testContainer".concat(indexcount)).fadeOut();
+                    $("#testAdded".concat(indexcount)).show();
+                    $("#submitTestButton".concat(indexcount)).hide();
+                    $("#editTestButton".concat(indexcount)).show();
+                }
+                else {
+
+                }
+            }
+        });
+    }
+
+    function callSaveTopicsApi(indexcount) {
+        debugger;
+        var topicNames = $("[name='topicName".concat(indexcount) + "']");
+        var topicDescriptions = $("[name='topicDescription".concat(indexcount) + "']");
+        var topicFiles = $("[name='topicFileUpload".concat(indexcount) + "']");
+        var topiRemoveButtons = $("[name='topicRemoveButton".concat(indexcount) + "']");
+        var topicAttachment = $("[name='topicAttachment".concat(indexcount) + "']");
+        var topicData = [];
+        var noOfTopics = 0;
+        for (var i = 0; i < topicNames.length; i++) {
+            if (!topicNames[i].disabled) {
+                noOfTopics++;
+                if (topicNames[i].classList.contains("is-invalid") || topicDescriptions[i].classList.contains("is-invalid") || topicNames[i].value == "" || topicDescriptions[i].value == "") {
+                    if (topicNames[i].value == "")
+                    {
+                        topicNames[i].classList.add("is-invalid");
+                    }
+                    else {
+                        topicDescriptions[i].classList.add("is-invalid");
+                    }
+                    $("#invalidSubmittion").modal('show');
+                    return;
+                }
+                var topic = {
+
+                    "topic_name": topicNames[i].value,
+                    "topic_description": topicDescriptions[i].value,
+                    "file_path": topicFiles[i].value,
+                    "file_attachment_path":topicAttachment[i].value
+                }
+                topicData.push(topic);
+            }
+        }
+        var _data =
+            {
+                "index_id": $("#indexId".concat(indexcount)).val(),
+                "topic_details": topicData
+            }
+        if (noOfTopics > 0) {
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+                type: "POST",
+                data: JSON.stringify(_data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/api/v1/instructor/addtopic",
+                success: function (data) {
+                    debugger;
+                    if (data != null && data.response_code == 1) {
+                        $('#modalIndexCreated').modal('show');
+                        for (var i = 0; i < topicNames.length; i++) {
+
+                            topicNames[i].disabled = true;
+                            topicDescriptions[i].disabled = true;
+                            topicFiles[i].disabled = true;
+                            //topiRemoveButtons[i].style.visibility = 'hidden';
+
+                        }
+                        for (var i = 0; i < noOfTopics; i++) {
+                            topiRemoveButtons[i].remove();
+                        }
+                        $("#topicContainer".concat(indexcount)).addClass("border-secondary");
+                    }
+                    else {
+
+                    }
+                }
+            });
+        }
+    }
+
+    function callAddNewIndexApi(indexcount)
+    {
+        if ($("#indexName".concat(indexcount)).hasClass("is-invalid") || $("#indexName".concat(indexcount)).val() == "" || $("#indexDescription".concat(indexcount)).hasClass("is-invalid") || $("#indexDescription".concat(indexcount)).val()=="") {
+            $("#invalidSubmittion").modal('show');
+            return;
+        }
+        debugger;
+        var _data=
+            {
+                "index_name": $("#indexName".concat(indexcount)).val(),
+                "index_description":$("#indexDescription".concat(indexcount)).val(),
+                "course_id": $("#courseId").val()
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/addindex",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $('#modalIndexCreated').modal('show');
+                    $("#indexName".concat(indexcount)).prop("disabled", true);
+                    $("#indexDescription".concat(indexcount)).prop("disabled", true);
+                    $("#indexId".concat(indexcount)).prop("value", data.index_id);
+                    $("#indexAddNewTopicButton".concat(indexCount)).show();
+                    $("#indexSaveTopicButtons".concat(indexCount)).show();
+                    $("#indexAddNewIndexButton".concat(indexCount)).hide();
+                    $("#nav-assignment-tab".concat(indexCount)).removeClass("disabled");
+                    $("#nav-test-tab".concat(indexCount)).removeClass("disabled");
+                }
+                else {
+
+                }
+            }
+        });
+    }
+
+    function callAddNewTopicApi(indexcount) {
+        debugger;
+        if ($("#indexName".concat(indexcount)).hasClass("is-invalid") || $("#indexDescription".concat(indexcount)).hasClass("is-invalid")) {
+            $("#invalidSubmittion").modal('show');
+            return;
+        }
+        var _data =
+            {
+                "index_name": $("#indexName".concat(indexcount)).val(),
+                "index_description": $("#indexDescription".concat(indexcount)).val(),
+                "course_id": $("#courseId").val()
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/addtopic",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $('#modalIndexCreated').modal('show');
+                    $("#indexName".concat(indexcount)).prop("disabled", true);
+                    $("#indexDescription".concat(indexcount)).prop("disabled", true);
+                   
+                    
+                }
+                else {
+
+                }
+            }
+        });
+    }
+
+    function callAddNewCourseApi()
+    {
+        debugger;
+        if ($("#courseName").hasClass("is-invalid") || $("#courseDescription").hasClass("is-invalid") || $("#courseDescription").val() == "" || $("#courseName").val()=="")
+        {
+            $("#course-creation-failed-msg").text("OOPS! Some of the fields are empty.");
+            $("#invalidSubmittion").modal("show");
+            return;
+        }
+        var _data =
+            {
+                "name":$("#courseName").val(),
+                "description":$("#courseDescription").val(),
+                "instructor_id": $("#instructorId").val(),
+                "course_image_details": {
+                    "small_size_url":smallIconUrl,
+                    "original_url":backGroundImagePath,
+                    "medium_size_url": mediumSizeIconUrl
+                    }
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify( _data ),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/addcourse",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $('#exampleModalCenter').modal('show');
+                    $("#courseDescription").prop("disabled", true);
+                    $("#courseName").prop("disabled", true);
+                    $("#postsubmit").show();
+                    $("#postsubmit").append('<a type="button" class="btn btn-link" href="ViewCourse?id=' + data.course_id + '">View course&rarr;</a>');
+                    //$("#courseId").prop("value", data.course_id);
+                    //$("#courseAddNewindexButton").show();
+                   // $("#courseSubmitButton").show();
+                    //$("#courseAddNewCourseButton").hide();
+                    //$("#courseMenuButton").show();
+                }
+                else {
+                    $("#course-creation-failed-msg").text("OOPS! Some error has occured while creating course.");
+                    $("#invalidSubmittion").modal("show");
+                    
+                }
+            }
+        });
+    }
+    //Region api end
+    
+    //Region assignment start
+    function addNewAssignment(indexId)
+    {
+        $("#addNewAssignmentButton".concat(indexId)).hide();
+        $("#submitAssignmentButton".concat(indexId)).show();
+        document.getElementById("assignmentContainer".concat(indexId)).insertAdjacentHTML("beforeend",
+            '<form>'
+                                    + '<div class="card">'
+                                        + '<div class="card-body">'
+                                            + '<h5 class="card-title">Add Assignment Details</h5>'
+                                            + '<div class="form-group row">'
+                                                + '<label for="assignmentName'.concat(indexId) + '"  class="col-sm-3 col-form-label">Name of assignment</label>'
+                                                + '<div class="col-sm-8">'
+                                                    + '<input onchange="validateInputField(this)" type="text" id="assignmentName'.concat(indexId) + '" class="form-control" id="inputPassword" placeholder="Enter name of course">'
+                                                + '</div>'
+                                            + '</div>'
+                                            + '<div class="form-group row">'
+                                                + '<label for="assignmentDescription'.concat(indexId) + '"  class="col-sm-3 col-form-label">Description of assignment</label>'
+                                                + '<div class="col-sm-8">'
+                                                    + '<textarea type="text"  id="assignmentDescription'.concat(indexId) + '"  placeholder="Enter course description" id="message" name="message" rows="2" class="form-control md-textarea"></textarea>'
+                                                + '</div>'
+                                            + '</div>'
+                                            + '<div class="form-group row">'
+                                                + '<label for="selectAssignmentTypeId'.concat(indexId) + '"class="col-sm-3 col-form-label">Select Assignment type:</label>'
+                                                + '<div class="col-sm-8">'
+                                                    + '<select class="form-control" id="selectAssignmentTypeId'.concat(indexId) + '">'
+                                                        + '<option value="mcq">MCQ</option>'
+                                                        + '<option value="sub">Subjective</option>'
+                                                    + '</select>'
+                                                + '</div>'
+                                            + '</div>'
+                                            + '<div id="assignmentQuestionContainer'.concat(indexId) + '"></div>'
+                                            + '<button type="button" class="btn btn-primary  btn-block" onclick="addNewAssignmentQuestion('.concat(indexId) + ')">Add Question</button>'
+                                         + '</div>'
+                                    + '</div>'
+                            +'</form>'
+          );
+    }
+    function addNewAssignmentQuestion(index) {
+        if ($("#assignmentName".concat(index)).val() == "" || $("#assignmentDescription".concat(index)).val() == "")
+        {
+            $("#invalidSubmittion").modal('show');
+            return;
+        }
+        var questionType = $("#selectAssignmentTypeId".concat(index)).val();
+        $("#selectAssignmentTypeId".concat(index)).prop("disabled", true);
+        switch (questionType) {
+            case "sub":
+                {
+                    addNewSubjectiveAssignmentQuestion(indexCount);
+                    break;
+                }
+            case "mcq":
+                {
+                    addNewMcqAssignmentQuestion(indexCount);
+                    break;
+                }
+        }
+    }
+    function editAssignment(indexid)
+    {
+        $("#editAssignmentButton".concat(indexid)).hide();
+        $("#updateAssignmentButton".concat(indexid)).show();
+        $("#assignmentContainer".concat(indexid)).show();
+        $("#assignmentAdded".concat(indexid)).hide();
+    }
+    function addNewMcqAssignmentQuestion(indexCount) {
+        document.getElementById("assignmentQuestionContainer".concat(indexCount)).insertAdjacentHTML("beforeend",
+             '<div class=" assignment-mcq-section">'
+                      + '<button type="button" class="btn close' + 'data-dismiss="alert" onclick="checkForEnableSelectAssignmentType(this,' + indexCount + ')" aria-label="Close">'
+                                + '<span aria-hidden="true" class="ml-3">×</span>'
+                      + '</button> '
+                        + '<div class="form-group row">'
+                            + '<label  class="col-sm-3 col-form-label">Question statement</label>'
+                            + '<div class="col-sm-8">'
+                                + '<input onchange="validateInputField(this)" type="text" name="questionStatementAssignment'.concat(indexCount) + '" class="form-control " placeholder="Enter question">'
+                            + '</div>'
+                        + '</div>'
+                        + '<div class="form-group row">'
+                            + '<label for="option1Assignment'.concat(indexCount) + '" class="col-sm-3 col-form-label">Option 1</label>'
+                            + '<div class="col-sm-8 mb-2">'
+                            + '<input onchange="validateInputField(this)" type="text" name="option1Assignment'.concat(indexCount) + '" class="form-control" placeholder="Enter question 1">'
+                            + '</div>'
+                            + '<label  for="option2Assignment'.concat(indexCount) + '" class="col-sm-3 col-form-label">Option 2</label>'
+                            + '<div class="col-sm-8 mb-2">'
+                                + '<input onchange="validateInputField(this)" required type="text" name="option2Assignment'.concat(indexCount) + '" class="form-control" placeholder="Enter question 2">'
+                            + '</div>'
+                            + '<label for="option3Assignment'.concat(indexCount) + '" class="col-sm-3 col-form-label">Option 3</label>'
+                            + '<div class="col-sm-8 mb-2">'
+                                + '<input onchange="validateInputField(this)" required type="text" name="option3Assignment'.concat(indexCount) + '" class="form-control" id="inputPassword" placeholder="Enter question 3">'
+                            + '</div>'
+                            + '<label  for="option4Assignment'.concat(indexCount) + '" class="col-sm-3 col-form-label">Option 4</label>'
+                            + '<div class="col-sm-8">'
+                                + '<input onchange="validateInputField(this)" required type="text"  name="option4Assignment'.concat(indexCount) + '" class="form-control" id="inputPassword" placeholder="Enter question 4">'
+                            + '</div>'
+                            + '<hr />'
+                        + '</div>'
+                        + '<div class="form-group row">'
+                                                            + '<label for="sel1" class="col-sm-3 col-form-label">Select Correct Option</label>'
+                                                            + '<div class="col-sm-8">'
+                                                                + '<select name="correctOptionAssignment'.concat(indexCount) + '" class="form-control" id="sel1">'
+                                                                    + '<option value="select">select...</option>'
+                                                                    + '<option value="1">Option 1</option>'
+                                                                    + '<option value="2">Option 2</option>'
+                                                                    + '<option value="3">Option 3</option>'
+                                                                    + '<option value="4">Option 4</option>'
+                                                                + '</select>'
+                                                            + '</div>'
+                                                        + '</div>'
+                + '</div>'
+            );
+    }
+    function addNewSubjectiveAssignmentQuestion(indexCount) {
+        document.getElementById("assignmentQuestionContainer".concat(indexCount)).insertAdjacentHTML("beforeend",
+              '<div class="test-subjective-section">'
+                      + '<button type="button" class="btn" data-dismiss="alert" onclick="checkForEnableSelectAssignmentType(this,'+indexCount+')" aria-label="Close">'
+                                + '<span aria-hidden="true" class="ml-3">×</span>'
+                      + '</button> '
+                + '<div class="form-group row">'
+                    + '<label for="inputPassword" class="col-sm-3 col-form-label">Question statement</label>'
+                    + '<div class="col-sm-8">'
+                        + '<textarea onchange="validateInputField(this)" type="text" class="form-control" name="subjectiveAssignmentQuestionStatement'.concat(indexCount)+'" placeholder="Enter question"></textarea>'
+                    + '</div>'
+                + '</div>'
+                + '<div class="form-group row">'
+                    + '<label for="inputPassword" class="col-sm-3 col-form-label">Question hint</label>'
+                    + '<div class="col-sm-8">'
+                        + '<textarea onchange="validateInputField(this)" type="text" class="form-control" name="subjectiveAssignmentQuestionHint'.concat(indexCount)+'" placeholder="Enter hint for question"></textarea>'
+                    + '</div>'
+                + '</div>'
+            + '</div>'
+        );
+    }
+    //Region assignment end
+    function checkForEnableSelectAssignmentType(elementId,indexNo)
+    {
+        debugger;
+        removeDiv(elementId);
+        if( $("#selectAssignmentTypeId".concat(indexNo)).val()=="mcq"){
+            var mcqQuestions = $("[name='questionStatementAssignment".concat(indexNo) + "']");
+            if (mcqQuestions[0]== null)
+            {
+                $("#selectAssignmentTypeId".concat(indexNo)).prop("disabled", false);
+            }
+        }
+        else{
+            var subjectiveQuestions = $("[name='subjectiveAssignmentQuestionStatement".concat(indexNo) + "']");
+            if (subjectiveQuestions[0]== null)
+            {
+                $("#selectAssignmentTypeId".concat(indexNo)).prop("disabled", false);
+            }
+        }
+        
+    }
+    //Region Test start
+    function addNewTest(indexId) {
+        debugger;
+        $("#addNewTestButton".concat(indexId)).hide();
+        $("#submitTestButton".concat(indexId)).show();
+        document.getElementById("testContainer".concat(indexId)).insertAdjacentHTML("beforeend",
+            '<form>'
+                                    + '<div class="card">'
+                                        + '<div class="card-body">'
+                                            + '<h5 class="card-title">Add Test Details</h5>'
+                                            + '<div class="form-group row">'
+                                                + '<label for="inputPassword" class="col-sm-3 col-form-label">Name of Test</label>'
+                                                + '<div class="col-sm-8">'
+                                                    + '<input id="testName'.concat(indexId) + '" onchange="validateInputField(this)" type="text" class="form-control"  placeholder="Enter name of test">'
+                                                + '</div>'
+                                            + '</div>'
+                                            + '<div class="form-group row">'
+                                                + '<label for="testDescription'.concat(indexId) + '" class="col-sm-3 col-form-label">Description of Test</label>'
+                                                + '<div class="col-sm-8">'
+                                                    + '<textarea type="text" onchange="validateInputField(this)" placeholder="Enter test description" id="testDescription'.concat(indexId) + '"  name="message" rows="2" class="form-control md-textarea"></textarea>'
+                                                + '</div>'
+                                            + '</div>'
+                                            + '<div class="form-group row">'
+                                                + '<label for="selectTestTypeId'.concat(indexId) + '" class="col-sm-3 col-form-label">Select Assignment type:</label>'
+                                                + '<div class="col-sm-8">'
+                                                    + '<select class="form-control" id="selectTestTypeId'.concat(indexId) + '">'
+                                                        + '<option value="mcq">MCQ</option>'
+                                                        + '<option value="sub">Subjective</option>'
+                                                    + '</select>'
+                                                + '</div>'
+                                            + '</div>'
+                                            
+                                           + '<div id="testQuestionContainer'.concat(indexId) + '"></div>'
+                                           + '<button type="button" class="btn btn-primary  btn-block"  onclick="addNewTestQuestion('.concat(indexId) + ')">Add Question</button>'
+                                         + '</div>'
+                                    + '</div>'
+                            + '</form>'
+          );
+    }
+    function addNewTestQuestion(index) {
+        var questionType = $("#selectTestTypeId".concat(index)).val();
+        $("#selectTestTypeId".concat(index)).prop("disabled", true);
+        switch (questionType) {
+            case "sub":
+                {
+                    //addNewSubjectiveTestQuestion(indexCount);
+                    break;
+                }
+            case "mcq":
+                {
+                    addNewMcqTestQuestion(indexCount);
+                    break;
+                }
+        }
+    }
+    function addNewMcqTestQuestion(indexCount) {
+        document.getElementById("testQuestionContainer".concat(indexCount)).insertAdjacentHTML("beforeend", ''
+                      +'<div class="question">'
+                      + '<button type="button" class="btn close' + 'data-dismiss="alert" onclick="removeDiv(this)" aria-label="Close">'
+                                + '<span aria-hidden="true" class="ml-3">×</span>'
+                      + '</button> '
+                        + '<div class="form-group row">'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Question statement</label>'
+                            + '<div class="col-sm-8">'
+                                + '<input type="text" onchange="validateInputField(this)" name="questionStatementTest'.concat(indexCount) + '" class="form-control"  placeholder="Enter question">'
+                            + '</div>'
+                        + '</div>'
+                          + '<div class="form-group row">'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Time for question</label>'
+                            + '<div class="col-sm-8">'
+                                + '<input type="tel" maxlength="10" minsize="10" pattern=".{10,}"  oninput="this.value = this.value.replace(/[^0-9.]/g, \'\');" onchange="validateInputField(this)" name="timeTest'.concat(indexCount) + '" class="form-control"  placeholder="Enter Time in seconds">'
+                            + '</div>'
+                        + '</div>'
+                          + '<div class="form-group row">'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Marks</label>'
+                            + '<div class="col-sm-8">'
+                                + '<input type="tel" maxlength="10" minsize="10" pattern=".{10,}"  oninput="this.value = this.value.replace(/[^0-9.]/g, \'\')" minsize onchange="validateInputField(this)" name="marksTest'.concat(indexCount) + '" class="form-control"  placeholder="Enter marks">'
+                            + '</div>'
+                        + '</div>'
+                        + '<div class="form-group row">'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Option 1</label>'
+                            + '<div class="col-sm-8 mb-2">'
+                                + '<input type="text" name="option1Test'.concat(indexCount) + '" onchange="validateInputField(this)" class="form-control"  placeholder="Enter option 1">'
+                            + '</div>'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Option 2</label>'
+                            + '<div class="col-sm-8 mb-2">'
+                                + '<input type="text" name="option2Test'.concat(indexCount) + '" onchange="validateInputField(this)" class="form-control"  placeholder="Enter option 2">'
+                            + '</div>'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Option 3</label>'
+                            + '<div class="col-sm-8 mb-2">'
+                                + '<input type="text" name="option3Test'.concat(indexCount) + '" class="form-control" onchange="validateInputField(this)" placeholder="Enter option 3">'
+                            + '</div>'
+                            + '<label for="inputPassword" class="col-sm-3 col-form-label">Option 4</label>'
+                            + '<div class="col-sm-8">'
+                                + '<input type="text" name="option4Test'.concat(indexCount) + '" class="form-control"  onchange="validateInputField(this)"  placeholder="Enter option 4">'
+                            + '</div>'
+                            + '<hr />'
+                        + '</div>'
+                        + '<div class="form-group row">'
+                                                            + '<label for="sel1" class="col-sm-3 col-form-label">Select Correct Option</label>'
+                                                            + '<div class="col-sm-8">'
+                                                                + '<select name="correctOptionTest'.concat(indexCount) + '" class="form-control" id="sel1">'
+                                                                    + '<option value="-1">select...</option>'
+                                                                    + '<option value="1">Option 1</option>'
+                                                                    + '<option value="2">Option 2</option>'
+                                                                    + '<option value="3">Option 3</option>'
+                                                                    + '<option value="4">Option 4</option>'
+                                                                + '</select>'
+                                                            + '</div>'
+                                                        + '</div><hr></div>'
+
+            );
+    }
+    function addTestSubjectiveQuestion() {
+        document.getElementById("testSubjectiveContainer").insertAdjacentHTML("beforeend",
+        '<div class="card test-subjective-section">'
+            + '<div class="card-body">'
+                + '<div class="form-group row">'
+                    + '<label for="inputPassword" class="col-sm-3 col-form-label">Question statement</label>'
+                    + '<div class="col-sm-8">'
+                        + '<input type="text" class="form-control" id="inputPassword" placeholder="Enter question">'
+                    + '</div>'
+                + '</div>'
+            + '</div>'
+        + '</div>'
+        );
+
+    }
+    //Region Test End
+
+    //Region Add index start
+    function addNewIndex()
+    {
+        indexCount++;
+        document.getElementById("addNewCourseContainer").insertAdjacentHTML("afterend",
+            ' <div class="card shadow mb-4 border-left-success">'
+            +'<!-- Card Header - Accordion -->'
+            +'<a href="#'.concat(collapseIdForIndex+indexCount)+'" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">'
+                + '<h6 class="m-0 font-weight-bold text-primary">Index'.concat(indexCount) + '</h6>'
+            + '</a>'
+            
+            +'<!-- Card Content - Collapse -->'
+            +'<div class="collapse show" id="'.concat(collapseIdForIndex+indexCount)+'">'
+                 +'<div class="card-body ">'
+                     +'<nav>'
+                         +'<div class="nav nav-tabs" id="nav-tab" role="tablist">'
+                             + '<a class="nav-item nav-link active" id="nav-index-tab'.concat(indexCount) + '"data-toggle="tab" href="#nav-home'.concat(indexCount) + '" role="tab" aria-controls="nav-home" aria-selected="true">Index Contents</a>'
+                             + '<a class="nav-item nav-link disabled" id="nav-assignment-tab'.concat(indexCount) + '" data-toggle="tab" href="#nav-profile'.concat(indexCount) + '" role="tab" aria-controls="nav-profile" aria-selected="false">Assignment</a>'
+                             + '<a class="nav-item nav-link disabled" id="nav-test-tab'.concat(indexCount) + '" data-toggle="tab" href="#nav-contact'.concat(indexCount) + '" role="tab" aria-controls="nav-contact" aria-selected="false">Test</a>'
+                         +'</div>'
+                     +'</nav>'
+                     +'<div class="tab-content" id="nav-tabContent">'
+                         +'<!--Section course content-->'
+                         + '<div class="tab-pane fade show active" id="nav-home'.concat(indexCount) + '" role="tabpanel" aria-labelledby="nav-home-tab'.concat(indexCount) + '">'
+                             +'<form action="FileUpload" id="courseForm" method="post" enctype="multipart/form-data">'
+                                 +'<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">'
+                                             +'<h5 class="card-title">Add Index Details</h5>'
+                                             +'<div class="form-group row">'
+                                                 +'<label for="inputPassword" class="col-sm-3 col-form-label">Name of Index</label>'
+                                                 +'<div class="col-sm-8">'
+                                                     + '<input onchange="validateInputField(this)" required type="text" id="indexName'.concat(indexCount) + '" class="form-control" id="inputPassword" placeholder="Enter name of Index">'
+                                                 +'</div>'
+                                             +'</div>'
+                                             +'<div class="form-group row">'
+                                                 +'<label for="inputPassword" class="col-sm-3 col-form-label">Description of Index</label>'
+                                                 +'<div class="col-sm-8">'
+                                                     + '<textarea onchange="validateInputField(this)" type="text" placeholder="Enter Index description" id="indexDescription'.concat(indexCount) + '" name="courseContents" rows="2" class="form-control md-textarea"></textarea>'
+                                                 +'</div>'
+                                             + '</div>'
+                                             + '<div class="col-sm-8">'
+                                                     + '<input type="text" hidden id="indexId'.concat(indexCount) + '" class="form-control" placeholder="Enter name of Index">'
+                                            + '</div>'
+                                            + '<div class="course-content" id="topicContainer'.concat(indexCount) + '">'
+                                            +'</div>'
+                                            + '<button type="button"  id="indexAddNewTopicButton'.concat(indexCount) + '" style="display:none" class="btn btn-primary  btn-block" onclick="addCourseContent('.concat(indexCount) + ')">Add new Topic</button>'
+                                            + '<button type="button" id="indexAddNewIndexButton'.concat(indexCount) + '"  class="btn btn-outline-primary  btn-block" onclick="callAddNewIndexApi('.concat(indexCount) + ')">create index</button>'
+                                            + '<button type="button" id="indexSaveTopicButtons'.concat(indexCount) + '" style="display:none" class="btn btn-outline-primary  btn-block" onclick="callSaveTopicsApi('.concat(indexCount) + ')">Save topics</button>'
+                                         +'</div>'
+                             +'</form>'
+                         +'</div>'
+                         + '<div class="tab-pane fade" id="nav-profile'.concat(indexCount) + '" role="tabpanel" aria-labelledby="nav-profile-tab'.concat(indexCount) + '">'
+                             + '<div id="assignmentContainer'.concat(indexCount) + '"></div>'
+                             + '<div id="assignmentAdded'.concat(indexCount) + '" style="display:none" class="alert alert-primary" role="alert">Assignment Added</div>'
+                             + '<button type="button" class="btn btn-primary  btn-block" id="addNewAssignmentButton'.concat(indexCount) + '" onclick="addNewAssignment('.concat(indexCount) + ')">Add assignment</button>'
+                             + '<button type="button" style="display:none" id="submitAssignmentButton'.concat(indexCount) + '" class="btn btn-outline-primary  btn-block" onclick="submitAssignment('.concat(indexCount) + ')">submit Assignment</button>'
+                             + '<button type="button" style="display:none" id="editAssignmentButton'.concat(indexCount) + '" class="btn btn-outline-primary  btn-block" onclick="editAssignment('.concat(indexCount) + ')">Edit Assignment</button>'
+                             + '<button type="button" style="display:none" id="updateAssignmentButton'.concat(indexCount) + '" class="btn btn-outline-primary  btn-block" onclick="editAssignment('.concat(indexCount) + ')">Update Assignment</button>'
+                         
+                         +'</div>'
+                         +'<!--Section Test contesnt content-->'
+                         + '<div class="tab-pane fade" id="nav-contact'.concat(indexCount) + '" role="tabpanel" aria-labelledby="nav-contact-tab'.concat(indexCount) + '">'
+                             + '<div id="testContainer'.concat(indexCount) + '"></div>'
+                             + '<div id="testAdded'.concat(indexCount) + '" style="display:none" class="alert alert-primary" role="alert">Test Added</div>'
+                             + '<button type="button" style="display:none" id="submitTestButton'.concat(indexCount) + '" class="btn btn-outline-primary  btn-block" onclick="submitTest('.concat(indexCount) + ')">submit Test</button>'
+                             + '<button type="button" class="btn btn-outline-primary  btn-block"  id="addNewTestButton'.concat(indexCount) + '" onclick="addNewTest('.concat(indexCount) + ')">Add Test</button>'
+                             + '<button type="button" style="display:none" id="editTestButton'.concat(indexCount) + '" class="btn btn-outline-primary  btn-block" onclick="editTest('.concat(indexCount) + ')">Edit Test</button>'
+                             + '<button type="button" style="display:none" id="updateTestButton'.concat(indexCount) + '" class="btn btn-outline-primary  btn-block" onclick="updateAssignment('.concat(indexCount) + ')">Update Test</button>'
+                         +'</div>'
+                     +'</div>'
+                 +'</div>'
+             +'</div>'
+         +'</div>'
+            );
+    }
+    function callSaveFile()
+    {
+
+    }
+    function addCourseContent(indexCount)
+    {
+        document.getElementById('topicContainer'.concat(indexCount) + '').insertAdjacentHTML("beforeend",
+            ' <div class="course-content-col">' 
+                + '<button name="topicRemoveButton'.concat(indexCount) + '" type="button" class="btn close' + 'data-dismiss="alert" onclick="removeDiv(this)" aria-label="Close">'
+                        +'<span aria-hidden="true" class="ml-3">×</span>'
+                +'</button> '
+                +'<div class="form-group row">'
+                        +'<label for="inputPassword" class="col-sm-3 col-form-label card-text">Topic Name</label>'
+                        +'<div class="col-sm-8">'
+                            + '<input onchange="validateInputField(this)" type="text" class="form-control" id="inputPassword" name="topicName'.concat(indexCount) + '" placeholder="Enter topic name">'
+                        +'</div>'
+                +'</div>'
+                +'<div class="form-group row">'
+                        +'<label for="inputPassword" class="col-sm-3 col-form-label">Content decription</label>'
+                        +'<div class="col-sm-8">'
+                            + '<textarea onchange="validateInputField(this)" type="text" name="topicDescription'.concat(indexCount) + '" placeholder="Enter topic description" id="message"  rows="2" class="form-control md-textarea"></textarea>'
+                        +'</div>'
+                + '</div> '
+                + '<div class="form-group row">'
+                +'<label for="exampleFormControlFile1" class="col-sm-3 col-form-label">Add Video</label>'
+                + '<div class="col-sm-7">'
+                +'<form class="card-img-top classroom-background" method="post" enctype="multipart/form-data" >'
+                    +'<i class="fa fa-download upload-icon" aria-hidden="true"></i>'
+                    +'<div class="form-group">'
+                        + '<input type="file"  name="fileVideoUpload'.concat(indexCount) + '"  accept="video/*"/>'
+                        + '<input type="text"  name="fileVideoUploadPath'.concat(indexCount) + '"  readonly hidden/>'
+                        + '<button type="button" class="btn btn-primary" onclick="requestUpload('.concat(indexCount) + ')">Upload</button>'
+                        +'<div class="progress progress-sm mr-2">'
+                            +'<div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="fileUploadProgressBar"></div>'
+                        +'</div>'
+                        +'<div class="alert alert-success" id="postUploadAlert" style="display:none" role="alert">file uploaded successfully'
+                        +'</div>'
+                    +'</div>'
+                +'</form> '
+
+                + '</div>'
+                + '</div>'
+                 + '<div class="form-group row">'
+                        + '<label for="inputPassword" class="col-sm-3 col-form-label card-text">Video link</label>'
+                        + '<div class="col-sm-8">'
+                            + '<input onchange="validateInputField(this)" type="url" class="form-control"  name="topicFileUpload'.concat(indexCount) + '" placeholder="add youtube vodeo link">'
+                        + '</div>'
+                + '</div>'
+                  + '<div class="form-group row">'
+                + '<label for="exampleFormControlFile1" class="col-sm-3 col-form-label">Add Attachment</label>'
+                + '<div class="col-sm-7">'
+                + '<form class="card-img-top classroom-background" method="post" enctype="multipart/form-data" >'
+                    + '<i class="fa fa-download upload-icon" aria-hidden="true"></i>'
+                    + '<div class="form-group">'
+                        + '<input type="file"  name="fileAttachmentUpload'.concat(indexCount) + '"  accept="video/*"/>'
+                        + '<input type="text"  name="fileAttachmentPath'.concat(indexCount) + '"  readonly hidden/>'
+                        + '<button type="button" class="btn btn-primary" onclick="requestUpload('.concat(indexCount) + ')">Upload</button>'
+                        + '<div class="progress progress-sm mr-2">'
+                            + '<div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="fileUploadProgressBar"></div>'
+                        + '</div>'
+                        + '<div class="alert alert-success" id="postUploadAlert" style="display:none" role="alert">file uploaded successfully'
+                        + '</div>'
+                    + '</div>'
+                + '</form> '
+
+                + '</div>'
+                + '</div>'
+                +'<hr/></div>'
+            );
+    }
+    var awsPath = "";
+    function requestUpload(indexcount) {
+        document.getElementById("fileUploadProgressBar").style.width = "0%";
+        debugger
+        var data = new FormData();
+        //var file = $('#fileUpload')[0];
+        var file = $("[name='fileVideoUpload".concat(indexcount) + "']")[0];
+        data.append('file', file.files[0]);
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        document.getElementById("fileUploadProgressBar").style.width = percentComplete + "%";
+                        if (percentComplete === 100) {
+                           
+                        }
+                    }
+                }, false);
+
+                return xhr;
+            },
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            data: data,
+            url: "/api/v1/instructor/UploadVideo",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1 && data.file_location != null && data.file_location!="") {
+                    awsPath = data.file_location;
+                    $("#imagePreview").attr("src", data.file_location);
+                    $("#postUploadAlert").show();
+                    $("#postUploadAlert").append('<button type="button" class="btn btn-link" onclick="requestPreviewUpload()">View upload&rarr;</button>');
+                }
+                else {
+                    $("#postUploadAlert").append('<button type="button" class="btn btn-link" onclick="requestPreviewUpload()">File uploading failed</button>');
+                }
+            }
+        });
+    }
+
+    function requestPreviewUpload() {
+        $("#previewUploadModal").modal("show");
+    }
+</script>
+
+<script type="text/javascript"> 
+    var smallIconUrl;
+    var mediumSizeIconUrl;
+    var backGroundImagePath;
+    function requestUpload() {
+        document.getElementById("fileUploadProgressBar").style.width = "0%";
+        debugger
+        var data = new FormData();
+        var file = $('#fileUpload')[0];
+        data.append('file', file.files[0]);
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        document.getElementById("fileUploadProgressBar").style.width = percentComplete + "%";
+                        if (percentComplete === 100) {
+                            $("#postUploadAlert").show();
+                            $("#postUploadAlert").append('<button type="button" class="btn btn-link" onclick="requestPreviewUpload()">View upload&rarr;</button>');
+                        }
+                    }
+                }, false);
+
+                return xhr;
+            },
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            data: data,
+            url: "/api/v1/instructor/UploadImage",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    backGroundImagePath = data.file_location;
+                    smallIconUrl = data.small_size_icon_url;
+                    mediumSizeIconUrl = data.medium_size_icon_url;
+                    $("#imagePreview").attr("src", data.file_location);
+                }
+                else {
+                    $("#errorAlertMessageBody").text("test could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+
+    function requestPreviewUpload() {
+        $("#previewUploadModal").modal("show");
+    }
+</script>

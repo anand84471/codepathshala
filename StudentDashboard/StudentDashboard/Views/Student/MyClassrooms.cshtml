@@ -1,0 +1,193 @@
+﻿@{
+    ViewBag.Title = "My Classrooms";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<style type="text/css">
+    .my-icon {
+    }
+     .classrooms
+    {
+        width:100%;
+        border:10px;
+       
+background: rgb(131,58,180);
+background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+        
+        padding:3px;
+        margin-top:10px;
+        margin-bottom:10px;
+        color:#f8f9fccc !important;
+        border-radius: 8px; 
+    }
+</style>
+<div class="container-fluid " id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">My Classrooms</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Classrooms</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    @*<div class="m-lg-5">
+        <div class="input-group" id="search-help-section">
+            <input type="text" class="form-control" id="courseSearchBox" placeholder="serach for course...">
+            <div class="input-group-append">
+                <button class="btn btn-primary input-group-append" onclick="searchForCourse()" type="button">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>*@
+    <div class="card shadow-lg container-fluid" id="extra-course-search" style="display:none;">
+        <div class="text-center container-fluid" id="search-help-section">
+            <h2 class="mt-4"><span>Join live class from </span>top instructors</h2>
+        </div>
+        <div class="row container-fluid">
+            <div class="col-sm-6">
+                <img class="img-fluid" src="../Images/join_new_live_class_graphics.svg" style="max-height:70vh;" />
+            </div>
+            <div class="col-sm-6 pt-5">
+              
+                <div class="row justify-content-center mb-5 pb-2">
+                    <div class="col-md-8 text-center heading-section heading-section-black ftco-animate">
+                        @*<h2 class="mb-1"><span>Join live class from </span>top instructors</h2>*@
+                        <h6 class="mb-1"><span> Try a free live course today from one of 10+ world-class universities.</span> </h6>
+                        <div class="row  align-items-center">
+                            <img class="img p-2 mr-2" style="width:100px;height:100px;" src="~/Images/iit-indore-logo.png" />
+                            <img class="img p-2 mr-2" style="width:100px;height:100px;" src="~/Images/iit_mandi_logo.png" />
+                            <img class="img p-2 mr-2" style="width:120px;height:110px;" src="~/Images/mnnit-allahabad-logo.png" />
+                            <img class="img p-2 mr-2" style="width:90px;height:90px;" src="~/Images/iit-madras-logo.png" />
+                        </div>
+                        <hr>
+                        <a class="btn btn-lg btn-primary" href="./JoinNewClassroom">Join a new live class <span class="fa fa-search"></span> </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row d-md-flex align-items-center justify-content-center">
+            <div class="col-md-12 text-center heading-section heading-section-black ftco-animate">
+                <h4 class="mb-1 font-weight-bolder"><span>Features available in our live classes</span> </h4>
+                <h6 class="mb-1"><span> “who knows, does it live” </span> </h6>
+                <div class="row">
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/certificate.png" style="height:50px;width:50px;" />
+                            <h4>Certificate of completion</h4>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/video.png" style="height:50px;width:50px;" />
+                            <h4>Life time study material access</h4>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/chat.png" style="height:50px;width:50px;" />
+                            <h4>Doubt clearance</h4>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/job-search.png" style="height:50px;width:50px;"    />
+                            <h4>Job opportunities</h4>
+                            <h6></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="ml-5 mr-5" />
+
+    <div class="row" id="coursesContainer">
+
+    </div>
+
+</div>
+
+<script>
+    (function () {
+        'use strict';
+        var input = document.getElementById("courseSearchBox");
+        //input.addEventListener("keyup", function (event) {
+        //    // Number 13 is the "Enter" key on the keyboard
+        //    if (event.keyCode === 13) {
+        //        searchForCourse();
+        //    }
+        //});
+        onpageshow = searchForCourse();
+    })();
+
+    function searchForCourse() {
+        var coursesContainer = $("#coursesContainer");
+        debugger
+        var _data =
+            {
+                "key": $("#courseSearchBox").val()
+
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetJoinedClassroom",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1 && data.classroom_details != null && data.classroom_details.length > 0) {
+                    var classrooms = data.classroom_details;
+                    $("#extra-course-search").hide();
+                    var rows='<div class="col-xl-12 col-md-6 mb-4">';
+                    for (var i = 0; i < classrooms.length; i++) {
+                        //if (classrooms[i].classroom_name.length > 18) {
+                        //    classrooms[i].classroom_name = classrooms[i].classroom_name.substring(0, 15) + "...";
+                        //}
+                        //if (classrooms[i].classroom_description.length > 22) {
+                        //    classrooms[i].classroom_description = classrooms[i].classroom_description.substring(0, 20) + "...";
+                        //}
+                        rows+= ('<div class="card classrooms shadow   ml-2 mr-2 mb-2">'
+                     + '<div class="card-body ">'
+                         + '<h1 class="text-white font-weight-bold"><a>' + classrooms[i].classroom_name + '</a></h1>'
+                         + '<p class="text-grey-200 mb-1">' + classrooms[i].classroom_description + '</p>'
+                          + '<h6 class="card-title font-weight-light">Joined on:' + classrooms[i].date_of_joining + '</h6>'
+                         + ' <div class="col mb-2">'
+                       
+                         + '<ul class="list-unstyled list-inline rating mb-0">'
+                            //+ '<li class="list-inline-item mr-2"><button  class="btn btn-outline-primary" onclick="getCourseDetails(' + classrooms[i].classroom_id + ')">Details</button></li>'
+                            + '<li class="list-inline-item mr-0"><a  class="btn btn-outline-light" href="ViewClassroom?classroom_id=' + classrooms[i].classroom_id + '">Start learning</a></li>'
+                        + '</ul>'
+                     + '</div></div>'
+                 + '</div>');
+
+                    }
+                    rows + '</div>';
+                    coursesContainer.html(rows);
+                }
+                else {
+                    coursesContainer.html("");
+                    $("#extra-course-search").show();
+                }
+            }
+        });
+    }
+
+   
+    function callLearning(id) {
+        $.ajax({
+           url: "LearnCourse?id=".concat(id),
+            type: 'GET',
+            success: function (data) {
+                $(document).html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "LearnCourse?id=".concat(id));
+            }
+        });
+    }
+
+</script>

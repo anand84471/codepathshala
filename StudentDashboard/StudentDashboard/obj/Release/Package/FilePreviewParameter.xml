@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="mypathshala" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\git\\CodePatshala\\StudentDashboard\\StudentDashboard\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\git\\CodePatshala\\StudentDashboard\\StudentDashboard\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="DefaultConnection-Web.config Connection String" description="" value="Data Source=(LocalDb)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\aspnet-StudentDashboard-20200226075452.mdf;Initial Catalog=aspnet-StudentDashboard-20200226075452;Integrated Security=True" tags="">
+    <parameterEntry kind="XmlFile" scope="D:\\git\\CodePatshala\\StudentDashboard\\StudentDashboard\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+  </parameter>
+</parameters>

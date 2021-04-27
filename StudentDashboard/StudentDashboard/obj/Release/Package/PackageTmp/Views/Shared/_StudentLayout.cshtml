@@ -1,0 +1,935 @@
+﻿@RenderPage("_Header.cshtml")
+@{
+
+}
+<body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center"  href="./Home">
+                <img width="60" height="60" src="~/Images/site-logo-v2.png"  />
+            </a>
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="./Home">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Student Dashboard</span>
+                </a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Learning
+            </div>
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+                    <i class="fas fa-fw fa-play-circle"></i>
+                    <span>Live classes</span>
+                </a>
+                <div id="collapseFive" class="collapse side-nav" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Live classes</h6>
+                        @*<a class="collapse-item font-weight-bold" href="/MyClassrooms" onclick="callMyClassrooms()">My Live Classrooms</a>
+                        <a class="collapse-item font-weight-bold" href="#" onclick="callJoinNewClassroom()">Join new Live Classroom</a>
+                        <a class="collapse-item font-weight-bold" href="#" onclick="callJoinNewPrivateClassroom()">Join private classroom</a>*@
+                        <a class="collapse-item font-weight-bold" href="./MyClassrooms">My Live Classrooms</a>
+                        <a class="collapse-item font-weight-bold" href="./JoinNewClassroom">Join new Live Classroom</a>
+                        @*<a class="collapse-item font-weight-bold" href="#" onclick="callJoinNewPrivateClassroom()">Join private classroom</a>*@
+                    </div>
+                </div>
+            </li>
+            @*<li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-book"></i>
+                    <span>Courses</span>
+                </a>
+                <div id="collapseTwo" class="collapse side-nav" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Courses for you</h6>
+                       
+                        <a class="collapse-item font-weight-bold" href="./MyCourses">My Courses</a>
+                        <a class="collapse-item font-weight-bold" href="./JoinNewCourse" onclick="callJoinNewCourse()">Join New Course</a>
+                    </div>
+                </div>
+            </li>*@
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-pen"></i>
+                    <span>Assignments</span>
+                </a>
+                <div id="collapseUtilities" class="collapse side-nav" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Assignments:</h6>
+                        @*<a class="collapse-item font-weight-bold" href="#" onclick="callMyAssignments()">My Assignments</a>*@
+                        @*<a class="collapse-item font-weight-bold" href="#" onclick="callAssignmentSubmissions()">View Submissions</a>
+                        <a class="collapse-item font-weight-bold" href="#" onclick="callNewAssignment()">Give new assignment</a>*@
+                        <a class="collapse-item font-weight-bold" href="./AssignmentSubmissions">View Submissions</a>
+                        <a class="collapse-item font-weight-bold" href="./NewAssignment">Give new assignment</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities1" aria-expanded="true" aria-controls="collapseUtilities1">
+                    <i class="fas fa-fw fa-clipboard-list"></i>
+                    <span>Tests</span>
+                </a>
+                <div id="collapseUtilities1" class="collapse side-nav" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Tests:</h6>
+                        @*<a class="collapse-item font-weight-bold" href="#" onclick="callMyTests()">My Tests</a>*@
+                        @*<a class="collapse-item font-weight-bold" href="#" onclick="callTestSubmissions()">View Submissions</a>
+                        <a class="collapse-item font-weight-bold" href="#" onclick="callFetchNewTest()">Give new Test</a>*@
+                        @*<a class="collapse-item font-weight-bold" href="#" onclick="callNewTest()">Search test by Id</a>*@
+                        <a class="collapse-item font-weight-bold" href="./TestSubmissions">View Submissions</a>
+                        <a class="collapse-item font-weight-bold" href="./FetchTests">Give new Test</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#testUtilities" aria-expanded="true" aria-controls="testUtilities">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Instructors</span>
+                </a>
+                <div id="testUtilities" class="collapse side-nav" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Instructors:</h6>
+                        @*<a class="collapse-item font-weight-bold" href="#" onclick="callViewAllInstructors()">Joined Instructors</a>
+                        <a class="collapse-item font-weight-bold" href="#" onclick="callJoinNewInstructor()">Join New Instructor</a>*@
+                        <a class="collapse-item font-weight-bold" href="./Instructors">Joined Instructors</a>
+                        <a class="collapse-item font-weight-bold" href="./JoinInstructor">Join New Instructor</a>
+                    </div>
+                </div>
+
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#studentUtilities" aria-expanded="true" aria-controls="studentUtilities">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Students</span>
+                </a>
+                <div id="studentUtilities" class="collapse side-nav" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Students:</h6>
+                        @*<a class="collapse-item font-weight-bold" href="#" onclick="callViewAllInstructors()">Joined Instructors</a>
+                    <a class="collapse-item font-weight-bold" href="#" onclick="callJoinNewInstructor()">Join New Instructor</a>*@
+                        <a class="collapse-item font-weight-bold" href="./JoinedStudents">Joined Students</a>
+                        <a class="collapse-item font-weight-bold" href="./JoinNewStudent">Join New Student</a>
+                    </div>
+                </div>
+
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <!-- Topbar Search -->
+                    <form  class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="Search">
+                        <div class="input-group" id="sera">
+                            <input type="text" name="q" class="form-control bg-light border-0 small" placeholder="Search for live classes, courses, and instructors..." aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit" data-toggle="#myInput">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                           
+                        </div>
+                    </form>
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group" id="sera">
+                                        <input type="text" name="q" class="form-control bg-light border-0 small" placeholder="Search for live classes, courses, and instructors..." aria-label="Search" aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit" data-toggle="#myInput">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                </form>
+                               
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">0</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown" id="alertContainer">
+                                <h6 class="dropdown-header">
+                                    Alerts Center
+                                </h6>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">No alerts</a>
+                            </div>
+                        </li>
+                        <!-- Nav Item - Messages -->
+                        @*<li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">0</span>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Message Center
+                                </h6>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                            </div>
+                        </li>*@
+                        <div class="topbar-divider d-none d-sm-block"></div>
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small font-weight-bold">@Session["student_email"].ToString()</span>
+                                <img class="img-profile rounded-circle" src="@Session["student_profile_picture_url"]">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                @*<button class="dropdown-item" id="profilePage">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </button>
+                                <button class="dropdown-item" id="editAccountPage">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Edit Account
+                                </button>
+                                <button class="dropdown-item" id="editProfilePicture" onclick="requestNewProfilePicture()">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Change Profile Picture
+                                </button>
+                                <button class="dropdown-item" id="activityLogPage">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </button>
+                                <button id="contactPage" class="dropdown-item">
+                                    <i class="fas fa-envelope fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Contact
+                                </button>*@
+                                <a class="dropdown-item btn" href="./Account">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item btn" href="./EditAccount">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Edit Account
+                                </a>
+                                <button class="dropdown-item" id="editProfilePicture" onclick="requestNewProfilePicture()">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Change Profile Picture
+                                </button>
+                                <a class="dropdown-item" href="./Activity">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </a>
+                                <a  class="dropdown-item" href="./Contact">
+                                    <i class="fas fa-envelope fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Contact
+                                </a>
+
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="./Logout" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+                <section >
+                    <div id="body" >@RenderBody()</div>
+                    <!-- Loading Spinner Wrapper-->
+                    <div class="loader text-center text-primary bg-primary" id="body-loader" style="display:none;">
+                        <div class="loader-inner">
+
+                            <!-- Animated Spinner -->
+                            <div class="lds-roller mb-3">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                            <h4 class="text-uppercase font-weight-bold">Loading</h4>
+                            <p class="font-italic text-muted">Coffee at your place, tommorow at 10A.M. - don't be late!</p>
+                        </div>
+                    </div>
+                   
+                </section>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            @RenderPage("_Footer.cshtml")
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Are you sure to want to logout?</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
+                    <a class="btn btn-primary" href="./Logout">Yes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<div class="modal fade top" id="profilePictureUploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 " id="myModalLabel"> <b>Upload New Profile Picture</b></h4>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <form class="card-img-top classroom-background" action="../Student/UpdateProfilePictute" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <i class="fa fa-upload upload-icon" aria-hidden="true"></i>
+                    <div class="form-group">
+                        <label for="exampleFormControlFile1">Upload New Image</label>
+                        <input type="file" id="fileUploadProfilePicture" name="file" accept="image/x-png,image/gif,image/jpeg" />
+                       
+                        <input type="url" id="fileUploadUrl" hidden name="url" />
+                        <input type="url" id="mediumSizeImageUrl" hidden name="medium_size_url" />
+                        <input type="url" id="smallSizeImageUrl" hidden name="small_size_url" />
+                        <button type="button" class="btn btn-primary" onclick="requestUploadProfile()"><i class="fa fa-upload"></i> Upload</button>
+                        <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="ProfileUploadProgressBar"></div>
+                        </div>
+                       
+                        <div class="alert alert-success" id="postProfileUploadAlert" style="display:none" role="alert">
+                            profile picture added successfully
+                        </div>
+                        <input type="submit" value="submit" class="btn btn-primary" disabled id="profilePictureUploadSubmitButton">
+                    </div>
+                </form>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<script type="text/javascript">
+   
+    $('#contactPage').click(function () {
+        callContact();
+    });
+    $('#activityLogPage').click(function () {
+        callActivity();
+    });
+    $('#editAccountPage').click(function () {
+        callEditAccount();
+    });
+    $('#profilePage').click(function () {
+        callAccount();
+    });
+</script>
+<script type="text/javascript">
+
+    (function () {
+        'use strict';
+
+    })();
+    var lastMethodStack = [];
+    function callLastMethod(currentMethod)
+    {
+        debugger
+        if (lastMethodStack != null && lastMethodStack.length > 0) {
+            var lastMethod = lastMethodStack.pop();
+            lastMethodStack.push(currentMethod);
+            callMethodByName(lastMethod);
+        }
+        else {
+            lastMethodStack.push(currentMethod);
+            callHome();
+        }
+        
+    }
+    function callMethodByName(strMethodName)
+    {
+        debugger
+        switch (strMethodName) {
+            case "callContact":
+                {
+                    callContact(); break;
+                }
+            case "callActivity":
+                {
+                    callActivity(); break;
+                }
+            case "callEditAccount":
+                {
+                    callEditAccount(); break;
+                }
+            case "callAccount":
+                {
+                    callAccount(); break;
+                }
+            case "callMyAssignments":
+                {
+                    callMyAssignments(); break;
+                }
+            case "callAssignmentSubmissions":
+                {
+                    callAssignmentSubmissions(); break;
+                }
+            case "callTestSubmissions":
+                {
+                    callTestSubmissions(); break;
+                }
+            case "callNewAssignment":
+                {
+                    callNewAssignment(); break;
+                }
+            case "callFetchNewTest":
+                {
+                    callFetchNewTest(); break;
+                }
+            case "callNewTest":
+                {
+                    callNewTest(); break;
+                }
+            case "callJoinNewCourse":
+                {
+                    callJoinNewCourse(); break;
+                }
+            case "callMyCourses":
+                {
+                    callMyCourses(); break;
+                }
+            case "callJoinNewInstructor":
+                {
+                    callJoinNewInstructor(); break;
+                }
+            case "callViewAllInstructors":
+                {
+                    callViewAllInstructors(); break;
+                }
+            case "callCreateNewTest":
+                {
+                    callCreateNewTest(); break;
+                }
+            case "callCreateNewAssignment":
+                {
+                    callCreateNewAssignment(); break;
+                }
+            case "callJoinNewClassroom":
+                {
+                    callJoinNewClassroom(); break;
+                }
+            case "callMyClassrooms":
+                {
+                    callMyClassrooms(); break;
+                }
+            case "callViewAllCourse":
+                {
+                    callViewAllCourse(); break;
+                }
+            case "callViewAllTest":
+                {
+                    callViewAllTest(); break;
+                }
+            case "callViewAllAssignment":
+                {
+                    callViewAllAssignment(); break;
+                }
+            case "callHome":
+                {
+                    callHome(); break;
+                }
+        }
+    }
+    function callContact() {
+        //accordionSidebar
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("Contact", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Contact Us" }, "", "Contact");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callContact");
+                //};
+            }
+        });
+    }
+    function callActivity()
+    {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("Activity", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Activity" }, "", "Activity");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callActivity");
+                //};
+            }
+        });
+    }
+    function callEditAccount()
+    {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("EditAccount", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Account" }, "", "EditAccount");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callEditAccount");
+                //};
+            }
+        });
+    }
+    function callAccount() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("Account", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Account" }, "", "Account");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callAccount");
+                //};
+            }
+        });
+    }
+    function callMyAssignments() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("MyAssignments", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "MyAssignments" }, "", "MyAssignments");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callMyAssignments");
+                //};
+            }
+        });
+    }
+    function callAssignmentSubmissions() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("AssignmentSubmissions", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Account" }, "", "AssignmentSubmissions");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callAssignmentSubmissions");
+                //};
+            }
+        });
+    }
+    function callTestSubmissions() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("TestSubmissions", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Account" }, "", "TestSubmissions");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callTestSubmissions");
+                //};
+            }
+        });
+    }
+    function callNewAssignment() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("NewAssignment", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "NewAssignment");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callNewAssignment");
+                //};
+            }
+        });
+    }
+    function callFetchNewTest()
+    {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("FetchTests", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Home" }, "", "FetchTests");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callFetchNewTest");
+                //};
+            }
+        });
+    }
+    function callNewTest() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("NewTest", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "NewTest");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callNewTest");
+                //};
+            }
+        });
+    }
+    function callJoinNewCourse() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("JoinNewCourse", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "JoinNewCourse");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callJoinNewCourse");
+                //};
+            }
+        });
+    }
+
+    function callMyCourses() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("MyCourses", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "MyCourses");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callMyCourses");
+                //};
+            }
+        });
+    }
+    function callJoinNewInstructor() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("JoinInstructor", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Home" }, "", "JoinInstructor");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callJoinNewInstructor");
+                //};
+            }
+        });
+    }
+    function callViewAllInstructors() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("Instructors", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Home" }, "", "Instructors");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callViewAllInstructors");
+                //};
+            }
+        });
+    }
+    function callCreateNewTest() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("CreateTest", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "CreateTest");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callCreateNewTest");
+                //};
+            }
+        });
+    }
+    function callCreateNewAssignment() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("CreateAssignment", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "CreateAssignment");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callCreateNewAssignment");
+                //};
+            }
+        });
+    }
+    function callJoinNewClassroom() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("JoinNewClassroom", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "JoinNewClassroom");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callJoinNewClassroom");
+                //};
+            }
+        });
+    }
+    function callJoinNewPrivateClassroom() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("JoinPrivateClassroom", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "JoinPrivateClassroom");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callJoinNewPrivateClassroom");
+                //};
+            }
+        });
+    }
+    function callMyClassrooms() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("MyClassrooms", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "MyClassrooms" }, "", "MyClassrooms");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callMyClassrooms");
+                //};
+            }
+        });
+    }
+    function callViewAllCourse() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("Courses", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "Courses");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callViewAllCourse");
+                //};
+            }
+        });
+    }
+    function callViewAllTest() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("Tests", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "Tests");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callViewAllTest");
+                //};
+
+            }
+        });
+    }
+    function callViewAllAssignment() {
+        $('#accordionSidebar').addClass("toggled");
+        startSpinner();
+        $.ajax({
+            url: '@Url.Action("Assignments", "Student")',
+            type: 'GET',
+            success: function (data) {
+                $("#body").html(data);
+                stopSpinner();
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "Assignments");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callViewAllAssignment");
+                //};
+            }
+        });
+    }
+    function callHome()
+    {
+        startSpinner();
+        $('#accordionSidebar').addClass("toggled");
+        $.ajax({
+            url: '@Url.Action("Home", "Student")',
+            type: 'GET',
+            success: function (data) {
+                stopSpinner();
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "Home");
+                //window.onpopstate = function (event) {
+                //    callLastMethod("callHome");
+                //};
+            }
+        });
+    }
+    function stopSpinner() {
+       
+        $("#body-loader").hide();
+       
+    }
+    function startSpinner() {
+      
+        $("#body").empty();
+        $("#body").html("");
+        $("#body-loader").show();
+    }
+    function requestNewProfilePicture() {
+        $("#profilePictureUploadModal").modal('show');
+    }
+    function requestUploadProfile() {
+        document.getElementById("ProfileUploadProgressBar").style.width = "0%";
+        debugger
+        var data = new FormData();
+        var file = $('#fileUploadProfilePicture')[0];
+        data.append('file', file.files[0]);
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        document.getElementById("ProfileUploadProgressBar").style.width = percentComplete + "%";
+                        if (percentComplete === 100) {
+
+
+                        }
+                    }
+                }, false);
+
+                return xhr;
+            },
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            data: data,
+            url: "/api/v1/Course/UploadImage",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    profilePictureUrl = data.file_location;
+                    $("#fileUploadUrl").val(data.file_location);
+                    $("#mediumSizeImageUrl").val(data.medium_size_icon_url);
+                    $("#smallSizeImageUrl").val(data.small_size_icon_url);
+                    //profilePictureUploadSubmitButton
+                    $("#profilePictureUploadSubmitButton").prop("disabled", false);
+                    $("#postProfileUploadAlert").show();
+                }
+                else {
+
+                }
+            }
+        });
+    }
+    var profilePictureUrl = "";
+   
+</script>
+</html>

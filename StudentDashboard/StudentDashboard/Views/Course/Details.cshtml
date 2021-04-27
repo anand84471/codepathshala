@@ -1,0 +1,329 @@
+﻿@{
+    ViewBag.Title = "Join course";
+    Layout = "~/Views/Shared/_AboutLayout.cshtml";
+}
+<style>
+    .course-accordion {
+        background-color: #eee;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+        transition: 0.4s;
+    }
+
+    .index-accordion {
+        background-color: #eee;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+        transition: 0.4s;
+    }
+
+    .course-accordion active, .course-accordion :hover {
+        background-color: #ccc;
+    }
+
+    .course-accordion::after {
+        content: '\002B';
+        color: #777;
+        font-weight: bold;
+        float: right;
+        margin-left: 5px;
+    }
+
+    .active course-accordion::after {
+        content: "\2212";
+    }
+
+    .course-panel {
+        padding: 0;
+        background-color: white;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+    }
+
+    .custom-blue {
+        background-image: linear-gradient(to right, rgba(51, 91, 255), rgba(51, 80, 210));
+    }
+
+    .custom-white {
+        background-image: linear-gradient(to right, rgba(253, 254, 254), rgba(253, 254, 254));
+    }
+
+    .custom-green {
+        background-image: linear-gradient(to right, rgba(9, 225, 118), rgba(9, 200, 100));
+    }
+
+    .course-nav {
+    }
+
+    .about-coure-section {
+        margin-top: -10px;
+    }
+
+    .course-nav li a:hover {
+        border-bottom: 3px solid red;
+    }
+
+    .course-nav li a.active {
+        border-bottom: 3px solid red;
+    }
+
+    .course-demo-card {
+        margin-left: 0px;
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+</style>
+
+
+<div class="course-demo-card container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Join new course</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="~/AboutUs" >Home</a></li>
+                <li class="breadcrumb-item"><a href="~/Course" onclick="callJoinNewCourse()">Course</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Enroll now</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <!-- Course section -->
+    @*<nav class="navbar  bg-dark ">
+            <a href="./JoinNewCourse" class="btn navbar-item text-white nav-item active">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            <a class="navbar-brand " href="#">
+                <img src="~/Images/site-logo.png" width="160" height="40" class="align-top bg-white" alt="">
+
+            </a>
+        </nav>*@
+    <div class="card  mb-0 p-1">
+        <div class="custom-blue jumbotron mb-0">
+            <div class="ml-lg-5">
+                <h2 class="display-6 text-white" id="courseName">Course Name</h2><span class="badge badge-pill badge-light" id="successbadge" style="display:none">Joined Successfully</span>
+                <p class="p text-white" id="courseDescription">Course description</p>
+                <div>
+                    <p class="text mr-3  text-white" id="courseCreationDate"><b>Creation date:</b> </p>
+                    <span><a class="btn btn-outline-light custom-green text-white font-weight-bold" id="enrollNowButton" href="@ViewBag.ReturnUrl">enroll now</a></span>
+
+                    <span><a class="btn btn-outline-light custom-green text-white font-weight-bold" id="goToCourse" style="display:none;" href="./MyCourses">Go to my courses<i class="ml-2 fa fa-arrow-right"></i></a></span>
+                </div>
+            </div>
+        </div>
+        <section class="about-coure-section">
+            <nav class="navbar navbar-expand-lg navbar-light custom-white">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse " id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto course-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#courseBody" onclick="getAboutCourse()">About course</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="#syallabus" onclick="getAboutCourse()">Syllabus</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="#assignments" onclick="getAboutCourse()">Assignments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="#tests" onclick="getAboutCourse()">Tests</a>
+                        </li>
+
+                    </ul>
+
+                </div>
+            </nav>
+            <!--Course nav bar ends-->
+            <!--Course body-->
+            @*<div id="spinner" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>*@
+            <div id="courseBody">
+
+            </div>
+            <div class="card-body">
+                <section id="syallabus">
+                    <h4 class="text-primary">Syllabus</h4>
+                    <div id="indexSectionContents">
+
+                    </div>
+                </section>
+            </div>
+            <div class="card-body">
+                <section id="assignments">
+                    <h4 class="text-primary">Assignments</h4>
+                    <div id="assignmentSectionContents">
+
+                    </div>
+                </section>
+            </div>
+            <div class="card-body">
+                <section id="tests">
+                    <h4 class="text-primary">Tests</h4>
+                    <div id="testSectionContents">
+
+                    </div>
+                </section>
+            </div>
+
+            <!--Course body Ends-->
+            <!--About course-->
+        </section>
+    </div>
+
+</div>
+<div class="modal fade border-success" id="successModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-success modal-content">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoTitle">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h3 id="infoMessageSuccess">Course joined successfully</h3>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-secondary" data-dismiss="modal" href="./MyCourses">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="infoMessageFail">Course could not be joined</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = init();
+    })();
+    function getAboutCourse() {
+        $("#courseBody").html(aboutCourseDetails);
+    }
+    var aboutCourseDetails;
+    function showSpinner()
+    {
+       $("#spinner").show();
+    }
+    function hideSpinner()
+    {
+        $("#spinner").fadeOut();
+    }
+
+    //----------------Index Section-------------------------------------
+
+    var indexDetails = [];
+    var courseId = 0;
+    //-----------------------Course section start----------------------
+    function init() {
+        debugger
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchAboutCourse?id=".concat("@ViewBag.Id"),
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    aboutCourseDetails = '';
+                    aboutCourseDetails = '<dl class="row ml-3">'
+                            + '<dt class="col-sm-3">Course name</dt><dd class="col-sm-9">' + data.course_name + '</dd>'
+                            + '<dt class="col-sm-3">Creation date</dt><dd class="col-sm-9">' + data.course_creation_date + '</dd>'
+                            + '<dt class="col-sm-3">Last updation date</dt><dd class="col-sm-9">' + data.course_creation_date + '</dd>'
+                            + '<dt class="col-sm-3">No of indexes</dt><dd class="col-sm-9">' + data.index_count + '</dd>'
+                            + '<dt class="col-sm-3">No of Assignments</dt><dd class="col-sm-9">' + data.assignment_count + '</dd>'
+                            + '<dt class="col-sm-3">No of Tests</dt><dd class="col-sm-9">' + data.test_count + '</dd>'
+                            + '<dt class="col-sm-3">No of Topics</dt><dd class="col-sm-9">' + data.topic_count + '</dd>'
+                            + '<dt class="col-sm-3">Estimeted time for course</dt><dd class="col-sm-9">' + data.test_count + '</dd>'
+                            + '<dt class="col-sm-3">Course description</dt><dd class="col-sm-9">' + data.course_description + '</dd>'
+
+                            + '</dl>';
+                    $("#courseBody").html(aboutCourseDetails);
+                    $("#courseName").text(data.course_name);
+                    $("#courseDescription").text(data.course_description);
+                    $("#courseCreationDate").html("<b>Creation date:</b>".concat(data.course_creation_date));
+                    var indexes = data.index_details;
+                    //fill indexes in nav
+                    $("#navBarIndexList").empty();
+                    var idexes = data.index_details;
+                    var indexHtml = '';
+                    if(idexes!=null&&idexes.length>0)
+                    {
+                        for (i = 0; i < indexes.length; i++) {
+                            indexHtml += '  <button class="course-accordion mb-1" >' + idexes[i].index_name + '</button>';
+                        }
+                        $("#indexSectionContents").html(indexHtml)
+
+                    }
+                    else{
+                        $("#indexSectionContents").html('<div class="alert alert-primary" role="alert">No data</div>');
+                    }
+                    var assignments = data.assignment_details;
+                    var indexHtml = '';
+                    if (assignments != null && assignments.length > 0) {
+                        for (i = 0; i < assignments.length; i++) {
+                            indexHtml += '  <button class="course-accordion mb-1">' + assignments[i].assignment_name + '</button>';
+                        }
+                        $("#assignmentSectionContents").html(indexHtml)
+
+                    }
+                    else {
+                        $("#assignmentSectionContents").html('<div class="alert alert-primary" role="alert">No data</div>');
+                    }
+                    var tests = data.test_details;
+                    var indexHtml = '';
+                    if (tests != null && tests.length > 0) {
+                        for (i = 0; i < tests.length; i++) {
+                            indexHtml += '  <button class="course-accordion mb-1">' + tests[i].test_name + '</button>';
+                        }
+                        $("#testSectionContents").html(indexHtml)
+
+                    }
+                    else {
+                        $("#testSectionContents").html('<div class="alert alert-primary" role="alert">No data</div>');
+                    }
+
+                }
+                hideSpinner();
+            }
+        });
+    }
+   
+</script>

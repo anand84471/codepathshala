@@ -1,0 +1,120 @@
+﻿@{
+    Layout = "";
+}
+<html lang="en">
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="CodePathshalaAdmin" content="">
+    <title>ReadMyCourse: Where knowledge has no boundaries</title>
+    <link href="../../Scripts/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="../../fonts/css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+<body style="background-image: url('../Images/bg_4.jpg');">
+    <style type="text/css">
+        .custom-blue
+    {
+        color:white;
+       background: rgb(63,94,251);
+       background: linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(235,113,138,1) 95%);
+    }
+    </style>
+    <div class="container">
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <div class="text-center">
+                            <a href="./"><img src="../Images/site-logo-v2-full.png" class="img-fluid " alt="..." style="max-height:100px;"></a>
+                            <h4 class="text-gray-900 font-weight-bold mb-2"><span><i class="fa fa-edit"></i></span> Test</h4>
+                            @*<h6 class="text-gray-900 font-weight-bold mb-2"><span><i class="fa fa-user"></i></span> Author:</h6>*@
+                            <a class="font-weight-bold mb-2" href="~/Student/StartTest?id=@ViewBag.Id">We request you to login to save your responses &rarr;</a>
+                        </div>
+                    </div>
+                    <div id="aboutTestContainer" class="p-3 rounded m-4 card p-4 custom-blue shadow-lg" >
+
+                        <div class="test-details" id="text-details">
+                            <dl class="row">
+                                <dt class="col-sm-3">Test Name:</dt>
+                                <dd class="col-sm-9" id="testName"></dd>
+                                <dt class="col-sm-3">Description:</dt>
+                                <dd class="col-sm-9" id="testDescription"></dd>
+                                <dt class="col-sm-3">No of questions:</dt>
+                                <dd class="col-sm-9" id="noOfQuestionsInTest">
+                                <dt class="col-sm-3">Test Type:</dt>
+                                <dd class="col-sm-9" id="testType">
+                                <dt class="col-sm-3">Total Time:</dt>
+                                <dd class="col-sm-9" id="timeForTest">
+                                <dt class="col-sm-3">Total Marks:</dt>
+                                <dd class="col-sm-9" id="marksForTest">
+                                <dt class="col-sm-3">Total Submissions:</dt>
+                                <dd class="col-sm-9" id="totalSubmissions">
+                            </dl>
+                            <h1 class="glow" id="testProgress" style="display:none">Test is in progress</h1>
+                            <hr class="border border-info" />
+                            <div id="testResponse"></div>
+                            <a id="startTestButton" onclick="startTest()" href="./StartTest/?id=@ViewBag.Id&ShareCode=@ViewBag.AccessCode" class="btn btn-outline-success btn-sm btn-block text-white" style="width:50%">Start</a>
+                            <button id="closeTestButton" onclick="closeTest()" type="button" class="btn btn-danger btn-sm btn-block text-white" style="width:50%;display:none">Close</button>
+                        </div>
+
+                        <div class="test-start-section"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../../Scripts/vendor/jquery/jquery.min.js"></script>
+    <script src="../../Scripts/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../../Scripts/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="../Scripts/js/sb-admin-2.min.js"></script>
+
+    <script>
+        function disableButton()
+        {
+            var submitButton = document.getElementById("submitButton");
+            submitButton.disabled = true;
+            submitButton.innerText = 'Please wait'
+        }
+    </script>
+</body>
+</html>
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = getTestDetails();
+    })();
+     function getTestDetails() {
+        debugger;
+        $.ajax({
+     
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/document/FetchTestDetails?id=@ViewBag.Id&AccessCode=@ViewBag.AccessCode",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $("#testName").text(data.test_name);
+                    $("#testDescription").text(data.test_description);
+                    $("#noOfQuestionsInTest").text(data.no_of_questions);
+                    var date = new Date(null);
+                    date.setSeconds(data.time_for_test_in_seconds);
+                    $("#timeForTest").text(date.toISOString().substr(11, 8));
+                    $("#marksForTest").text(data.max_marks);
+                    $("#testType").text(data.test_type);
+                    $("#totalSubmissions").text(data.total_no_of_submissions);
+                    $("#aboutTestContainer").show();
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "Assignment Submissions";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Assignment Submissions</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Assignment Submissions</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="mb-4">
+        <div class="" style="padding:0">
+            <div class="table-responsive">
+                @*<input onkeyup="searchToCustomTable()" type="text" class="form-control m-2 col-sm-4 align-content-end" id="customTableCodePathshalaSearch" placeholder="serach for assignments...">*@
+                <table id="customTableCodePathshala" class="table table-hover" style="display:none">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Assignment Name</th>
+                            <th scope="col">Submission Date</th>
+                            <th scope="col">Total No of Questions</th>
+                            <th scope="col">Percentage Score</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assignmentsRows"></tbody>
+                </table>
+                <div id="spinner" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center" id="footer" style="display:none">
+                <h5 class="card-title p-2 font-weight-bold"> You have not submitted any assignments</h5>
+            <a id="addAssignmentButton" class="card-title h4" href="./NewAssignment">Give new assignments <span class="fa fa-arrow-right"></span></a>
+                @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+                <div id="assignmentContainer" class="assignmentContainer"></div>
+                
+                <img src="~/Images/submit_new_assignment_graphics.svg" class="img-fluid px-sm-4" style="width:300px;height:300px;" />
+            
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+        (function () {
+            'use strict';
+            //window.addEventListener('load', function () {
+            //    getAssignmentDetails();
+            //}, false);
+            onpageshow = getAllAssignmentDetails();
+        })();
+    function searchToCustomTable() {
+        var input, filter, table, tr, td, i, txtValue, a;
+        input = document.getElementById("customTableCodePathshalaSearch");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("customTableCodePathshala");
+        tr = table.getElementsByTagName("tr");
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+            a = tr[i].getElementsByTagName("th")[0];
+            a = a.getElementsByTagName("button")[0];
+            if (a) {
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    function getSubmissionDetails(id) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            url: '/Student/AssignmentResponse?id='.concat(id),
+            type: 'GET',
+            success: function (data) {
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "AssignmentResponse?id=".concat(id));
+            }
+        });
+    }
+    function getAllAssignmentDetails() {
+        var x = $('#assignmentsRows').empty();
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetAllAssignmentSubmissionsForStudent",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var assignments = data.assignment_submissions;
+                    for (var i = 0; i < assignments.length; i++) {
+                        //if (assignments[i].name.length > 30)
+                        //{
+                        //    assignments[i].name = assignments[i].name.substring(0, 30) + "...";
+                        //}
+                        var rows = '<tr><th scope="row" ><button type="button" class="btn btn-link font-weight-bold" onclick="getAssignmentDetails('.concat(assignments[i].submission_id) + ')">' + assignments[i].assignment_name + '</button></th>'
+                        + '<td>' + assignments[i].submission_date + '</td><td>' + assignments[i].total_no_questions + '</td><td>' + assignments[i].percentage_score + '</td>'
+                        +'<td>'
+                            + '<button type="button" class="btn btn-link" class="list-group-horizontal" onclick="getSubmissionDetails(' + assignments[i].submission_id + ')">'
+                                +'<i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                            +'</button>'
+                        +'</td>'
+                        +'</tr>';
+                        $('.table').append(rows);
+                        $("#spinner").remove();
+                        $("#customTableCodePathshala").show();
+                    }
+                }
+                else {
+                    $("#footer").show();
+                    $("#spinner").remove();
+                }
+            }
+    });
+    }
+
+
+</script>

@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewBag.Title = "ReadMyCourse - Authentication service";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/__BackLayout.cshtml";
+}
+<nav class="navbar  bg-white" style="padding:0px;">
+  
+    <a class="navbar-brand p-2" href="https://readmycourse.com">
+        <img src="~/Images/site-logo.png" width="140" height="35" class="align-top  alt="">
+
+    </a>
+</nav>
+<div class="container-fluid">
+    @if (ViewBag.IsValidRequest != null)
+    {
+        if (ViewBag.IsValidRequest)
+        {
+            <div class="alert alert-success" role="alert" name="loginMessage1">
+                Phone No Varified successfully
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger h1" role="alert" name="loginMessage1">
+
+                Either the link doesn't exist, expired or you have already varified your phone no
+            </div>
+        }
+        ViewBag.IsLoggedIn = null;
+    }
+</div>
+

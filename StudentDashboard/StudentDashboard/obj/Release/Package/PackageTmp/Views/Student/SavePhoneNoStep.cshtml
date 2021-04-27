@@ -1,0 +1,170 @@
+﻿@{
+    Layout = "";
+}
+<html lang="en">
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="CodePathshalaAdmin" content="">
+    <title>ReadMyCourse -Join Free Live classes for professional courses</title>
+    <!-- Custom fonts for this template-->
+    <link href="../../Scripts/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="../../fonts/css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="../../fonts/vendors/intl-tel-input-master/intlTelInput.min.css" rel="stylesheet" type="text/css " />
+</head>
+<body style="background-image: url('../Images/bg_4.jpg');">
+    <div class="container">
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                            <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <a href="../"><img src="../Images/site-logo-v2-full.png" class="img-fluid " alt="..."></a>
+                                        <h4 class="text-gray-900 font-weight-bold mb-2">Please enter phone no</h4>
+                                    </div>
+                                    @if (ViewBag.ReturnUrl != null)
+                                    {
+                                        var action = "/Student/ValidateLogin?return_url=" + ViewBag.ReReturnUrl;
+                                    }
+                                    else
+                                    {
+                                        var action = "/Student/ValidateLogin";
+                                    }
+                                  
+                                <form method="post" id="registerForm" class="needs-validation" action="/Student/UpdatePhoneNo?redirect_url=@ViewBag.redirectUrl" autocomplete="off" novalidate>
+                                    <label for="validationCustomUsername2">Please enter your phone no to continue.</label>
+                                    <div class="input-group">
+                                        <input type="tel" pattern=".{10,}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" maxlength="10" minsize="10" name="phone_no" id="phone_no" placeholder="Phone No" aria-describedby="inputGroupPrepend2"
+                                               required>
+                                    </div>
+                                    <div class="text-danger" id="invalidNo" style="display:none;">
+                                        Please enter a valid phone no
+                                    </div>
+                                    <input type="text" class="form-control" name="token" id="token" value="@ViewBag.token" required hidden>
+                                    <input type="text" class="form-control" name="user_id" id="user_id" value="@ViewBag.userId" required hidden>
+                                    <input type="text" class="form-control" name="varify_phone" id="varify_phone" required hidden>
+                                    <input type="text" class="form-control" value="+91" name="country_code" id="country_code" required hidden>
+                                    @Html.AntiForgeryToken()
+
+                                    @if (ViewBag.IsLoggedIn != null)
+                                    {
+                                        if (ViewBag.IsLoggedIn)
+                                        {
+                                            <div class="alert alert-success" role="alert" name="loginMessage1">
+                                                Successfully Logged In!
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-danger" role="alert" name="loginMessage1">
+                                                Login failed
+                                            </div>
+                                        }
+                                        ViewBag.IsLoggedIn = null;
+                                    }
+                                    <br />
+                                    <button id="submitButton" class="btn btn-primary btn-user btn-block" onclick="requestPhoneNoVarification()">
+                                        Next <i class="fa fa-arrow-right"></i>
+                                    </button>
+                                    <button class="btn btn-primary" style="display:none;" id="varifyPhoneNo">Varify Phone No <i class="fa fa-arrow-right"></i></button>
+                                    <button class="btn btn-outline-primary" style="display:none;" id="varifyPhoneDenied">No Thanks <i class="fa fa-arrow-right"></i></button>
+
+                                </form>
+                                    <hr>
+                                    <div class="text-center">
+                                        <a class="small" href="/Student/ForgotPassword">Forgot Password?</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a class="small" href="/Student/Join">Create an Account!</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-none d-lg-block" style="background-image:url(../../Images/bg_student_login.jpg);background-size: auto;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../../Scripts/vendor/jquery/jquery.min.js"></script>
+    <script src="../../Scripts/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../../Scripts/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="../Scripts/js/sb-admin-2.min.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
+
+    <script src="../../Scripts/vendor/intl-tel-input-master/intlTelInput.min.js"></script>
+
+    <script src="../../Scripts/vendor/intl-tel-input-master/intlTelInput-jquery.min.js"></script>
+    <script src="../../Scripts/vendor/intl-tel-input-master/utils.js"></script>
+    <script>
+       
+    </script>
+    <script>
+       
+        function requestPhoneNoVarification() {
+            if ($("#phone_no").val().length < 10) {
+                return;
+            }
+
+            $("#submitButton").fadeOut();
+            $("#varifyPhoneNo").fadeIn();
+            $("#varifyPhoneDenied").fadeIn();
+            $("#country_code").val("+"+countrycode.s.dialCode);
+            $("#varifyPhoneNo").click(function () {
+                $("#varify_phone").val("true");
+                $("#registerForm").submit();
+            });
+            $("#varifyPhoneDenied").click(function () {
+                $("#varify_phone").val("false");
+                $("#registerForm").submit();
+            });
+            event.preventDefault();
+        }
+        var countrycode;
+        function lanuchInteli() {
+            var phoneNo = document.getElementById("phone_no");
+            countrycode = window.intlTelInput(phoneNo, ({
+                initialCountry: "in",
+            }));
+        }
+        lanuchInteli();
+        
+    </script>
+</body>
+</html>
+

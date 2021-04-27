@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewBag.Title = "Join private classroom";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<div class="container-fluid " id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Join new classroom</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Join private classroom</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+
+    <div id="assignmentAccessController" class="card col-sm-6 ml-xl-5 shadow-lg ">
+        <div class="card-body">
+            <h5>Please enter classroom id and access code to continue</h5>
+            <form method="post" class="needs-validation" action="RequestClassroomAccess" novalidate>
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Classroom Id</label>
+                    <input type="text" name="classroom_id" class="form-control" id="accessCode" placeholder="Enter id" required>
+                    <div class="invalid-feedback">
+                        Please enter classroom id id
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Access code</label>
+                    <input type="text" name="access_code" class="form-control" id="accessCode" placeholder="Enter access code" required>
+                    <div class="invalid-feedback">
+                        Please enter access code
+                    </div>
+                </div>
+                @if (ViewBag.IsAccessError != null)
+                {
+                    if (ViewBag.IsAccessError)
+                    {
+                        <div class="alert alert-danger" role="alert" name="loginMessage1">
+                            Access denied!
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-primary" role="alert" name="loginMessage1">
+                            Access granted
+                        </div>
+                    }
+                    ViewBag.IsLoggedIn = null;
+                }
+                <div class="form-group">
+                    <button type="submit" class="btn btn-block btn-outline-primary">Submit</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form)
+                {
+                    form.addEventListener('submit', function (event)
+                    {
+                        if (form.checkValidity() === false ) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                            form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+      
+</script>
+   

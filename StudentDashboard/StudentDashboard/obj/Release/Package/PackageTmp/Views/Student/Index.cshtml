@@ -1,0 +1,202 @@
+﻿@{
+    Layout = "";
+}
+<html lang="en">
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="CodePathshalaAdmin" content="">
+    <title>ReadMyCourse -Student Login</title>
+    <!-- Custom fonts for this template-->
+    <link href="../../Scripts/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="../../fonts/css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="../../fonts/vendors/intl-tel-input-master/intlTelInput.min.css" rel="stylesheet" type="text/css "/>
+</head>
+<body style="background-image: url('../Images/bg_4.jpg');">
+    <div class="container">
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <!-- Nested Row within Card Body -->
+                        <div class="row">
+                          
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <a href="../"><img src="../Images/site-logo-v2-full.png" class="img-fluid " alt="..."></a>
+                                        <h4 class="text-gray-900 font-weight-bold mb-2">Student login</h4>
+                                    </div>
+                                    @if (ViewBag.ReturnUrl != null)
+                                    {
+                                        var action = "/Student/ValidateLogin?return_url=" + ViewBag.ReReturnUrl;
+                                    }
+                                    else
+                                    {
+                                        var action = "/Student/ValidateLogin";
+                                    }
+
+                                    <div id="gSignInWrapper">
+                                        <div id="name"></div>
+                                        <button id="customBtn" class="btn btn-primary btn-user btn-block">
+                                            <span><i class="fa fa-google text-white" aria-hidden="true"></i></span> Sign in with google
+                                        </button>
+                                    </div>
+
+                                    
+                                    
+                                    <form method="post" id="gmailForm" action="/Student/ValidateGmailLogin?return_url=@ViewBag.RedirectUri" autocomplete="off" novalidate>
+                                        @Html.AntiForgeryToken()
+                                        <input type="text" class="form-control" name="user_id" id="user_id" placeholder="Password" required hidden>
+                                        <input type="text" class="form-control" name="gmail_id" id="gmail_id" placeholder="Password" required hidden>
+                                        <input type="text" class="form-control" name="profile_url" id="profile_url" placeholder="Password" required hidden>
+                                        <input type="text" class="form-control" name="first_name" id="first_name" placeholder="Password" required hidden>
+                                        <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Password" required hidden>
+                                    </form>
+                                    <form method="post" id="registerForm" class="needs-validation" action="@ViewBag.ReturnUrl" autocomplete="off" novalidate>
+                                        <hr />
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text"><i class="fa fa-envelope"></i></div>
+                                                </div>
+                                                <input type="email" class="form-control" name="userEmail" id="userEmail" aria-describedby="emailHelp" placeholder="Enter Email Address..." required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text"><i class="fa fa-lock"></i></div>
+                                                </div>
+                                                <input type="password" class="form-control" name="userPassword" id="userPassword" placeholder="Password" required>
+                                            </div>
+                                        </div>
+                                        @Html.AntiForgeryToken()
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox small">
+                                                <input onchange="$(this).val($(this).is(':checked'));" type="checkbox" class="custom-control-input" id="customCheck" name="remeberMe" value="true">
+                                                <label class="custom-control-label" for="customCheck">Remember Me</label>
+                                            </div>
+                                        </div>
+                                        @if (ViewBag.IsLoggedIn != null)
+                                        {
+                                            if (ViewBag.IsLoggedIn)
+                                            {
+                                                <div class="alert alert-success" role="alert" name="loginMessage1">
+                                                    Successfully Logged In!
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="alert alert-danger" role="alert" name="loginMessage1">
+                                                    Login failed
+                                                </div>
+                                            }
+                                            ViewBag.IsLoggedIn = null;
+                                        }
+                                        <button id="submitButton" class="btn btn-primary btn-user btn-block" onsubmit="disableButton()">
+                                            Login
+                                        </button>
+                                    </form>
+                                    <hr>
+                                    <div class="text-center">
+                                        <a class="small" href="/Student/ForgotPassword">Forgot Password?</a>
+                                    </div>
+                                    <div class="text-center">
+                                        <a class="small" href="/Student/Join">Create an Account!</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-none d-lg-block" style="background-image:url(../../Images/bg_student_login.jpg);background-repeat: no-repeat;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="../../Scripts/vendor/jquery/jquery.min.js"></script>
+    <script src="../../Scripts/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../../Scripts/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="../Scripts/js/sb-admin-2.min.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+    <script>
+        function disableButton() {
+            var submitButton = document.getElementById("submitButton");
+            submitButton.disabled = true;
+            submitButton.innerText = 'Please wait'
+        }
+    </script>
+
+
+    <script src="../../Scripts/vendor/intl-tel-input-master/intlTelInput.min.js"></script>
+
+    <script src="../../Scripts/vendor/intl-tel-input-master/intlTelInput-jquery.min.js"></script>
+    <script src="../../Scripts/vendor/intl-tel-input-master/utils.js"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+    <script src="https://apis.google.com/js/api:client.js"></script>
+    <script>
+        var googleUser = {};
+        var startApp = function () {
+            gapi.load('auth2', function () {
+                // Retrieve the singleton for the GoogleAuth library and set up the client.
+                auth2 = gapi.auth2.init({
+                    client_id: '186541045153-5jotabtj8m629ff03re17cv6kq2vlsri.apps.googleusercontent.com',
+                    cookiepolicy: 'single_host_origin',
+                    // Request scopes in addition to 'profile' and 'email'
+                    //scope: 'additional_scope'
+                });
+                attachSignin(document.getElementById('customBtn'));
+            });
+        };
+
+        function attachSignin(element) {
+            auth2.attachClickHandler(element, {},
+                function (googleUser) {
+                    var profile = googleUser.getBasicProfile();
+                    
+                    $("#gmail_id").val(profile.getId());
+                    $("#user_id").val(profile.getEmail()); 
+                    $("#profile_url").val(profile.getImageUrl());
+                    $("#first_name").val(profile.getGivenName());
+                    $("#last_name").val(profile.getFamilyName());
+                    $("#gmailForm").submit();
+
+                }, function (error) {
+                });
+        }
+
+    </script>
+    <script>startApp();</script>
+</body>
+</html>
+

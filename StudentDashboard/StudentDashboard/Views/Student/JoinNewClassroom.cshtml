@@ -1,0 +1,439 @@
+﻿@{
+    ViewBag.Title = "Join new classroom";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<style type="text/css">
+    .classroom-assignemnts
+    {
+        width:100%;
+        border:10px;
+background: rgb(58,180,60);
+background: linear-gradient(90deg, rgba(58,180,60,1) 26%, rgba(253,29,29,1) 100%, rgba(252,176,69,1) 100%);
+        padding:3px;
+        margin-top:10px;
+        margin-bottom:10px;
+        color:#f8f9fccc !important;
+        border-radius: 8px; 
+    }
+    .classroom-assignemnts-submitted
+    {
+        width:100%;
+        border:10px;
+background: rgb(58,180,60);
+background: linear-gradient(130deg, rgba(58,180,60,1) 26%, rgba(226,210,210,1) 100%, rgba(252,176,69,1) 100%);
+        padding:3px;
+        margin-top:10px;
+        margin-bottom:10px;
+        color:#f8f9fccc !important;
+        border-radius: 8px; 
+    }
+</style>
+<style type="text/css">
+  .card-img-top{
+   /* max-width: 22.8rem !important;*/
+    max-height: 12.8rem !important;
+
+  
+}
+.card-bodys{
+    padding-top: 0.8rem;
+}
+.card-titles{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: black;
+    padding-bottom: 0;
+    margin-bottom: 5px;
+}
+.stars-outer {
+    display: inline-block;
+    color: #f8ce0b;
+    position: relative;
+    font-family: FontAwesome;
+    font-size: 20px;
+    letter-spacing: 5px;
+  }
+  
+  .stars-outer::before {
+    content: "\f006 \f006 \f006 \f006 \f006";
+  }
+  
+  .stars-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  .stars-inner::before {
+    content: "\f005 \f005 \f005 \f005 \f005";
+    color: #f8ce0b;
+  }
+
+  .stars-outer spam{
+      letter-spacing: normal;
+      color: black;
+  }
+  .stars-outer spam:nth-child(3){
+    letter-spacing: normal;
+    color: black;
+    opacity: 0.6;
+    font-size: 17px;
+}
+.badge-course-complexity{
+    position: absolute;
+    background-image: linear-gradient(to left,#FF8008,#FFC837);
+    color: white;
+    width: 6rem;
+    font-size: 1rem;
+    margin-top: 20px;
+    margin-left: 20px;
+    border-radius:20px;
+    text-align:center;
+}
+.card-texts{
+    color: black;
+    opacity: 0.8;
+    padding-top: 10px;
+}
+.enroll{
+    display: flex;
+    justify-content: flex-end;
+}
+#join-now-button {
+    color: #fff;
+    background-color: #09e176;
+    border-color: #09e176;
+    min-width: 9.2rem;
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    border-radius: 5px;
+    text-align: center;
+    justify-content: center;
+    justify-content: space-between;
+}
+#join-now-button:hover{
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+.course-details{
+    display: flex;
+    justify-content: space-between;
+}
+.course-details button{
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+.price{
+
+    font-size: 1.0rem;
+    font-weight: 600;
+    padding: .2rem 0 0;
+    color: #7a17eb;
+}
+.author{
+    display: flex;
+    margin-top: 0;
+}
+.author img{
+    width: 30px;
+    height: 30px;
+    border-radius: 20px;
+}
+.author div{
+    margin: 0.1rem 0 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 550;
+    color: black;
+    opacity: 0.8;       
+}
+.live{
+   margin-bottom: 0;
+    padding-bottom: 0;
+    border: 2px solid red;
+    color: red;
+    border-radius: 4px;
+    font-weight: bold;
+    padding: 0.2rem;
+    text-align: center;
+    float: right;
+    font-size: 0.8rem;
+}
+    .live-registration-open {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border: 2px solid #09e176;
+        color: #09e176;
+        border-radius: 4px;
+        font-weight: bold;
+        text-align: center;
+        float: right;
+        font-size: 0.9rem;
+        padding: 0.2rem;
+    }
+
+@@media only screen and (max-width: 600px) {
+    .parent{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    .live-class-cards{
+   /*     width: 21rem !important;
+        min-height: 29rem !important;*/
+    }
+    .card-img-top{
+/*        width: 20.8rem !important;*/
+    }
+}
+</style>
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Join new classroom</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Join new classroom</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="input-group p-1">
+        <input type="text" class="form-control" id="classroomSearchBox" placeholder="Search for classrooms..." aria-label="Search">
+        <div class="input-group-append">
+            <button class="btn btn-primary" onclick="initiliazeJoinNewClassroom()" type="button">
+                <i class="fas fa-search fa-sm"></i>
+            </button>
+        </div>
+    </div>
+    <hr class="ml-5 mr-5" />
+    <div id="spinner" class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+      <div class="row col-md-12 mt-4 parent" id="live-classes-container">
+     
+    </div>
+    <div class="alert alert-danger" id="footerAllClassroom" style="display:none">
+        No more classrooms founds
+    </div>
+    <button class="btn btn-block mh-100 btn-outline-primary" onclick="searchForClassrooms()">view more</button>
+    
+   
+    
+
+</div>
+<div class="modal fade" id="requestAssignemntAccess" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAndUpdateIndexTopicHeader">Please enter access code to continue</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetAddTopicModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" class="needs-validation" action="RequestClassroomAccess" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Assignment Id</label>
+                        <input type="text" name="assignment_id" class="form-control" id="assignmentModalId" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Access code</label>
+                        <input type="text" name="assignment_access_code" class="form-control" id="assignmentModalAccessCode" placeholder="Enter access code">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-block btn-outline-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetAddTopicModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="infoMessageFail">Course could not be joined</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-lg btn-outline-primary mr-lg-5 ml-lg-5" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade top" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 " id="myModalLabel"> <b>Course Details:</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9" id="classroomName"></dd>
+                    <dt class="col-sm-3">Description:</dt>
+                    <dd class="col-sm-9" id="classroomDescription"></dd>
+                    <dt class="col-sm-3">Created on:</dt>
+                    <dd class="col-sm-9" id="createdOn">
+                    </dd>
+                    <dt class="col-sm-3">Instructor:</dt>
+                    <dd class="col-sm-9" id="instructorName"></dd>
+                    
+                    <dt class="col-sm-3">No od enrollments:</dt>
+                    <dd class="col-sm-9" id="noOfStudentsJoined"></dd>
+                </dl>
+                <ul class="list-group z-depth-0" id="indexContainer"></ul>
+
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal" onclick="requestStartAssignment()">Close</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<script type="text/javascript">
+
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                initiliazeJoinNewClassroom();
+            }, false);
+        })();
+        function initiliazeJoinNewClassroom()
+        {
+            $("#live-classes-container").empty();
+            noOfRecordFectched = 0;
+            searchForClassrooms();
+        }
+</script>
+<script>
+    (function () {
+        'use strict';
+        var input = document.getElementById("classroomSearchBox");
+        input.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                initiliazeJoinNewClassroom();
+            }
+        });
+        $("#spinner").remove();
+    })();
+    var noOfRecordFectched=0;
+    function searchForClassrooms() {
+        var queryString = $("#classroomSearchBox").val();
+        if (queryString == null)
+        {
+            queryString = "";
+        }
+        var _data = {
+            "serach_request": queryString,
+            "no_of_record_fetched": noOfRecordFectched,
+            "max_rows_to_be_fecthed": 10
+        };
+        $.ajax({    
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/SearchClassroom",
+            data: JSON.stringify(_data),
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    var row = '';
+                    var classrooms = data.classrooms;
+                    noOfRecordFectched += classrooms.length;
+                    if (classrooms != null && classrooms.length > 0) {
+                        for (var i = 0; i < classrooms.length; i++) {
+                            lastClassroomIdFetched = classrooms[i].classroom_id;
+                            if (classrooms[i].is_joined == false) {
+                                if (classrooms[i].instructor_image == null)
+                                {
+                                    classrooms[i].instructor_image = "../../Images/profile1.png";
+                                }
+                                if (classrooms[i].classroom_image == null) {
+                                    classrooms[i].classroom_image = "../../Images/join_new_static_course_graphics.jpg";
+                                }
+                                var highlight = "Live Class";
+                                var highlightclass = "live-registration-open";
+                                if (classrooms[i].is_registration_closed == true) {
+                                    highlight = "Registration Closed";
+                                    highlightclass = "live";
+                                }
+                                row = '<div class="col-md-6 col-lg-4 col-sm-12 my-2 my_card">'
+                            + '<div class="card live-class-cards shadow-lg" >'
+                              //+ '<div class="badge-course-complexity">Beginner</div>'
+                              + '<img src="' + classrooms[i].classroom_image + '" class="card-img-top" alt="course">'
+                              + '<div class="card-body card-bodys">'
+                                
+                                    + '<div class="card-title card-titles">' + classrooms[i].classroom_name + '</div>'
+                                    
+                                    + '<p class="card-text card-texts">20+ LIVE Lessons | English | Guided Project</p>'
+                                    + '<div class="' + highlightclass+' ml-1">' + highlight + '</div>'
+                                + '<div class="stars-outer">'
+                                    + '<div class="stars-inner">'
+                                    + '</div>'
+                                  + '<spam >5</spam>'
+                                  + '<spam > (' + classrooms[i].no_of_enrollments + ') </spam>'
+
+                                    + '</div>'
+                                    + '<p class="price">Price: ' + classrooms[i].classroom_joining_fee + '</p>'
+                                
+                                + '<div class="author">'
+                                
+                                  + '<img src="' + classrooms[i].instructor_image + '"alt="prof" />'
+                                  + '<div>' + classrooms[i].instructor_name + '</div>'
+                                 + '</div>' 
+                                + '<div class="enroll">'
+                                     + '<div class="course-details">'
+                                    + '<a class="btn text-gray-500" href="PreviewClassroom?ClassroomId=' + classrooms[i].classroom_id + '">Details</a>'
+                                     + '</div>'
+                                    + '<a id="join-now-button" href="PreviewClassroom?ClassroomId=' + classrooms[i].classroom_id + '">Join now</a>'
+                                + '</div>'
+                          + '</div>'
+                        + '</div>'
+                      + '</div>';
+                                $("#live-classes-container").append(row);
+                               
+                            }
+
+                        }
+                       
+                    } else {
+                        $("#footerAllClassroom").show();
+                    }
+                    
+                }
+
+                $("#spinnerAllClassroom").remove();
+            }
+        });
+    }
+
+  
+</script>

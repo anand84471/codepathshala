@@ -1,0 +1,271 @@
+﻿@{
+    ViewBag.Title = "View all assignments";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<div class="container-fluid " id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Give new assignment</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Give new assignment</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="input-group pl-lg-5 pr-lg-5">
+        <input type="text" class="form-control" id="courseSearchBox" placeholder="Search for assignments..." aria-label="Search">
+        <div class="input-group-append">
+            <button class="btn btn-primary" onclick="searchForAssignments()" type="button">
+                <i class="fas fa-search fa-sm"></i>
+            </button>
+        </div>
+    </div>
+    <hr class="ml-5 mr-5" />
+    <div id="spinner" class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <div id="assignmentAccessController" class="card col-sm-6 ml-xl-5 shadow-lg ">
+        <div class="card-body">
+            <h5>Please enter assignment id and access code to continue</h5>
+            <form method="post" class="needs-validation" action="RequestAssignmentAccess" novalidate>
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Assignment Id</label>
+                    <input type="text" name="assignment_id" class="form-control" id="accessCode" placeholder="Enter id" required>
+                    <div class="invalid-feedback">
+                        Please enter assignment id
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Access code</label>
+                    <input type="text" name="assignment_access_code"  class="form-control" id="accessCode" placeholder="Enter access code" required>
+                    <div class="invalid-feedback">
+                        Please enter access code
+                    </div>
+                </div>
+                @if (ViewBag.IsAccessError != null)
+                {
+                    if (ViewBag.IsAccessError)
+                    {
+                        <div class="alert alert-danger" role="alert" name="loginMessage1">
+                            Access denied!
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-primary" role="alert" name="loginMessage1">
+                            Access granted
+                        </div>
+                    }
+                    ViewBag.IsLoggedIn = null;
+                }
+                <div class="form-group">
+                    <button type="submit" class="btn btn-block btn-outline-primary">Submit</button>
+                </div>
+            </form>
+           
+        </div>
+    </div>
+    <div class="row" id="coursesContainer">
+    </div>
+
+</div>
+<div class="modal fade" id="requestAssignemntAccess" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAndUpdateIndexTopicHeader">Please enter access code to continue</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetAddTopicModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" class="needs-validation" action="RequestAssignmentAccess" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label" >Assignment Id</label>
+                        <input type="text" name="assignment_id" class="form-control" id="assignmentModalId" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Access code</label>
+                        <input type="text" name="assignment_access_code" class="form-control" id="assignmentModalAccessCode"  placeholder="Enter access code">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-block btn-outline-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetAddTopicModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="infoMessageFail">Course could not be joined</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade top" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 " id="myModalLabel"> <b>Course Details:</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9" id="courseName"></dd>
+                    <dt class="col-sm-3">Description:</dt>
+                    <dd class="col-sm-9" id="courseDescription"></dd>
+                    <dt class="col-sm-3">Created on:</dt>
+                    <dd class="col-sm-9" id="insertDate">
+                    </dd>
+                    <dt class="col-sm-3">Assignments:</dt>
+                    <dd class="col-sm-9" id="assignments"></dd>
+                    <dt class="col-sm-3">Tests:</dt>
+                    <dd class="col-sm-9" id="tests"></dd>
+                    <dt class="col-sm-3">Indexes:</dt>
+                    <dd class="col-sm-9" id="indexes"></dd>
+                </dl>
+                <ul class="list-group z-depth-0" id="indexContainer"></ul>
+
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal" onclick="requestStartAssignment()">Close</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<script type="text/javascript">
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form)
+                {
+                    form.addEventListener('submit', function (event)
+                    {
+                        if (form.checkValidity() === false ) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                            form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+        function requestStartAssignment() {
+            $.ajax({
+                type: "POST",
+                data: JSON.stringify(_data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/api/v1/instructor/contact",
+                success: function (data) {
+                    if (data != null && data.response_code == 1) {
+                        $("#successResponseMessage").text("response received. we will contact you soon");
+                        $("#successDelete").modal('show');
+                    }
+                    else {
+                        $("#errorAlertMessageBody").text("Form submission failed. Please try again");
+                        $("#errorAlertHeader").modal('show');
+                    }
+                }
+            });
+        }
+</script>
+<script>
+    (function () {
+        'use strict';
+        var input = document.getElementById("courseSearchBox");
+        input.addEventListener("keyup", function (event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                searchForAssignments();
+            }
+        });
+        $("#spinner").remove();
+        //onpageshow = searchForAssignments();
+    })();
+    function searchForAssignments() {
+        $("#assignmentAccessController").remove();
+        debugger
+        var _data =
+            {
+                "key": $("#courseSearchBox").val()
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/SearchAssignments",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var assignments = data.assignments;
+                    var coursesContainer = $("#coursesContainer");
+                    var rows='';
+                    for (var i = 0; i < assignments.length; i++) {
+                        rows+=''
+                        +'<div class="col-xl-3 col-md-6 mb-4">'
+                            +'<div class="card shadow border-left-success  ml-2 mr-2 mb-2">'
+                                +'<div class="card-body text-center">'
+                                   + ' <h4 class="card-title font-weight-bold text-info">' + assignments[i].name + '</h4>'
+                                   + ' <h5 class="card-text font-weight-bold ">Created on:</h5><p>' + assignments[i].creation_date + '</p>'
+                                   + ' <p class="text mr-3"><i class="fas fa-fw fa-list mr-2"></i><b>No of questions :</b> ' + assignments[i].no_of_questions + '</p>'
+                                   //+ ' <p class="text mr-3"><i class="fas fa-fw fa-book mr-2"></i><b>Courses Created:</b> ' + assignments[i].no_of_course + '</p>'
+                                    +'<ul class="list-unstyled list-inline rating mb-1">'
+                                       //+' <li class="list-inline-item mr-2"><button  class="btn btn-outline-primary">Profile</button></li>'
+                                        + '<li class="list-inline-item mr-0"><button  class="btn btn-dark mb-1" onclick=joinAssignment(' + assignments[i].assignment_id + ')>Start</button></li>'
+                                    +'</ul>'
+                                +'</div>'
+                            +'</div>'
+                         +'</div>';
+                    }
+                    coursesContainer.html(rows);
+                    $("#spinner").remove();
+                }
+                else {
+                    $("#spinner").remove();
+                }
+            }
+        });
+    }
+    function joinAssignment(id) {
+        $('#accordionSidebar').addClass("toggled");
+        $("#requestAssignemntAccess").modal("show");
+        $("#assignmentModalId").val(id);
+    }
+
+</script>

@@ -1,0 +1,523 @@
+﻿@{
+    ViewBag.Title = "View Test";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">View Test</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callViewAllClassroom()">Classrooms</a></li>
+                <li class="breadcrumb-item"><a href="ClassroomDashboard?id=@ViewBag.ClassroomId">@ViewBag.ClassroomId/Tests</a></li>
+                <li class="breadcrumb-item active" aria-current="page" id="breadcumbCurrentName"></li>
+            </ol>
+        </nav>
+    </div>
+
+    <div id="testDetailsContainer"></div>
+</div>
+<div class="modal fade" id="editTestMcqQuestionModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTestMcqQuestionModelHeader">Edit question</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick=" refreshMcqTestModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="test-question" class="col-form-label">Question statement:</label>
+                        <input type="text" class="form-control" id="test-question">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-option1" class="col-form-label">Option 1:</label>
+                        <input type="text" class="form-control" id="test-option1">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-option2" class="col-form-label">Option 2:</label>
+                        <input type="text" class="form-control" id="test-option2">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-option3" class="col-form-label">Option 3:</label>
+                        <input type="text" class="form-control" id="test-option3">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-option4" class="col-form-label">Option 4:</label>
+                        <input type="text" class="form-control" id="test-option4">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-correctOption">Correct option</label>
+                        <select id="test-correctOption" class="form-control">
+                            <option selected>Choose...</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="test-time" class="col-form-label">Time for question(in sec):</label>
+                        <input type="text" class="form-control" id="test-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-marks" class="col-form-label">Marks For question:</label>
+                        <input type="text" class="form-control" id="test-marks">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refreshMcqTestModal()">Close</button>
+                <button type="button" id="editTestMcqQuestionModelSubmitButton" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="successDelete" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-success modal-content">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoTitle">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-success">
+                    <h3 id="successResponseMessage">deleted successfully</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refreshTestDetails()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editTopicModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTopicModalHeader">Edit Test</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="refreshTestDetailsModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label" id="ab-topicNameLabel">Test Name:</label>
+                        <input type="text" class="form-control" id="ab-topicName">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label" id="ab-topicDescriptionLabel">Test Description:</label>
+                        <textarea class="form-control" id="ab_topicDescription"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refreshTestDetailsModal()">Close</button>
+                <button type="button" class="btn btn-primary" id="editTopicModalSubmitButton">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Confirm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="confirmMessage">Are you sure to want to delete the topic?</h3>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmDeletButtonForCourse" type="button" class="btn btn-primary" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="errorAlertHeader" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="errorAlertMessageBody">Course could not be deleted</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = getTestDetails(@ViewBag.TestId);
+    })();
+    function refreshTestDetails()
+    {
+       getTestDetails(@ViewBag.TestId);
+    }
+    var testName;
+    var testDescription;
+    var currentTestQuestions = {};
+    function copyText()
+    {
+        var copyText = document.getElementById("test-url");
+        copyText.select();
+
+        document.execCommand("copy");
+    }
+    function performPostGetTestDetailsAction(status,id)
+    {
+        debugger
+        if(status!="active")
+        {
+            $("#viewtestactions").append(''
+                + '<a class="dropdown-item" href="#" onclick=requestEditTestDeails(' + id + ')>Edit Test</a>'
+                + '<a class="dropdown-item" href="#" onclick=requestDeleteTest(' + id + ')>Delete Test</a>'
+                + '<a class="dropdown-item" href="#" onclick=activateTest(' + id + ')>Activate Test</a>'
+                + '<a class="dropdown-item" href="#" onclick=requestAddMcqTestQuestion(' + id + ')>Add Question</a>'
+                + '<a class="dropdown-item" href="#" onclick=requestAddMcqTestQuestion(' + id + ')>Add Question</a>'
+                         );
+            $("#testStatus").append('<button class="btn btn-sm border btn-primary ml-2" href="#" onclick=activateTest(' + id + ')>Activate Test</button>');
+        }
+        else {
+            $("#viewtestactions").append(''
+
+               + '<a class="dropdown-item" href="#" onclick=callTestSubmissions(' + id + ')>View submissions</a>'
+               + '<a class="dropdown-item" href="#" onclick=requestDeleteTest(' + id + ')>Delete Test</a>'
+                );
+            $("#test-details").append('<div class="card">'
+            +'<p>Share url:<input type="text" readonly="readonly" id="test-url" value="something" /><span><button class="btn-sm btn-primary ml-2" onclick="copyText()">copy<i class="ml-1 fa fa-copy" ></i></button></span></p>'
+            +'</div>');
+        }
+    }
+    function getTestDetails(id) {
+        debugger
+        $.ajax({
+
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/FetchTestDetails?id=".concat(id),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    debugger
+                    var questionDetails = data.mcq_questions;
+                    testName = data.test_name;
+                    testDescription = data.test_description;
+                    $("#breadcumbCurrentName").text(data.test_name);
+                    var assignmentHtml = '<div class="card shadow mb-4 border-bottom-primary">'
+                                + '<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">'
+                                    + '<h6 class="m-0 font-weight-bold text-primary">Test Details</h6>'
+                                     + '<div class="dropdown no-arrow">'
+                                         + '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+                                            + '<i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>'
+                                         + '</a>'
+                                         + '<div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink" id="viewtestactions">'
+
+                                         + '</div>'
+                                     + '</div>'
+                                 + '</div>'
+                                + '<div class="card-body">'
+                    assignmentHtml += '<dl class="row ml-3" id="test-details">'
+                          + '<dt class="col-sm-3">Test name:</dt><dd class="col-sm-9">' + data.test_name + '</dd>'
+                          + '<dt class="col-sm-3">Test description:</dt><dd class="col-sm-9">' + data.test_description + '</dd>'
+                          + '<dt class="col-sm-3">Test Creation Date:</dt><dd class="col-sm-9">' + data.test_creation_datetime + '</dd>'
+                          + '<dt class="col-sm-3">Test Updat Date:</dt><dd class="col-sm-9">' + data.test_updation_datetime + '</dd>'
+                          + '<dt class="col-sm-3">Test Type:</dt><dd class="col-sm-9">Mcq</dd>'
+                          + '<dt class="col-sm-3">Test status:</dt><dd class="col-sm-9" id="testStatus">' + data.status + '</dd>'
+                          + '</dl></div><h2 class="ml-3">Questions</h2>';
+                    assignmentHtml += '<div class="card-body" style="padding:0">'
+                                            + '<div class="table-responsive">'
+                                                + '<table id="coursesTable" class="table table-hover">'
+                                                    + '<thead class="thead-dark">'
+                                                        + '<tr>'
+                                                            + '<th scope="col">S.No</th>'
+                                                            + '<th scope="col">Question Statement</th>'
+                                                            + '<th scope="col">Option1</th>'
+                                                            + '<th scope="col">Option2</th>'
+                                                            + '<th scope="col">Option3</th>'
+                                                            + '<th scope="col">Option4</th>'
+                                                            + '<th scope="col">Correct Option</th>'
+                                                            + '<th scope="col">Time(sec)</th>'
+                                                            + '<th scope="col">Marks</th>'
+                                                            + '<th scope="col" class="hideable-test-content">Actions</th>'
+                                                        + '</tr>'
+                                                    + '</thead>'
+                                                    + '<tbody>';
+                    var rows = '';
+                    if (questionDetails != null) {
+                        for (var i = 0; i < questionDetails.length; i++) {
+                            currentTestQuestions[questionDetails[i].question_id] = questionDetails[i];
+                            var sNo = i + 1;
+                            rows += '<tr><th scope="row" >' + sNo + '</th>'
+                            + '<td>' + questionDetails[i].question_statement + '</td><td>' + questionDetails[i].option1 + '</td><td>' + questionDetails[i].option2 + '</td><td>' + questionDetails[i].option3 + '</td><td>' + questionDetails[i].option4 + '</td><td>' + questionDetails[i].correct_option + '</td>'
+                            + '<td>' + questionDetails[i].question_time_in_seconds + '</td><td>' + questionDetails[i].marks + '</td>'
+                            + '<td class="hideable-test-content">'
+                                + '<button type="button" class="btn btn-link" class="list-group-horizontal"  onclick="requestUpdateMcqTestQuestion(' + questionDetails[i].question_id + ')">'
+                                    + '<i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                                + '</button>'
+                                + '<button type="button" class="btn btn-link" class="list-group-horizontal" onclick="requestDeleteMcqTestQuestion(' + questionDetails[i].question_id + ')" >'
+                                    + '<i class="fas fa-trash fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                                + '</button>'
+                            + '</td>'
+                            + '</tr>';
+                        }
+                    }
+                    assignmentHtml += rows;
+                    assignmentHtml += '</tbody></table></div></div>';
+                }
+                $("#testDetailsContainer").html(assignmentHtml);
+                if (data.status != "active") {
+                    $("#viewtestactions").append(''
+                        + '<a class="dropdown-item" href="#" onclick=requestEditTestDeails(' + id + ')>Edit Test</a>'
+                        + '<a class="dropdown-item" href="#" onclick=requestDeleteTest(' + id + ')>Delete Test</a>'
+                        + '<a class="dropdown-item" href="#" onclick=activateTest(' + id + ')>Activate Test</a>'
+                        + '<a class="dropdown-item" href="#" onclick=requestAddMcqTestQuestion(' + id + ')>Add Question</a>'
+
+                                 );
+                    $("#testStatus").append('<button class="btn btn-sm border btn-primary ml-2" href="#" onclick=activateTest(' + id + ')>Activate Test</button>');
+                }
+                else {
+                    $("#viewtestactions").append(''
+
+                       + '<a class="dropdown-item" href="#" onclick=callViewTestSubmissions(' + id + ')>View submissions</a>'
+
+                        );
+                    $("#test-details").append('<div class="card-body p-2">'
+                    + '<p>Share url: <input type="text" readonly="readonly" id="test-url" value="' + data.tiny_url + '" /><span><button class="btn-sm btn-primary ml-2" onclick="copyText()">copy<i class="ml-1 fa fa-copy" ></i></button></span></p>'
+                    + '</div>');
+                    $(".hideable-test-content").remove();
+
+                }
+            }
+        });
+    }
+    function requestEditTestDeails(TestId) {
+        $("#editTopicModalHeader").text('Update Test Details');
+        $("#ab-topicNameLabel").text('Enter Test Name');
+        $("#ab-topicDescriptionLabel").text('Enter Test Description');
+        $("#ab-topicName").val(testName);
+        $("#ab_topicDescription").val(testDescription);
+        $("#editTopicModalSubmitButton").attr("onclick", "editTestDetails(" + TestId + ")");
+        $("#editTopicModal").modal('show');
+    }
+    function refreshTestDetailsModal()
+    {
+        $("#ab-topicName").val("");
+        $("#ab_topicDescription").val("");
+    }
+    function editTestDetails(TestId) {
+        debugger
+        var _data = {
+            "test_id": TestId,
+            "test_name": $("#ab-topicName").val(),
+            "test_description": $("#ab_topicDescription").val(),
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/UpdateTestDetails",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("test updated successfully");
+                    requestEditTestDeails();
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("test details could not be updated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestDeleteTest(TestId) {
+        $("#confirmDelete").modal('show');
+        $("#confirmMessage").text("Are you sure to want to delete the test?");
+        $("#confirmDeletButtonForCourse").attr("onclick", "DeleteTest(" + TestId + ")");
+    }
+    function DeleteTest(TestId) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/DeleteTestOfCourse?id=".concat(TestId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("test deleted successfully");
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("test could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestUpdateMcqTestQuestion(QuestionId)
+    {
+        $("#editTestMcqQuestionModel").modal('dispose');
+        $("#editTestMcqQuestionModelHeader").text("Update question");
+        $("#editTestMcqQuestionModelSubmitButton").text("Update");
+        $("#editTestMcqQuestionModelSubmitButton").attr("onclick", "updateMcqTestQuestion(" + QuestionId + ")");
+        preSetUpdateQuestionModal(QuestionId);
+        $("#editTestMcqQuestionModel").modal('show');
+    }
+    function updateMcqTestQuestion(QuestionId) {
+        var _data = extractDataFromAddMcqTestQuestionModel();
+        _data["test_id"] = "@ViewBag.TestId";
+        _data["question_id"] = QuestionId;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/UpdateMcqQuestionTestDetails",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("question updated successfully");
+                    refreshTestDetails();
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("question could not be updated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+
+    function requestAddMcqTestQuestion(TestId) {
+        debugger
+        $("#editTestMcqQuestionModel").modal('dispose');
+        $("#editTestMcqQuestionModelHeader").text("Add question");
+        $("#editTestMcqQuestionModelSubmitButton").text("Submit");
+        $("#editTestMcqQuestionModelSubmitButton").attr("onclick", "addMcqTestQuestion(" + TestId + ")");
+        $("#editTestMcqQuestionModel").modal('show');
+    }
+    function extractDataFromAddMcqTestQuestionModel() {
+        var _data = {
+            "question_statement": $("#test-question").val(),
+            "option1": $("#test-option1").val(),
+            "option2": $("#test-option2").val(),
+            "option3": $("#test-option3").val(),
+            "option4": $("#test-option4").val(),
+            "correct_option": parseInt($("#test-correctOption").val()),
+            "question_time_in_seconds": $("#test-time").val(),
+            "marks": $("#test-marks").val(),
+        }
+        return _data;
+    }
+    function preSetUpdateQuestionModal(QuestionId)
+    {
+        $("#test-question").val(currentTestQuestions[QuestionId].question_statement);
+        $("#test-option1").val(currentTestQuestions[QuestionId].option1);
+        $("#test-option2").val(currentTestQuestions[QuestionId].option2);
+        $("#test-option3").val(currentTestQuestions[QuestionId].option3);
+        $("#test-option4").val(currentTestQuestions[QuestionId].option4);
+        $("#test-correctOption").val(currentTestQuestions[QuestionId].correct_option);
+        $("#test-time").val(currentTestQuestions[QuestionId].question_time_in_seconds);
+        $("#test-marks").val(currentTestQuestions[QuestionId].marks);
+    }
+    function refreshMcqTestModal()
+    {
+        $("#test-question").val("");
+        $("#test-option1").val("");
+        $("#test-option2").val("");
+        $("#test-option3").val("");
+        $("#test-option4").val("");
+        $("#test-correctOption").val("");
+        $("#test-time").val("");
+        $("#test-marks").val("");
+    }
+    function addMcqTestQuestion(TestId) {
+        var _data = extractDataFromAddMcqTestQuestionModel();
+        _data["test_id"] = TestId;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/AddNewMcqTestQuestion",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("question added successfully");
+
+                    refreshTestDetails();
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("question could not be added");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestDeleteMcqTestQuestion(QuestionId) {
+        $("#confirmDelete").modal('dispose');
+        $("#confirmDeletButtonForCourse").attr("onclick", "deleteMcqTestQuestion(" + QuestionId + ")");
+        $("#confirmMessage").text("Are you sure to want to delete the question");
+        $("#confirmDelete").modal('show');
+    }
+    function deleteMcqTestQuestion(QuestionId) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/DeleteMcqTestQuestion?id=".concat(QuestionId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("question deleted successfully");
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("question could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function activateTest(id)
+    {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/activatetest?testid=".concat(id),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("test activated successfully");
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("test could not be activated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+</script>

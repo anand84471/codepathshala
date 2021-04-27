@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Create Meeting";
+    Layout = "~/Views/Shared/_AboutLayout.cshtml";
+}
+@using StudentDashboard.Models.Instructor;
+@model JitsiMeetingModal
+<script src="../../Scripts/vendor/jquery/jquery.min.js"></script>
+<script src='https://goodpathshala.com/external_api.js'></script>
+<div id="meet"></div>
+<section class="ftco-section ftco-no-pt ftc-no-pb"  style="background-image: url(../Images/classroom-bg.png);" data-stellar-background-ratio="0.5">
+    <div class="container-fluid">
+        <div class="text-center heading-section heading-section-black ftco-animate right">
+            <h2 class="mb-2"><span>Take your live class with</span><br> ReadMyCourse Classroom</h2>
+            
+        </div>
+        
+        <div class="row">
+            
+            <div class="col-md-6 py-5">
+                <div class="text px-4 ftco-animate">
+                   
+                    <h5 class="text-center">
+                        Secure, fully-loaded, free and easy to use online class to continue your
+                        teaching by taking e-learning classes, assignments and assessments. Take your
+                        online class with Readmycourse platform now.
+                    </h5>
+                  
+                    @*<p><a href="#" class="btn btn-secondary px-4 py-3">Read More</a></p>*@
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-center heading-section heading-section-black ftco-animate">
+                   
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/pOPTEVX9uzk" allowfullscreen></iframe>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ftco-section ftco-counter img" id="section-counter"  style="padding-top:2rem;" data-stellar-background-ratio="0.5">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-2">
+            <div class="col-md-8 text-center heading-section heading-section-black ftco-animate">
+                <h2 class="mb-4">Features provided by <span><br>ReadMyCourse Classroom</span></h2>
+               
+            </div>
+        </div>
+        <div class="row d-md-flex align-items-center justify-content-center">
+            <div class="col-lg-10">
+                <h1 class="mb-4"></h1>
+                <ol class="list-group list-group-flush list-unstyled">
+                    <li class="h4"><span class="fa fa-2x fa-check text-success"></span>Take your live class</li>
+                    <li class="h4"><span class="fa fa-2x fa-check text-success"></span>Chat with students</li>
+                    <li class="h4"><span class="fa fa-2x fa-check text-success"></span>Take or schedule online test</li>
+                    <li class="h4"><span class="fa fa-2x fa-check text-success"></span>Assign assignments</li>
+                    <li class="h4"><span class="fa fa-2x fa-check text-success"></span>Add study materails.</li>
+                    <li class="h4"><span class="fa fa-2x fa-check text-success"></span>Share screen.</li>
+                </ol>
+            </div>
+            <div> <h2><a class="btn btn-primary btn-lg mr-4" href="/Instructor/CreateClassroom">Join new classroom</a></h2></div>
+            <div> <h2><a class="btn btn-primary btn-lg mr-4" href="/Instructor/CreateClassroom">Create Classroom</a></h2></div>
+            <div> <h2><a class="btn btn-primary btn-lg" href="https://play.google.com/store/apps/details?id=com.readmycourse.android" target="_blank">Download app</a></h2></div>
+
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    (function () {
+        'use strict'
+
+        onpageshow = setActiveLink();
+    })();
+    function setActiveLink()
+    {
+        $("#createMeetingMenu").addClass("active");
+        $("#homeMenu").removeClass("active");
+    }
+    
+</script>

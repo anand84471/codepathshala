@@ -1,0 +1,185 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+@using StudentDashboard.Models.Student;
+@model StudentHomeModal
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+        @*<a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>*@
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Live classes joined</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iLiveClassesJoined</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-play-circle fa-2x text-gray-300"></i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Courses Joined</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iCoursesJoined</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-graduation-cap fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Courses Completed</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">@Model.m_iCoursesCompleted</div>
+                                </div>
+                                <div class="col">
+                                    <div class="progress progress-sm mr-2">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Instructors joined</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iInstructorsJoined</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        
+        <!-- Pending Requests Card Example -->
+        
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4 border-bottom-success ">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">My live classes</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.m_lsClassrooms != null)
+                    {
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Classroom Name</th>
+                                    <th scope="col">Joining Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var classrooms in Model.m_lsClassrooms)
+                                {
+                                    <tr class="">
+                                        <td class="justify-content-between font-weight-bolder p-2"><span class="fa fa-2x text-primary fa-play-circle p-2"></span><a href="./ViewClassroom?classroom_id=@classrooms.m_llClassroomId">@classrooms.m_strClassroomName</a></td>
+                                        <td>@classrooms.m_strClassroomJoiningDate</td>
+                                    </tr>
+                                }
+                                
+                            </tbody>
+                        </table>
+                        <a class="btn  btn-outline-primary font-weight-bolder text-center" href="./MyClassrooms">explore more</a>
+                    }
+                    else
+                    {
+                        <div class="text-center" >
+                            <h4 class="text-gray-500 text-info">You have not joined any live classes.</h4>
+                            <a class="btn btn-outline-primary text-center p-2 m-2" href="./JoinNewClassroom">Join free live class</a>
+                            
+                            <img class="img" src="~/Images/join_new_live_class_graphics.svg" style="max-height:300px" />
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4" style="display:none;">
+            <div class="card shadow mb-4 border-bottom-success ">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">My courses</h6>
+                </div>
+                <div class="card-body">
+                   @if (Model.m_lsCourses != null)
+                   {
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Course Name</th>
+                                <th scope="col">Joining Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var courses in Model.m_lsCourses)
+                            {
+                                <tr>
+                                    <td class="font-weight-bolder p-2"><span class="fa fa-2x fa-book p-2 text-primary"></span><a href="./LearnCourse?id=@courses.m_llCourseId">@courses.m_strCourseName</a></td>
+                                    <td>@courses.m_strJoiningDate</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a class="btn  btn-outline-primary font-weight-bolder text-center" href="./MyCourses">explore more</a>
+                   }
+                   else
+                   {
+                    <div class="text-center" style="max-height:400px">
+                        <h4 class="text-gray-500 text-info">You have not joined any course.</h4>
+                        <a class="btn btn-outline-primary text-center p-2 m-2" href="./JoinNewCourse">Join free course</a>
+                        <img class="img" src="~/Images/join_new_static_course_graphics.svg" style="max-height:300px" />
+                    </div>
+
+                   }
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    (function () {
+        'use strict';
+        window.localStorage.setItem('jwttoken', "@ViewBag.Token");
+        if ("@ViewBag.redirect_url" != "null" &&"@ViewBag.redirect_url" != "" ) {
+            location.href = "@ViewBag.redirect_url";
+        }
+    })();
+    </script>

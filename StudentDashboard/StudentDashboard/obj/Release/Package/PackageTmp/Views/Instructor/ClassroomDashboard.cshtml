@@ -1,0 +1,3064 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+@using StudentDashboard.Models.Instructor;
+@model ClassRoomModal
+<style type="text/css">
+    .classroom-background-container {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .classroom-background-image {
+        max-height: 300px;
+        height: 300px;
+        z-index: -1;
+    }
+
+    .classroom-background-mask {
+        width: 100%;
+        border: 10px;
+        z-index: 10;
+        background: rgb(3,0,237);
+        background: linear-gradient(360deg, rgba(3,0,237,0.969625350140056) 5%, rgba(11,33,196,0.7063200280112045) 77%);
+        backdrop-filter: blur(8px);
+        padding: 20px;
+        margin-top: 140px;
+        margin-bottom: 20px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+
+    .classroom-background {
+        padding-top: 10px;
+        align-items: center;
+        overflow-y: no-display;
+        background: #f8f8f8;
+        margin-bottom: 10px;
+        text-align: center;
+        border: 3px solid #eee;
+        box-shadow: 2px;
+        border-radius: 8px;
+    }
+
+        .classroom-background:hover {
+            border: 2px solid red;
+        }
+
+    .upload-icon {
+        font-size: 72px;
+        align-items: center;
+    }
+
+    .ui-input-container {
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    .ui-input-container-message {
+        background-color: #fff;
+        border-radius: 4px;
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+
+    .ui-form-input-container {
+        position: relative;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .ui-input-container h2 {
+        font-family: sans-serif;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .ui-form-input {
+        padding: 13px 15px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 100%;
+        max-height: 200px;
+    }
+
+    .ui-form-chat {
+        padding: 13px 15px;
+        margin-bottom: 0px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 70%;
+        float: right;
+    }
+
+    .ui-form-chat-instructor {
+        padding: 13px 8px;
+        margin-bottom: 0px;
+        border-radius: 8px;
+        background-color: #757575;
+        color: #fafafa;
+        outline: 0;
+        width: 70%;
+        float: left;
+    }
+
+    .time_date {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #747474;
+        display: block;
+        font-size: 12px;
+        width: 70%;
+        float: right;
+    }
+
+    .time_date_instructor {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #747474;
+        display: block;
+        font-size: 12px;
+        width: 70%;
+        float: left;
+    }
+
+    .messge-sender {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: rgba(3,0,237,0.969625350140056);
+        display: block;
+        font-size: 18px;
+        width: 70%;
+        float: left;
+    }
+
+    #zmmtg-root {
+        background-color: aquamarine;
+    }
+
+    .classroom-nav li a:hover {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a:active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a.active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav a.active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a active {
+        border-bottom: 3px solid red;
+    }
+
+    @@media only screen and (max-width: 600px) {
+        .container-classroom-section {
+            padding-left: 0rem;
+            padding-right: 0rem;
+        }
+    }
+
+    
+
+ .classroom-time{
+     width:60px;
+ }
+</style>
+<div class="container-classroom-section container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Classroom Dashboard</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callViewAllClassroom()">Classrooms</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@Model.m_strClassRoomName</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-lg-12">
+        @if (Model.m_strClassroomStatus == "active")
+        {
+            <nav class="navbar navbar-expand-lg  navbar-light font-weight-bold">
+                @*<a class="navbar-brand" href="#">@Model.m_strClassRoomName</a>*@
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto classroom-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#navHome" onclick="viewClassroomHome()"><span class="fa fa-home"></span> Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#navPreviousMeetings" onclick="showPreviousMeetings()"><span class="fa fa-play-circle"></span> Live class <span class="sr-only">(current)</span></a>
+                        </li>
+                        @*<li class="nav-item">
+                                <a class="nav-link" href="#navClassroomPost" onclick="viewClassroomPosts()">Posts<span class="sr-only">(current)</span></a>
+                            </li>*@
+                        <li class="nav-item">
+                            <a class="nav-link" href="#navMessagesContainer" onclick="showMessages()"><span class="fa fa-envelope"></span> Messages</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#navStudentsJoined" onclick="showStudentsJoined()"><span class="fa fa-users"></span> Students Joined</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-pencil-square"></span> Assignments
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="CreateClassroomAssignment?id=@Model.m_llClassRoomId"><span class="fa fa-plus-circle"></span>  Add new assignment</a>
+                                <a class="dropdown-item" href="#navAllAssignments" onclick="viewAllClassroomAssignments()"><span class="fa fa-list"></span> View all assignment</a>
+
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-clock-o"></span> Tests
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="CreateClassroomTest?id=@Model.m_llClassRoomId"><span class="fa fa-plus-circle"></span>  Add new test</a>
+                                <a class="dropdown-item" href="#navAllTests" onclick="viewAllClassroomTests()"><span class="fa fa-list"></span> View all tests</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-paperclip"></span> Study Materials
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#navAddnewAttachment" onclick="viewAddNewAttachment()"><span class="fa fa-plus-circle"></span> Add new study material</a>
+                                <a class="dropdown-item" href="#navAllAttachments" onclick="viewAllClassroomAttachments()"><span class="fa fa-list"></span> View all study materials</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-cogs"></span> Settings
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#navUpdateDetails" onclick="showUpdateMeeting()"><span class="fa fa-cog"></span> Update Details</a>
+                                <a class="dropdown-item" href="#navUpdateDetails" onclick="showInstructorsOfClassrooms()"><span class="fa fa-cog"></span> Instructors</a>
+                                <a class="dropdown-item" href="#navUpdateSchedulerDetails" onclick="showUpdateScheduleDetails()"><span class="fa fa-calendar"></span> Update Classroom Time-Table</a>
+                                @*<a class="dropdown-item" href="#">Delete Classroom</a>*@
+                                <a class="dropdown-item" href="#updateSyllabusDiv" onclick="viewUpdateClassroomSyallabus()"><span class="fa fa-pencil"></span> Update syllabus</a>
+                                <a class="dropdown-item" href="#sendClassroomNotification" onclick="sendClassroomNotification()"><span class="fa fa-paper-plane"></span> Send Notification</a>
+                                <a class="dropdown-item" href="#shareModal" onclick="viewClassroomSharingDetails()"><span class="fa fa-share"></span> Share classroom</a>
+
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" onclick="callHome()"><span class="fas fa-sign-out-alt"></span> Exit classroom</a>
+                            </div>
+                        </li>
+                    </ul>
+                    @*<form class="form-inline my-2 my-lg-0">
+                            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>*@
+                </div>
+            </nav>
+        }
+    </div>
+    <div class="row" id="classroomDetails">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4 border-bottom-success ">
+                @if (Model.m_strBackGroundImageUrl == null)
+                {
+                    Model.m_strBackGroundImageUrl = "../../Images/course-3.jpg";
+                }
+
+                <div class="card-body classroom-background-container" style="background-image:url(@Model.m_strBackGroundImageUrl)">
+                    <div class="classroom-background-mask">
+                        <h1 class="card-text font-weight-bold text-gray-100 ">@Model.m_strClassRoomName </h1>
+                        <label class="mb-0 font-weight-bold">
+                            @Model.m_strClassRoomDescription
+                        </label>
+                        <p class="text mr-3  text-white" id="courseCreationDate"><b>Creation date:</b> @Model.m_strCreationDate </p>
+                        <span class="badge badge-pill badge-light" id="successbadge">Status: @Model.m_strClassroomStatus</span>
+
+                        @if (Model.m_strClassroomStatus == "created")
+                        {
+                            <span><button class="btn btn-outline-light custom-green text-white font-weight-bold" id="enrollNowButton" onclick="requestActivateClassroom()">Activate</button></span>
+                        }
+                        else
+                        {
+
+                        }
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content Row -->
+    <div class="row" id="classroomContaintProgressDetails">
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-1">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Live classes</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfMeetings</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-play-circle fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Assignments added</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfAssignments</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-pen fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tests added</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfTests</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-pen fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pending Requests Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Students joined</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfStudentsJoined</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 mb-2" id="navHome">
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                <div class="add-items-container p-3 text-center ">
+                    <div class="control-buttons">
+                        @*<button class="btn btn-circle bg-primary text-white" onclick="requestUploadVideo()" data-toggle="tooltip" data-placement="top" title="Upload video"><span><i class="fa fa-file"></i></span></button>*@
+                        @*<button class="btn btn-circle bg-primary text-white" onclick="callAddNewAssignment()" data-toggle="tooltip" data-placement="top" title="Add assignment"><i class="fa fa-pen"></i></button>
+                            <button class="btn btn-circle bg-primary text-white" data-toggle="tooltip" data-placement="top" title="Add test"><span><i class="fa fa-clipboard-list" ></i></span></button>*@
+                        @if (Model.m_strClassroomStatus == "active")
+                        {
+                            <a class="btn  bg-primary text-white" href="#" onclick="requestStartMeeting()" data-toggle="tooltip" data-placement="top" title="Start live class now"><span><i class="fa fa-play-circle"></i></span> Start Live Class</a>
+
+                        }
+                        else
+                        {
+                            <h1>Please activate the classroom to start any action.</h1>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div id="secctionTest"></div>
+        </div>
+    </div>
+    @if (Model.m_strClassroomStatus == "active")
+    {
+        <div class="col-lg-12 mb-2" id="navUpdateDetails" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Update classroom details</div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Name of Classroom</label>
+                        <div class="col-sm-8">
+                            <input onchange="validateInputField(this)" type="text" name="courseName" class="form-control" id="classroomName" placeholder="Enter name of classroom" value="@Model.m_strClassRoomName">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Description of Classroom</label>
+                        <div class="col-sm-8">
+                            <textarea type="text" onchange="validateInputField(this)" placeholder="Enter classroom description" id="classroomDescription" name="courseContents" rows="2" class="form-control md-textarea">@Model.m_strClassRoomDescription</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">No of demo classes</label>
+                        <div class="col-sm-3">
+                            <input onchange="validateInputField(this)" type="number" name="noOfDemoClasses" class="form-control" id="noOfDemoClasses" placeholder="No of demo classes" value="@Model.m_iNoOfDemoSessions">
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Registration close date</label>
+                        <div class="col-sm-6">
+                            <input type="date" onchange="validateInputField(this)" placeholder="registration close date" id="registrationCloseDate" name="registrationCloseDate" rows="2" class="form-control md-textarea" value="@Model.m_strClassroomRegistratioCloseDate">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Classroom start date</label>
+                        <div class="col-sm-6">
+                            <input type="date" onchange="validateInputField(this)" placeholder="classroom start date" id="classroomStartDateSchedule" name="classroomStartDateSchedule" rows="2" class="form-control md-textarea" value="@Model.m_strClassroomStartDate">
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-primary" onclick="callUpdateClassroomDetails(this)">Update</button>
+                </div>
+                <br />
+                <hr />
+                <form class="card-img-top classroom-background" method="post" enctype="multipart/form-data">
+                    <i class="fa fa-upload upload-icon" aria-hidden="true"></i>
+                    <div class="form-group">
+                        <label for="exampleFormControlFile1">Upload classroom back ground image</label>
+                        <input type="file" id="fileUpload" name="file" accept="image/x-png,image/gif,image/jpeg" />
+                        <button type="button" class="btn btn-primary" onclick="requestUpload()">Upload</button>
+                        <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="fileUploadProgressBar"></div>
+                        </div>
+                        <div class="alert alert-success" id="postUploadAlert" style="display:none" role="alert">
+                            file uploaded successfully
+                        </div>
+                    </div>
+                </form>
+                <button class="btn btn-sm btn-primary" onclick="updateClassroomBgImage()">Update Image</button>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navInstructors" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Update classroom details</div>
+                <div class="card-body">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navUpdateSchedulerDetails" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Update classroom classroom time-table</div>
+                <div class="card-body">
+                    <table class="table table-responsive">
+                        <thead class="thead-light">
+                            <tr>
+                                <td>Day</td>
+                                <td>Status</td>
+                                <td style="min-width:150px;">Start Time</td>
+                                <td style="min-width:150px;">Close Time</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Monday</td>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="classroomCloseStatus1" onchange="changeClassroomOpenStatus(this)">
+                                        <label class="custom-control-label text-danger" for="classroomCloseStatus1">Closed</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomStartTime1" disabled />
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomFinishTime1" disabled />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Tuesday</td>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="classroomCloseStatus2" onchange="changeClassroomOpenStatus(this)">
+                                        <label class="custom-control-label text-danger" for="classroomCloseStatus2">Closed</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomStartTime2" disabled />
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomFinishTime2" disabled />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Wednesday</td>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="classroomCloseStatus3" onchange="changeClassroomOpenStatus(this)">
+                                        <label class="custom-control-label text-danger" for="classroomCloseStatus3">Closed</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomStartTime3" disabled />
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomFinishTime3" disabled />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Thursday</td>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="classroomCloseStatus4" onchange="changeClassroomOpenStatus(this)">
+                                        <label class="custom-control-label text-danger" for="classroomCloseStatus4">Closed</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomStartTime4" disabled />
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomFinishTime4" disabled />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Friday</td>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="classroomCloseStatus5" onchange="changeClassroomOpenStatus(this)">
+                                        <label class="custom-control-label text-danger" for="classroomCloseStatus5">Closed</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomStartTime5" disabled />
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomFinishTime5" disabled />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Saturday</td>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="classroomCloseStatus6" onchange="changeClassroomOpenStatus(this)">
+                                        <label class="custom-control-label text-danger" for="classroomCloseStatus6">Closed</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomStartTime6" disabled />
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomFinishTime6" disabled />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Sunday</td>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="classroomCloseStatus7" onchange="changeClassroomOpenStatus(this)">
+                                        <label class="custom-control-label text-danger" for="classroomCloseStatus7">Closed</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomStartTime7" disabled />
+                                </td>
+                                <td>
+                                    <input class="form-control" type='text' id="classroomFinishTime7" disabled />
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="alert alert-success alert-dismissible fade show" style="display:none;" id="classroomScheduleUpdateAlert" role="alert">
+                        <div class="classroomScheduleUpdateMessage">Classroom schedule updated successfully</div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                    </div>
+                    <button class="btn btn-sm btn-primary" onclick="callUpdateClassroomSchedule()">Update classroom time-table</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-12 mb-2" id="navAllAssignments" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">View all assignments</div>
+                <div class="card-body">
+                    <div class="table ">
+                        <table id="studentAllAssignmentsTable" class="table-responsive table-hover" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th colspan="2">Assignment Name</th>
+                                    <th class="mr-2">Creation Date</th>
+                                    <th class="mr-2">Status</th>
+                                    <th class="mr-2">No of submissions</th>
+                                    <th class="mr-2">Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="tableAllAssignments"></tbody>
+                        </table>
+                        <div id="spinnerAllAssignments" class="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" id="footerAllAssignments" style="display:none">
+                        <h6 class="card-title"> You have not created any assignment.</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navAllTests" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">View all tests</div>
+
+                <div class="card-body">
+                    <div class="table-responsive ">
+                        <table id="studentAllTestTable" class="table-responsive table-hover" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="p-2">Test Name</th>
+                                    <th class="p-2">Creation Date</th>
+                                    <th class="p-2">No of questions</th>
+                                    <th class="p-2">No submissions</th>
+                                    <th class="p-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableAllTests"></tbody>
+                        </table>
+                        <div id="spinnerAllTests" class="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" id="footerAllTests" style="display:none">
+                        <h6 class="card-title"> You have not created any test</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="callClassroomSyllabus" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">View all tests</div>
+
+                <div class="card-body">
+                    <div class="table-responsive ">
+                        <table id="studentAllTestTable" class="table-responsive table-hover" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="p-2">Test Name</th>
+                                    <th class="p-2">Creation Date</th>
+                                    <th class="p-2">No of questions</th>
+                                    <th class="p-2">No submissions</th>
+                                    <th class="p-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableAllTests"></tbody>
+                        </table>
+                        <div id="spinnerAllTests" class="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" id="footerAllTests" style="display:none">
+                        <h6 class="card-title"> You have not created any test</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navAllAttachments" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">View all study materials</div>
+
+                <div class="card-body">
+
+                    <div class="table table-responsive ">
+                        <table id="tableClassroomAttachments" class="table-responsive table-hover" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="p-2">S. No.</th>
+                                    <th class="p-2">Attachment Name</th>
+                                    <th class="p-2">Addition Date</th>
+                                    <th class="p-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyClassroomAttachments"></tbody>
+                        </table>
+
+                    </div>
+                    <div id="spinnerClassroomAttachments" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="card-body" id="footerAllAttachments" style="display:none">
+                        <h6 class="card-title"> You have not added any study materials</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="sendClassroomNotification" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Send SMS Notification</div>
+
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label for="classroomNotification" class="col-sm-3 col-form-label">Enter classroom message</label>
+                        <div class="col-sm-8">
+                            <textarea onchange="validateInputField(this)" type="text" name="courseName" class="form-control" id="classroomNotification" placeholder="Enter enter message"></textarea>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm mt-1" onclick="sendClassroomSMSNotificationToAllStudents()">Send</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="updateSyllabusDiv" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Update classroom syllabus</div>
+
+                <div class="card-body">
+                    <div id="spinnerClassroomClassroomSchedule" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="accordion" id="classroom-syllabus-container">
+                    </div>
+                    <button class="btn btn-primary btn-sm mt-1" onclick="addNewWeek()">Add new week</button>
+                    <button class="btn btn-primary btn-sm mt-1" onclick="updateClassroomSyllabus()">update schedule</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 mb-2" style="display:none" id="navMessagesContainer">
+                <div class="card shadow-lg border-primary">
+                    <div class="card-header">
+                        Messages
+                        <button class="btn btn btn-sm btn-outline-primary" onclick="openFullscreen(document.getElementById('navMessagesContainer'))"><span class="fa fa-arrows-alt">full screen</span></button>
+                        <button class="btn btn btn-sm btn-outline-primary" onclick="closeFullscreen()"><span class="fa fa-window-close"> exit full screen</span></button>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="ui-input-container-message " id="messagesContainer">
+                            <div class="question" id="questionContainer">
+                            </div>
+                        </div>
+                        <div class="add-items-container p-3">
+                            <div class="ui-input-container">
+
+                                <label class="ui-form-input-container">
+                                    <textarea class="ui-form-input" id="classroomMessage" placeholder="Message"></textarea>
+                                </label>
+                                <button type="button" onclick="callSubmitMessage(this)" class="btn btn-primary btn-sm">submit</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="secctionTest"></div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-2" id="navSharingDetails" style="display:none">
+                <div class="card shadow-lg border-primary">
+                    <div class="card-header">Sharing details</div>
+                    <div class="card-body">
+                        <div class="add-items-container p-3 text-center ">
+                            <div class="control-buttons">
+                                <p>Share url: <input type="text" readonly="readonly" id="test-url" value="@Model.m_strShareUrl" /><span><button class="btn-sm btn-primary ml-2" onclick="copyText()">copy<i class="ml-1 fa fa-copy"></i></button></span></p>
+                            </div>
+
+                            <button class="btn btn-outline-primary" onclick="viewClassroomSharingDetails()" data-toggle="tooltip" data-placement="top" title="View sharing details"><i class="fa fa-share"></i>View sharing details</button>
+                        </div>
+                    </div>
+                    <div id="secctionTest"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12 mb-2" id="navStudentsJoined" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Students Joined</div>
+                <div class="card-body">
+                    <div class="table-responsive ">
+                        <table id="studentDetailsTable" class="table-responsive table-hover" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>S.No.</th>
+                                    <th>Student Name</th>
+                                    <th>Joining Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyStudentDetails"></tbody>
+                        </table>
+                        <div id="spinnerStudentDetails" class="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-center" id="footerStudentsJoined" style="display:none">
+                        <div class="card-body">
+                            <h6 class="card-title"> No students have joined.</h6>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-2" id="navClassroomPost" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Classroom posts</div>
+                <div class="card-body">
+                    @*<textarea id="classroomPost"></textarea>*@
+                    <div class="ui-input-container-message " id="messagesContainer">
+                        <div class="question" id="questionContainer">
+                        </div>
+                    </div>
+                    <div class="add-items-container p-3">
+                        <div class="ui-input-container">
+
+                            <label class="ui-form-input-container">
+                                <textarea class="ui-form-input" id="classroomMessage" placeholder="Message"></textarea>
+                            </label>
+                            <div class="form-group">
+                                <label>Attachments :</label>
+                                <ul class="list-group" id="attachmentsContainer">
+                                    <li class="list-group-item"><i class="fa fa-file" aria-hidden="true"></i> Image: <span><button class="btn btn-sm btn-primary">remove</button></span></li>
+                                    <li class="list-group-item"><i class="fa fa-film" aria-hidden="true"></i> Video: </li>
+                                    <li class="list-group-item"><i class="fa fa-pencil" aria-hidden="true"></i> Pdf: </li>
+                                </ul>
+                            </div>
+                            <button type="button" onclick="callSubmitMessage(this)" class="btn btn-primary btn-sm">submit</button>
+                            <button type="button" onclick="requestNewFileUpload()" class="btn btn-primary btn-sm"><i class="fa fa-file" aria-hidden="true"></i> Add image</button>
+                            <button type="button" onclick="requestNewFileUpload()" class="btn btn-primary btn-sm"><i class="fa fa-film" aria-hidden="true"></i> Add video</button>
+                            <button type="button" onclick="requestNewFileUpload()" class="btn btn-primary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i> Add pdf</button>
+                        </div>
+                    </div>
+                </div>
+                @*<div id="spinner" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+        <div class="row col-lg-12 mb-2" id="navPreviousMeetings" style="display:none">
+            <div class="col-lg-8">
+                <div class="card">
+
+                    <p class="text-center"><img id="no_video_present_img" class="text-center img-fluid" src="~/Images/no_video_present.png" style="max-width:300px"></p>
+                    <h4 id="no-video-data-present" class="text-center align-items-center">No video file present</h4>
+                    <div class="">
+                        <h4 id="no-data-present" class="ml-3"></h4>
+
+                        @*<iframe id="video-url" class="embed-responsive-16by9 container-fluid" src="" allowfullscreen style="display:none;min-width:50vw;min-height:40vh;"></iframe>*@
+                    </div>
+                    <video id="topic-video-palyer-container" controls class="videos" style="display:none;">
+                        <source src="" id="video-url" type="video/mp4" style="display:none;">
+                        Your browser does not support HTML video.
+                    </video>
+
+                    <h4 class="text-left font-weight-bolder p-1" id="topic-name"></h4>
+                    <h6 class="text-left font-weight-bolder p-1" id="topic-notes"></h6>
+                    <div class="card-footer">
+                        <ul class="nav nav-pills mb-3 nav-fill" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true"><i class="fa fa-comments"></i>Discussions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false"><i class="fa fa-pencil-square-o"></i>Edit</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false"><i class="fa fa-download"></i>Attachments</a>
+                            </li>
+                        </ul>
+                        <hr />
+
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">...</div>
+                            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                <div class="form-group row">
+                                    <label for="inputPassword" class="col-sm-3 col-form-label">Topic Name</label>
+                                    <div class="col-sm-8">
+                                        <input onchange="validateInputField(this)" type="text" class="form-control" id="liveClassTopicName" placeholder="give your lecture a name">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputPassword" class="col-sm-3 col-form-label">Notes</label>
+                                    <div class="col-sm-8">
+                                        <textarea type="text" onchange="validateInputField(this)" placeholder="share some notes related to class" id="liveClassNotes" name="courseContents" rows="2" class="form-control md-textarea"></textarea>
+                                    </div>
+
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputPassword" class="col-sm-3 col-form-label">Edit video url or upload new</label>
+                                    <div class="col-sm-8">
+                                        <input onchange="validateUrl(this)" type="url" name="attachmentName" class="form-control" id="liveClassVideoUrl" placeholder="Enter attachment url">
+                                    </div>
+                                </div>
+                                <form class="card-img-top classroom-background" method="post" enctype="multipart/form-data">
+                                    <i class="fa fa-upload upload-icon" aria-hidden="true"></i>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlFile1">Upload video</label>
+                                        <input type="file" id="meetingVideoUpload" name="file" accept="*" />
+                                        <button type="button" class="btn btn-primary" onclick="uploadClassroomMeetingVideo()">Upload video</button>
+                                        <div class="progress progress-sm mr-2">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="meetingVideoUploadProgressbar"></div>
+                                        </div>
+                                        <div class="alert alert-success" id="postMeetingVideoUploadAlert" style="display:none" role="alert">
+                                            video uploaded successfully
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="alert alert-success" id="postStudyMaterialUploadSucess" style="display:none" role="alert">
+                                    Updated Sucessfully
+                                </div>
+                                <div class="alert alert-danger" id="postStudyMaterialUploadFail" style="display:none" role="alert">
+                                    Can not be added video
+                                </div>
+                                <button type="button" class="btn btn-primary  btn-block" onclick="updateClassroomMeetingDetails()">Update</button>
+                            </div>
+                            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 card shadow-lg border-primary">
+                <div class="card-header">Live classes <span><a style="display:none" href="#" id="startPreviousMeeting" class="btn btn-sm btn-danger">start previous class</a></span></div>
+                <div class="card-body">
+                    <div class="table-responsive table-hover">
+                        <table id="coursesTable" class="table-responsive table-hover" style="display:none;max-height:60vh;">
+
+
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                        <div id="spinner" class="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center" id="footer" style="display:none">
+                        <div class="card-body">
+                            <h6 class="card-title"> You have not taken any live class.</h6>
+                            <div id="assignmentContainer" class="assignmentContainer"></div>
+
+                        </div>
+                        <div class="card-footer text-muted">
+                            Thank you!
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div id="secctionTest"></div>
+        <div class="col-lg-12 mb-2" id="navAddNewAttachment" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Add attachment<span><a style="display:none" href="#" id="startPreviousMeeting" class="btn btn-sm btn-danger">start previous meeting</a></span></div>
+                <div class="card-body">
+
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-3 col-form-label">Name of attachment</label>
+                            <div class="col-sm-8">
+                                <input onchange="validateInputField(this)" type="text" class="form-control" id="attachmentName" placeholder="Enter name of attachment">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-3 col-form-label">Description of attachment</label>
+                            <div class="col-sm-8">
+                                <textarea type="text" onchange="validateInputField(this)" placeholder="Enter attachment description" id="attachmentDescription" name="courseContents" rows="2" class="form-control md-textarea"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-3 col-form-label">Add attachment url or upload file</label>
+                            <div class="col-sm-8">
+                                <input onchange="validateUrl(this)" type="url" name="attachmentName" class="form-control" id="attachmentUrl" placeholder="Enter attachment url">
+                            </div>
+                        </div>
+                        <form class="card-img-top classroom-background" method="post" enctype="multipart/form-data">
+                            <i class="fa fa-upload upload-icon" aria-hidden="true"></i>
+                            <div class="form-group">
+                                <label for="exampleFormControlFile1">Upload attachment</label>
+                                <input type="file" id="studyMaterialUpload" name="file" accept="*" />
+                                <button type="button" class="btn btn-primary" onclick="requestFileUploadForStudyMaterial()">Upload</button>
+                                <div class="progress progress-sm mr-2">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="fileUploadProgressBarForAttachment"></div>
+                                </div>
+                                <div class="alert alert-success" id="postFileUploadAlert" style="display:none" role="alert">
+                                    file uploaded successfully
+                                </div>
+                            </div>
+                        </form>
+                        <div class="alert alert-success" id="postStudyMaterialUploadSucess" style="display:none" role="alert">
+                            Attachment Added successfully
+                        </div>
+                        <div class="alert alert-danger" id="postStudyMaterialUploadFail" style="display:none" role="alert">
+                            Attachment could not added
+                        </div>
+                        <button id="addAssignmentButton" type="button" class="btn btn-primary  btn-block" onclick="callAddAttachment(this)">Add attachment</button>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-12 mb-2" id="navAllAssignments" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Assignments</div>
+                <div class="card-body">
+                    <div class="table-responsive ">
+                        <table id="coursesTable" class="table-responsive table-hover" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="p-2">Assignment Name</th>
+                                    <th class="p-2">Creation date</th>
+                                    <th>Status</th>
+                                    <th>Students joined</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                        <div id="spinner" class="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card text-center" id="footer" style="display:none">
+                        <div class="card-body">
+                            <h6 class="card-title"> You have not created any assignsent</h6>
+                            <a type="button" href="CreateClassroomAssignment" class="btn btn-link">Create Assignment&rarr;</a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="secctionTest"></div>
+        </div>
+    }
+</div>
+<div class="modal fade" id="requestStartMeeting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAndUpdateIndexTopicHeader">Are you sure to want the live class?</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" class="needs-validation" action="RequestStartMeeting" novalidate>
+                    @Html.AntiForgeryToken()
+                    @*<div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Meeting Id</label>
+                            <input type="text" name="test_id" class="form-control" id="testModalId" placeholder="Enter meeting id"  >
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Meeting Password</label>
+                            <input type="text" name="test_access_code" class="form-control" id="testModalAccessCode" placeholder="Enter access code">
+                        </div>*@
+                    <input type="hidden" name="classroom_id" class="form-control" value="@Model.m_llClassRoomId">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-block btn-outline-primary" onclick="callClassroomMeeting()">Yes</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetAddTopicModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="previewUploadModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Upload preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img class="image-popup img-fluid" id="imagePreview" alt="waiting the file to appear" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Confirm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="confirmMessage">Are you sure to want to delete the topic?</h3>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmDeletButtonForCourse" type="button" class="btn btn-primary" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade top" id="studentMeetingJoinedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 "> <b>Student Joined To Meeting Details:</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <div class="card-img-top ">
+                    <div class="table-responsive ">
+                        <table id="studentMeetingTable" class="table-responsive table-hover" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>S.No.</th>
+                                    <th class="p-2">Student Name</th>
+                                    <th class="p-2">Joining Time</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="tableBodyStudentMeetingDetails"></tbody>
+                        </table>
+                        <div id="spinnerStudentMeetingDetails" class="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card text-center" id="footerStudentsMeetingJoined" style="display:none">
+                        <div class="card-body">
+                            <h6 class="card-title"> No students have joined.</h6>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="infoMessage">Post added successfully</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="classroomTopicModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Update classroom syllabus</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-6 col-form-label">Enter topic name</label>
+                    <div class="col-sm-12">
+                        <input  type="text" class="form-control" id="currentWeekTopic" placeholder="please enter topic name" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-6 col-form-label">Enter topic preview url</label>
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="currentWeekTopicPreviewUrl" placeholder="please enter preview url" value="">
+                    </div>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="addTopicToWeek()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="classroomUpdateSuccess" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="infoMessage">Details updated successfully</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="classroomActivateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Activate classroom</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height:500px;overflow-y:scroll;">
+                <h3>Please select classroom type</h3>
+                <h4 class="text-info">Public: <span class="fa fa-check text-success" style="display:none" id="activateClassroomPublic">Selected</span><button class="btn btn-outline-primary ml-2" onclick="activateClassroomChoose(2)">Select this</button></h4>
+                <p>Public classroom will be public and any studnt can join. We incourage you to create public classroom to support student.</p>
+
+                <h4 class="text-info">Private: <span class="fa fa-check text-success" style="display:none" id="activateClassroomPrivate">Selected</span><button class="btn btn-outline-primary ml-2" onclick="activateClassroomChoose(1)">Select this</button></h4>
+                <p>
+                    Private classroom will not appear to public and any studnt can join the classroom by Id and access code.
+                    If you are a private institution select this option.
+                </p>
+               
+                <hr />  
+                <h5 class="font-weight-bolder">Classroom settings</h5>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-6 col-form-label">Set classroom joining fee</label>
+                    <div class="col-sm-4">
+                        <input  min="0" type="number" name="courseName" class="form-control" id="classroomFee" placeholder="please set an amount in rupees as the fee of your classroom" value="0">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-6 col-form-label">No of demo classes</label>
+                    <div class="col-sm-4">
+                        <input  min="0" type="number" name="courseName" class="form-control" id="demoClasses" placeholder="demo classes" value="3">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-6 col-form-label">Please enter classroom start date</label>
+                    <div class="col-sm-6">
+                        <input  type="date" class="form-control" id="classroomStartDate" placeholder="please enter classroom start date" >
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label for="inputPassword" class="col-sm-6 col-form-label">Start time:</label>
+                        <div class="col-sm-6">
+                            <input type="time" class="form-control" id="classroomDailyStartTime" placeholder="please enter classroom start date" >
+                        </div>
+                    </div>
+                    
+                </div>
+                <h6 class="font-weight-bolder">Please select classroom active days</h6>
+                <div class="row col-sm-12">
+                <button onclick="setDate(this,'monday')" class="btn btn-sm btn-outline-primary col-2">Mon</button>
+                <button onclick="setDate(this,'tuesday')"  class="btn btn-sm btn-outline-primary col-2">Tue</button>
+                <button onclick="setDate(this,'wednesday')"  class="btn btn-sm btn-outline-primary col-3">Wed</button>
+                <button onclick="setDate(this,'thursday')"  class="btn btn-sm btn-outline-primary col-3">Thu</button>
+                    <button onclick="setDate(this,'friday')"  class="btn btn-sm btn-outline-primary col-2">Fri</button>
+                    <button onclick="setDate(this,'saturday')"  class="btn btn-sm btn-outline-primary col-2">Sat</button>
+                    <button onclick="setDate(this,'sunday')"  class="btn btn-sm btn-outline-primary col-2">Sun</button>
+                </div>
+                
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" disabled id="activateClassroomButton" onclick="activateClassroom()">Activate Now</button>
+            </div>
+        </div>    
+    </div>
+</div>
+<div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Sharing details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4>1. Use below link to join the classroom</h4>
+                <div class="control-buttons">
+                    <p>Share url: <input type="text" readonly="readonly" id="test-url-2" value="@Model.m_strShareUrl" /><span><button class="btn-sm btn-primary ml-2" onclick="copyText2()">copy<i class="ml-1 fa fa-copy"></i></button></span></p>
+                </div>
+                <h4>2. Please ask student to use below details to join classroom.</h4>
+                <p><b>Classroom Id:</b> @Model.m_llClassRoomId</p>
+                <p><b>Access code:</b> @Model.m_strShareCode</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="successModal1" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered border-success" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="location.reload()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="infoMessage" class="text-success"><span><i class="fa fa-check"></i></span> details updated successfully</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="location.reload()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="errorModal1" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="courseIdGenerated"><span><i class="fa fa-warning"></i></span>Classroom details could not be updatd</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade top modal-lg" id="assignmentDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 " id="myModalLabel"> <b>Assignment Details:</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div id="responseBodyContainer" class="modal-body">
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<div class="modal fade top" id="testDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 "> <b>Test Details:</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body" id="testDetailsModalBody">
+
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<div class="modal fade" id="classroomUpdateTopicModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Update classroom syllabus</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-6 col-form-label">Enter topic name</label>
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="updateCurrentWeekTopic" placeholder="please enter topic name" value="">
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="updateTopic()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--<script>
+
+    //tinymce.init({
+    //    selector: '#classroomPost',
+    //  plugins: ' preview  autolink lists  media     table   ',
+    //  toolbar: ' undo redo |print preview media fullpage | forecolor backcolor styleselect | bold italic | alignleft aligncenter alignright alignjustify |bullist numlist |checklist code table',
+    //  toolbar_mode: 'floating',
+    //  tinycomments_mode: 'embedded',
+    //  tinycomments_author: 'Author name'
+
+    //});
+    
+    
+    function viewClassroomSharingDetails()
+    {
+        $("#shareModal").modal('show');
+
+    }
+    function requestUploadVideo()
+    {
+        $("#fileUploadModal").modal("show");
+    }
+    function requestStartMeeting() {
+        $("#requestStartMeeting").modal("show");
+    }
+    function copyText() {
+        var copyText = document.getElementById("test-url");
+        copyText.select();
+        document.execCommand("copy");
+    }
+    function copyText2() {
+        var copyText = document.getElementById("test-url-2");
+        copyText.select();
+        document.execCommand("copy");
+    }
+    function callInsertNewPost(buttonid) {
+        debugger
+        var post = tinyMCE.activeEditor.getContent();
+        if (post == "") { return; }
+        $(buttonid).append('<i class="fa fa-spinner fa-spin" id="tempspinner"></i>');
+        $(buttonid).disabled = true;
+
+        if (true) {
+            var _data =
+            {
+                "post": post,
+                "classroom_id": "@Model.m_llClassRoomId"
+            }
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+                type: "POST",
+                data: JSON.stringify(_data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/api/v1/instructor/InsertNewPostToClassroom",
+                success: function (data) {
+                    debugger;
+                    if (data != null && data.response_code == 1) {
+                        $("#successModal").modal("show");
+                    }
+                    else {
+                        $("#errorModal").modal("show");
+                    }
+                    $(buttonid).disabled = false;
+                    $(buttonid).find(":first-child").remove();
+                },
+                error: function (data) {
+                    $("errorModal").modal("show");
+                    $(buttonid).disabled = false;
+                    $(buttonid).find(":first-child").remove();
+                }
+            });
+        }
+        else {
+            $(buttonid).disabled = false;
+            $(buttonid).find(":first-child").remove();
+        }
+    }
+    function requestActivateClassroom()
+    {
+        $("#classroomActivateModal").modal("show");
+    }
+    function getClassroomWeekDaysSchedule(){
+
+    }
+    function activateClassroom() {
+        debugger;
+        var classroomJoiningFee = $("#classroomFee").val();
+        var demoClasses = $("#demoClasses").val();
+        var _data = {
+            "classroom_id": "@Model.m_llClassRoomId",
+            "classroom_joining_fee": classroomJoiningFee,
+            "classroom_start_date": $("#classroomStartDate").val(),
+            "classroom_start_time": $("#classroomDailyStartTime").val(),
+            "classroom_weekday_schedule": getSelectedDates(),
+            "no_of_demo_classes": demoClasses,
+            "public_type": ClassroomPublicType
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data:JSON.stringify(_data),
+            url: "/api/v1/instructor/activateclassroom",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    location.reload();
+                }
+            }
+        });
+    }
+
+</script>
+<script type="text/javascript">
+        (function () {
+            'use strict';
+            pageShowEvents();
+        })();
+        function pageShowEvents()
+        {
+            //runTimer();
+        }
+        function onPageHideEvents()
+        {
+            clearInterval(messageInerval);
+        }
+
+        function getMeetingDetails() {
+        //debugger;
+            $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/GetAllMeetingsForClassroom?ClassroomId=@Model.m_llClassRoomId",
+            success: function (data) {
+                debugger;
+                var sNo = 0;
+                if (data != null && data.response_code == 1 && data.meeting_details != null && data.meeting_details.length>0) {
+                    var meetings = data.meeting_details;
+                    $('#tableBody').empty();
+                    for (var i = 0; i < meetings.length; i++) {
+                        sNo++;
+                        var rows = '<tr><td class="pr-2"><button class=btn btn-outline-primary" onclick="showClassroomMeetingContent(' + meetings[i].meeting_id + ')"><i class="fa fa-2x fa-play-circle text-primary"></i></button></td></td>'
+                        + '<td class="pr-2">Topic Name</td><td class="pr-2">' + meetings[i].meeting_finish_time + '</td>'
+                        + '<td class="pr-2"><button class="btn btn-sm btn-primary" onclick="getStudentMeetingDetails('.concat(meetings[i].meeting_id) + ')">' + meetings[i].participants_count + '</button></td>'
+                        +''
+                            + '</tr>';
+
+                        $('#tableBody').append(rows);
+                        $("#spinner").remove();
+                        $("#coursesTable").show();
+                    }
+                    $("#startPreviousMeeting").fadeIn();
+                    $("#startPreviousMeeting").attr("href", "StartMeeting?ClassroomId=@Model.m_llClassRoomId");
+
+                }
+                else {
+                    $("#footer").show();
+                    $("#spinner").remove();
+                }
+            }
+    });
+        }
+    function getStudentDetails() {
+        //debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/GetAllStudnetJoinedToClassroom?ClassroomId=@Model.m_llClassRoomId",
+            success: function (data) {
+                debugger;
+                var sNo = 0;
+                if (data != null && data.response_code == 1 && data.student_details != null && data.student_details.length > 0) {
+                    var students = data.student_details;
+                    $('#tableBodyStudentDetails').empty();
+                    for (var i = 0; i < students.length; i++) {
+                        sNo++;
+                        var rows = '<tr><td scope="row" ><button type="button" class="btn btn-link font-weight-bold" onclick="getCourseIndexDetails('.concat(students[i].student_id) + ')">' + sNo + '</button></td>'
+                        + '<td>' + students[i].student_name + '</td><td>' + students[i].date_of_joining + '</td>'
+                        + '</tr>';
+                        $('#tableBodyStudentDetails').append(rows);
+                        $("#spinnerStudentDetails").remove();
+                        $("#studentDetailsTable").show();
+                    }
+                    $('#studentTable').DataTable();
+
+                }
+                else {
+                    $("#footerStudentsJoined").show();
+                    $("#spinnerStudentDetails").remove();
+                }
+            }
+        });
+    }
+    function getStudentMeetingDetails(meetingId) {
+        //debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },-->
+            @*data: {
+                "MeetingId": meetingId,
+                "ClassroomId": "@Model.m_llClassRoomId"
+            },*@
+            <!--type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/GetAllStudentsJoinedToMeeting?ClassroomId=@Model.m_llClassRoomId&MeetingId=".concat(meetingId),
+            success: function (data) {
+                debugger;
+                var sNo = 0;
+                if (data != null && data.response_code == 1 && data.student_details != null && data.student_details.length > 0) {
+                    var students = data.student_details;
+                    $("#footerStudentsMeetingJoined").hide();
+                    $('#tableBodyStudentMeetingDetails').empty();
+                    $("#spinnerStudentMeetingDetails").remove();
+                    $("#studentMeetingTable").show();
+                    $("#studentMeetingJoinedModal").modal('show');
+                    for (var i = 0; i < students.length; i++) {
+                        sNo++;
+                        var rows = '<tr><td scope="row" ><button type="button" class="btn btn-link font-weight-bold" onclick="getCourseIndexDetails('.concat(students[i].student_id) + ')">' + sNo + '</button></td>'
+                        + '<td>' + students[i].student_name + '</td><td>' + students[i].time_of_joining + '</td>'
+                        + '</tr>';
+                        $('#tableBodyStudentMeetingDetails').append(rows);
+
+                    }
+
+                    $('#studentMeetingTable').DataTable();
+
+                }
+                else {
+                    $("#footerStudentsMeetingJoined").show();
+                    $("#spinnerStudentMeetingDetails").remove();
+                }
+            }
+        });
+    }
+
+    function callSubmitMessage(buttonid) {
+        debugger
+        syncFlag = true;
+        var post = $("#classroomMessage").val();
+        if (post == "") { return; }
+        $(buttonid).append('<i class="fa fa-spinner fa-spin" id="tempspinner"></i>');
+        $(buttonid).disabled = true;
+        if (true) {
+            var _data =
+            {
+                "message": post,
+                "classroom_id": "@Model.m_llClassRoomId"
+            }
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+                type: "POST",
+                data: JSON.stringify(_data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/api/v1/instructor/InsertNewClassroomMessage",
+                success: function (data) {
+                    debugger;
+                    if (data != null && data.response_code == 1) {
+                        $("#classroomMessage").val("")
+                        getAllMessagesAsync();
+                    }
+                    else {
+                        $("#errorModal1").modal("show");
+                    }
+                    $(buttonid).disabled = false;
+                    $(buttonid).find(":first-child").remove();
+                    syncFlag = false;
+                },
+                error: function (data) {
+                    $("errorModal").modal("show");
+                    $(buttonid).disabled = false;
+                    $(buttonid).find(":first-child").remove();
+                }
+            });
+        }
+        else {
+            $(buttonid).disabled = false;
+            $(buttonid).find(":first-child").remove();
+        }
+    }
+    var messageInerval
+    function runTimer() {
+        messageInerval = setInterval(getAllMessagesAsync, 1000);
+    }
+    function getAllMessages() {
+        $.ajax({
+
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/GetAllClassroomMessage?ClassroomId=@Model.m_llClassRoomId",
+            success: function (data) {
+                debugger;
+                //stopCourseSpinner();
+                if (data != null && data.response_code == 1) {
+                    var currentSessionLastMessageId=-1;
+                    $("#questionContainer").empty();
+                    var row = "";
+                    for (var i = 0; i < data.message_details.length; i++) {
+                        currentSessionLastMessageId = data.message_details[i].message_id;
+
+                        if (data.message_details[i].is_instructor == false) {
+
+                            row= ' <div class="container-fluid">'
+                                + '<p class="messge-sender"><spna><i class="fa fa-user mr-2"></i></span>' + data.message_details[i].student_name + '</p>'
+                                          + '<p class="ui-form-chat-instructor">' + data.message_details[i].message + '</p>'
+                                          + '<p class="time_date_instructor">' + data.message_details[i].message_creation_time + '</p>'
+                                      + '</div>';
+                        }
+                        else {
+                            row='<div class="container-fluid">'
+
+                                          + '<p class="ui-form-chat">' + data.message_details[i].message + '</p>'
+                                          + '<p class="time_date">' + data.message_details[i].message_creation_time + '</p>'
+                                      + '</div>';
+
+                        }
+                        $("#questionContainer").append(row);
+                        $("#messagesContainer").scrollTop($("#messagesContainer")[0].scrollHeight);
+                    }
+                    if (currentSessionLastMessageId != -1) {
+                        lastMessageId = currentSessionLastMessageId;
+                    }
+
+                }
+            }
+        });
+    }
+    function getAllMessagesAsync() {
+        if (lastMessageId == -1||syncFlag)
+        {
+            return;
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/GetAllClassroomMessageAfterLast?ClassroomId=@Model.m_llClassRoomId&LastMessageId=".concat(lastMessageId),
+            success: function (data) {
+                //stopCourseSpinner();
+                if (data != null && data.response_code == 1) {
+                    //$("#questionContainer").empty();
+                    for (var i = 0; i < data.message_details.length; i++) {
+                        lastMessageId = data.message_details[i].message_id;
+                        if (data.message_details[i].is_instructor == false) {
+                            var row = ' <div class="container-fluid">'
+                                + '<p class="messge-sender"><spna><i class="fa fa-user mr-2"></i></span>' + data.message_details[i].student_name + '</p>'
+                                          + '<p class="ui-form-chat-instructor">' + data.message_details[i].message + '</p>'
+                                          + '<p class="time_date_instructor">' + data.message_details[i].message_creation_time + '</p>'
+                                      + '</div>';
+                        }
+                        else {
+                            var row = ' <div class="container-fluid">'
+
+                                          + '<p class="ui-form-chat">' + data.message_details[i].message + '</p>'
+                                          + '<p class="time_date">' + data.message_details[i].message_creation_time + '</p>'
+                                      + '</div>';
+                        }
+                        $("#questionContainer").append(row);
+                        $("#messagesContainer").scrollTop($("#messagesContainer")[0].scrollHeight);
+                    }
+                }
+            }
+        });
+    }
+    function showMessages()
+    {
+        hideAll();
+        runTimer();
+        $("#navMessagesContainer").show();
+        getAllMessages();
+    }
+    function showUpdateMeeting()
+    {
+        hideAll();
+        $("#navUpdateDetails").show();
+    }
+    function showInstructorsOfClassrooms() {
+        hideAll();
+        $("#navInstructors").show();
+    }
+    function hideAll()
+    {
+        clearInterval(messageInerval);
+        $(".nav-link").removeClass("active");
+        $("#navMessagesContainer").hide();
+        $("#navPreviousMeetings").hide();
+        $("#navStudentsJoined").hide();
+        $("#navUpdateDetails").hide();
+        $("#navInstructors").hide();
+        $("#navAllAssignments").hide();
+        $("#navAllTests").hide();
+        $("#classroomDetails").hide();
+        $("#navClassroomPost").hide();
+        $("#navAddNewAttachment").hide();
+        $("#navAllAttachments").hide();
+        $("#classroomContaintProgressDetails").hide();
+        $("#navHome").hide();
+        $("#navUpdateSchedulerDetails").hide();
+        $("#updateSyllabusDiv").hide();
+        $("#sendClassroomNotification").hide();
+    }
+    function showPreviousMeetings() {
+        hideAll();
+        $("#navPreviousMeetings").addClass("active");
+        $("#navPreviousMeetings").show();
+        getMeetingDetails();
+    }
+    function showStudentsJoined() {
+        hideAll();
+        $("#navStudentsJoined").show();
+        getStudentDetails();
+    }
+    var syncFlag = false;
+    var lastMessageId = -1;
+
+    function callUpdateClassroomDetails(buttonid) {
+        debugger
+        $(buttonid).append('<i class="fa fa-spinner fa-spin" id="tempspinner"></i>');
+        $(buttonid).disabled = true;
+        var classRoomName = $("#classroomName").val();
+        var classRoomDescription = $("#classroomDescription").val();
+        var BackGroundUrl = $("#classroomBackGroundUrl").val();
+        var classroomRegistrationCloseDate = $("#registrationCloseDate").val();
+        var classroomStartDate = $("#classroomStartDateSchedule").val();
+        var noOfDemoClassrooms = $("#noOfDemoClasses").val();
+        if (validateInputField(classroomName) && validateInputField(classroomDescription)) {
+            var _data =
+            {
+                "classroom_id":"@Model.m_llClassRoomId",
+                "classroom_name": classRoomName,
+                "classroom_description": classRoomDescription,
+                "background_url": BackGroundUrl,
+                "classroom_class_start_date": classroomStartDate,
+                "classroom_registration_close_date": classroomRegistrationCloseDate,
+                "no_of_demo_sessions": noOfDemoClassrooms
+            }
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+                type: "POST",
+                data: JSON.stringify(_data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/api/v1/instructor/UpdateClassroomDetails",
+                success: function (data) {
+                    debugger;
+                    if (data != null && data.response_code == 1) {
+                        $("#successModal1").modal("show");
+
+                    }
+                    else {
+                        $("#errorModal").modal("show");
+                    }
+                    $(buttonid).disabled = false;
+                    $(buttonid).find(":first-child").remove();
+                },
+                error: function (data) {
+                    $("errorModal").modal("show");
+                    $(buttonid).disabled = false;
+                    $(buttonid).find(":first-child").remove();
+                }
+            });
+        }
+        else {
+            $(buttonid).disabled = false;
+            $(buttonid).find(":first-child").remove();
+        }
+    }
+    function validateInputField(id) {
+        if ($(id).val() == "") {
+            $(id).addClass("is-invalid");
+            return false;
+        }
+        else {
+            $(id).addClass("is-valid").removeClass("is-invalid");
+            return true;
+        }
+    }
+    function viewAllClassroomTests()
+    {
+        hideAll();
+        $("#navAllTests").show();
+        getAllTestDetails();
+    }
+    function viewAllClassroomAssignments() {
+        hideAll();
+        $("#navAllAssignments").show();
+        //debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },-->
+            @*data: {
+                "MeetingId": meetingId,
+                "ClassroomId": "@Model.m_llClassRoomId"
+            },*@
+            <!--type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/GetAllClassroomAssignment?ClassroomId=@Model.m_llClassRoomId",
+            success: function (data) {
+                debugger;
+                var sNo = 0;
+                if (data != null && data.response_code == 1 && data.assignment_details != null && data.assignment_details.length > 0) {
+                    var assignmentDetails = data.assignment_details;
+                    $('#tableAllAssignments').empty();
+                    for (var i = 0; i < assignmentDetails.length; i++) {
+                        sNo++;
+                        var rows = '<tr><td scope="row" colspan="2"><button type="button" class="btn btn-link font-weight-bold" onclick="getAssignmentDetails('.concat(assignmentDetails[i].assignment_id) + ')">' + assignmentDetails[i].assignment_name + '</button></td>'
+                        + '<td class="mr-2">   ' + assignmentDetails[i].creation_date + '</td><td class="mr-2">   ' + assignmentDetails[i].no_of_submissions + '</td><td class="mr-2">' + assignmentDetails[i].no_of_submissions + '</td>'
+                        + '<td class="mr-2">'
+                            + '<a type="button" href="ViewClassroomAssignment?c_id=@Model.m_llClassRoomId&&ass_id=' + assignmentDetails[i].assignment_id + '" class="btn btn-link" class="list-group-horizontal">'
+                                + '<i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                            + '</a>'
+                            + '<button type="button" class="btn btn-link" class="list-group-horizontal" onclick="requestDeletAssignment(' + assignmentDetails[i].assignment_id + ')">'
+                                + '<i class="fas fa-trash fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                            + '</button>'
+                        + '</td>'
+                        + '</tr>';
+                        $("#footerAllAssignments").hide();
+                        $('#tableAllAssignments').append(rows);
+                        $("#spinnerAllAssignments").remove();
+                        $("#studentAllAssignmentsTable").show();
+                    }
+                    $('#studentAllAssignmentsTable').DataTable();
+
+                }
+                else {
+                    $("#footerAllAssignments").show();
+                    $("#spinnerAllAssignments").remove();
+                }
+            }
+        });
+    }
+    function requestDeletAssignment(AssignmentId) {
+        $("#confirmMessage").text("Are you sure to want to delete the assignment?");
+        $("#confirmDeletButtonForCourse").attr("onclick", "deleteAssignment(" + AssignmentId + ")");
+        $("#confirmDelete").modal('show');
+    }
+    function deleteAssignment(AssignmentId) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/DeleteClassroomAssignment?ClassroomId=@Model.m_llClassRoomId&AssignmentId=".concat(AssignmentId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("assignment deleted successfully");
+                    $("#successDelete").modal('show');
+                    viewAllClassroomAssignments();
+                }
+                else {
+                    $("#errorAlertMessageBody").text("assignment could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function getAssignmentDetails(id) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchAssignmentDetails?AssignmentId=".concat(id),
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    var questionDetails = data.mcq_questions;
+                    if (data.assignment_type == "sub") {
+                        data.assignment_type = "Subjective";
+                    }
+                    AssignmentType = data.assignment_type;
+                    var assignmentHtml = '<div class="card shadow mb-4 border-bottom-primary">'
+                                + '<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">'
+                                    + '<h6 class="m-0 font-weight-bold text-primary">Assignment Details</h6>'
+                                     + '<div class="dropdown no-arrow">'
+                                     + '</div>'
+                                 + '</div>'
+                                + '<div class="card-body">'
+                    assignmentHtml += '<dl class="row ml-3">'
+                          + '<dt class="col-sm-3">Assignment name:</dt><dd class="col-sm-9">' + data.assignment_name + '</dd>'
+                          + '<dt class="col-sm-3">Assignment description:</dt><dd class="col-sm-9">' + data.assignment_description + '</dd>'
+                          + '<dt class="col-sm-3">Assignment Creation Date:</dt><dd class="col-sm-9">' + data.creation_date + '</dd>'
+                          + '<dt class="col-sm-3">Assignment Updat Date:</dt><dd class="col-sm-9">' + data.updatione_date + '</dd>'
+                          + '<dt class="col-sm-3">Assignment Type:</dt><dd class="col-sm-9">' + data.assignment_type + '</dd>'
+                          + '</dl></div><h2 class="ml-3">Questions</h2>';
+                    if (data.assignment_type == "mcq") {
+                        assignmentHtml += '<div class="card-body" style="padding:0">'
+                                                + '<div class="table-responsive">'
+                                                    + '<table id="coursesTable" class="table table-hover text-xsmall">'
+                                                        + '<thead class="thead-dark">'
+                                                            + '<tr>'
+                                                                + '<th scope="col">S.No</th>'
+                                                                + '<th scope="col">Question Statement</th>'
+                                                                + '<th scope="col">Option1</th>'
+                                                                + '<th scope="col">Option2</th>'
+                                                                + '<th scope="col">Option3</th>'
+                                                                + '<th scope="col">Option4</th>'
+                                                                + '<th scope="col">Correct Option</th>'
+                                                            + '</tr>'
+                                                        + '</thead>'
+                                                        + '<tbody>';
+                    }
+                    else {
+                        assignmentHtml += '<div class="card-body" style="padding:0">'
+                                               + '<div class="table-responsive">'
+                                                   + '<table id="coursesTable" class="table table-hover text-xsmall">'
+                                                       + '<thead class="thead-dark">'
+                                                           + '<tr>'
+                                                               + '<th scope="col">S.No</th>'
+                                                               + '<th scope="col">Question Statement</th>'
+                                                               + '<th scope="col">Hint</th>'
+                                                               + '<th scope="col">Addition Date</th>'
+                                                               //+ '<th scope="col">Actions</th>'
+                                                           + '</tr>'
+                                                       + '</thead>'
+                                                       + '<tbody>';
+                    }
+                    var rows = '';
+                    if (data.assignment_type == "mcq") {
+                        if (questionDetails != null) {
+                            for (var i = 0; i < questionDetails.length; i++) {
+                                var sNo = i + 1;
+                                rows += '<tr><th scope="row" >' + sNo + '</th>'
+                                + '<td>' + questionDetails[i].question_statement + '</td><td>' + questionDetails[i].option1 + '</td><td>' + questionDetails[i].option2 + '</td><td>' + questionDetails[i].option3 + '</td><td>' + questionDetails[i].option4 + '</td><td>' + questionDetails[i].correct_option + '</td>'
+                                + '</tr>';
+                            }
+                        }
+                    }
+                    else if (data.assignment_type = "Subjective") {
+
+                        var questionDetails = data.subjective_questions;
+                        if (questionDetails != null) {
+                            for (var i = 0; i < questionDetails.length; i++) {
+                                var sNo = i + 1;
+                                rows += '<tr><th scope="row" >' + sNo + '</th>'
+                               + '<td>' + questionDetails[i].question_statement + '</td><td>' + questionDetails[i].hint + '</td><td>' + questionDetails[i].creation_date + '</td>'
+                               + '</tr>';
+                            }
+                        }
+                    }
+                    assignmentHtml += rows;
+                    assignmentHtml += '</tbody></table></div></div>';
+                }
+
+                $("#responseBodyContainer").html(assignmentHtml);
+                $("#assignmentDetailsModal").modal('show');
+            }
+        });
+    }
+    function getAllTestDetails() {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/GetAllClassroomTests?ClassroomId=@Model.m_llClassRoomId",
+            success: function (data) {
+                var x = $('#tableAllTests').empty();
+                debugger;
+                if (data != null && data.response_code == 1 && data.classroom_test_details!=null) {
+                    var tests = data.classroom_test_details;
+                    if (tests.length > 0) {
+                        for (var i = 0; i < tests.length; i++) {
+                            if (tests[i].test_name.length > 30) {
+                                tests[i].test_name = tests[i].test_name.substring(0, 30) + "...";
+                            }
+                            var rows = '<tr><th scope="row" ><button type="button" class="btn btn-link"  onclick=getTestDetails("' + tests[i].test_id + '") >' + tests[i].test_name + '</button></th>'
+                            + '<td>' + tests[i].creation_date + '</td><td>' + tests[i].no_of_questions + '</td>'
+                            + '<td><button type="button" class="btn btn-link font-weight-bold" onclick="getTestSubmissions('.concat(tests[i].test_id) + ')">' + tests[i].no_of_submissions + '</button></td>'
+                            + '<td>'
+                                + '<a type="button" class="btn btn-link" class="list-group-horizontal" href="ViewClassroomTest?t_id='.concat(tests[i].test_id) + '&c_id=@Model.m_llClassRoomId">'
+                                    + '<i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                                + '</a>'
+                                + '<button type="button" class="btn btn-link" class="list-group-horizontal" onclick=requestDeleteTest("' + tests[i].test_id + '") >'
+                                    + '<i class="fas fa-trash fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                                + '</button>'
+                            + '</td>'
+                            + '</tr>';
+                            $('#tableAllTests').append(rows);
+
+                            $("#studentAllTestTable").show();
+                        }
+                    }
+                    else {
+                        $("#footerAllTests").show();
+                    }
+                    $('#customTableCodePathshala').DataTable();
+                    $("#spinnerAllTests").remove();
+                }
+                else {
+                    $("#footerAllTests").show();
+                    $("#spinnerAllTests").remove();
+                }
+            }
+        });
+    }
+    function markClassroomOpen(id)
+    {
+        $(id).removeClass("fa-square").addClass("fa-check-square").addClass("text-success").text(" Open").removeClass("text-danger");
+        $(id).prop("onclick", markClassroomClosed(id));
+    }
+    function markClassroomClosed(id) {
+        $(id).removeClass("fa-check-square").addClass("fa-square").addClass("text-danger").text(" Closed").removeClass("text-success");
+        $(id).prop("onclick", markClassroomClosed(id));
+    }
+    function getTestDetails(id) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchTestDetails?id=".concat(id),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    var questionDetails = data.mcq_questions;
+                    var assignmentHtml = '<div class="card shadow mb-4 border-bottom-primary">'
+                                + '<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">'
+                                    + '<h6 class="m-0 font-weight-bold text-primary">Test Details</h6>'
+                                     + '<div class="dropdown no-arrow">'
+                                         + '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+                                            + '<i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>'
+                                         + '</a>'
+
+                                     + '</div>'
+                                 + '</div>'
+                                + '<div class="card-body">'
+                    assignmentHtml += '<dl class="row ml-3">'
+                          + '<dt class="col-sm-3">Test name:</dt><dd class="col-sm-9">' + data.test_name + '</dd>'
+                          + '<dt class="col-sm-3">Test description:</dt><dd class="col-sm-9">' + data.test_description + '</dd>'
+                          + '<dt class="col-sm-3">Test Creation Date:</dt><dd class="col-sm-9">' + data.test_creation_datetime + '</dd>'
+                          + '<dt class="col-sm-3">Test Updat Date:</dt><dd class="col-sm-9">' + data.test_updation_datetime + '</dd>'
+                          + '<dt class="col-sm-3">Test Type:</dt><dd class="col-sm-9">Mcq</dd>'
+                          + '</dl></div><h2 class="ml-3">Questions</h2>';
+                    assignmentHtml += '<div class="card-body" style="padding:0">'
+                                            + '<div class="table-responsive">'
+                                                + '<table id="coursesTable" class="table table-hover">'
+                                                    + '<thead class="thead-dark">'
+                                                        + '<tr>'
+                                                            + '<th scope="col">S.No</th>'
+                                                            + '<th scope="col">Question Statement</th>'
+                                                            + '<th scope="col">Option1</th>'
+                                                            + '<th scope="col">Option2</th>'
+                                                            + '<th scope="col">Option3</th>'
+                                                            + '<th scope="col">Option4</th>'
+                                                            + '<th scope="col">Correct Option</th>'
+                                                            + '<th scope="col">Time(sec)</th>'
+                                                            + '<th scope="col">Marks</th>'
+                                                            //+ '<th scope="col">Actions</th>'
+                                                        + '</tr>'
+                                                    + '</thead>'
+                                                    + '<tbody>';
+                    var rows = '';
+                    if (questionDetails != null) {
+                        for (var i = 0; i < questionDetails.length; i++) {
+                            var sNo = i + 1;
+                            rows += '<tr><th scope="row" >' + sNo + '</th>'
+                            + '<td>' + questionDetails[i].question_statement + '</td><td>' + questionDetails[i].option1 + '</td><td>' + questionDetails[i].option2 + '</td><td>' + questionDetails[i].option3 + '</td><td>' + questionDetails[i].option4 + '</td><td>' + questionDetails[i].correct_option + '</td>'
+                            + '<td>' + questionDetails[i].question_time_in_seconds + '</td><td>' + questionDetails[i].marks + '</td>'
+
+                            + '</tr>';
+                        }
+                    }
+                    assignmentHtml += rows;
+                    assignmentHtml += '</tbody></table></div></div>';
+
+                }
+                $("#testDetailsModalBody").html(assignmentHtml);
+                $("#testDetailsModal").modal('show');
+            }
+
+        });
+    }
+    function deleteTest(TestId) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/DeleteClassroomTest?ClassroomId=@Model.m_llClassRoomId&TestId=".concat(TestId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("test deleted successfully");
+                    $("#successDelete").modal('show');
+                    viewAllClassroomTests();
+                }
+                else {
+                    $("#errorAlertMessageBody").text("test could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestDeleteTest(TestId) {
+        $("#confirmMessage").text("Are you sure to want to delete the test?");
+        $("#confirmDeletButtonForCourse").attr("onclick", "deleteTest(" + TestId + ")");
+        $("#confirmDelete").modal('show');
+    }
+    function viewClassroomPosts()
+    {
+        hideAll();
+        $("#navClassroomPost").show();
+    }
+    function viewClassroomHome()
+    {
+        hideAll();
+        $("#classroomDetails").show();
+        $("#classroomContaintProgressDetails").show();
+        $("#navHome").show();
+    }
+    function showUpdateScheduleDetails()
+    {
+        hideAll();
+        $("#navUpdateSchedulerDetails").show();
+        for(var i=1;i<8;i++)
+        {
+            $('#classroomStartTime'.concat(i)).timepicker();
+            $('#classroomFinishTime'.concat(i)).timepicker();
+        }
+        callGetClassroomTimeTable();
+    }
+    function requestNewFileUpload()
+    {
+        $("#fileUploadModal").modal('show');
+    }
+    function requestUpload() {
+        document.getElementById("fileUploadProgressBar").style.width = "0%";
+        debugger
+        var data = new FormData();
+        var file = $('#fileUpload')[0];
+        data.append('file', file.files[0]);
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        document.getElementById("fileUploadProgressBar").style.width = percentComplete + "%";
+                        if (percentComplete === 100) {
+                            $("#postUploadAlert").show();
+                            $("#postUploadAlert").append('<button type="button" class="btn btn-link" onclick="requestPreviewUpload()">View upload&rarr;</button>');
+                        }
+                    }
+                }, false);
+
+                return xhr;
+            },
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            data: data,
+            url: "/api/v1/instructor/UploadImage",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    backGroundImagePath = data.file_location;
+                    smallIconUrl = data.small_size_icon_url;
+                    mediumSizeIconUrl = data.medium_size_icon_url;
+                    $("#imagePreview").attr("src", data.file_location);
+                }
+                else {
+                    $("#errorAlertMessageBody").text("file could not be added");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestPreviewUpload() {
+        $("#previewUploadModal").modal("show");
+    }
+    function viewAddNewAttachment()
+    {
+        hideAll();
+        $("#navAddNewAttachment").show();
+    }
+    function requestFileUpload() {
+        document.getElementById("fileUploadProgressBar").style.width = "0%";
+        debugger
+        var data = new FormData();
+        var file = $('#studyMaterialUpload')[0];
+        data.append('file', file.files[0]);
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        document.getElementById("fileUploadProgressBar").style.width = percentComplete + "%";
+
+                    }
+                }, false);
+
+                return xhr;
+            },
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            data: data,
+            url: "/api/v1/instructor/UploadFile",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    backGroundImagePath = data.file_location;
+                    $("#attachmentUrl").val(backGroundImagePath);
+                    $("#attachmentUrl").prop("disabled", true);
+                    $("#postFileUploadAlert").show();
+                    $("#postFileUploadAlert").append('<a type="button" target="_blank" href="' + data.file_location + '" class="btn btn-link" >download upload&rarr;</a>');
+
+                }
+                else {
+
+                }
+            }
+        });
+    }
+
+    function validateUrl(id)
+    {
+        var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+        if($(id).val() != "" && re.test($(id).val()))
+        {
+            $(id).addClass("is-valid").removeClass("is-invalid");
+        }
+        else
+        {
+            $(id).addClass("is-invalid");
+        }
+    }
+
+    function callAddAttachment(buttonid) {
+        $(buttonid).append('<i class="fa fa-spinner fa-spin" id="tempspinner"></i>');
+        $(buttonid).prop("disabled", true);
+        var attachmentNameId = $("#attachmentName");
+        var attachmentDescriptionId = $("#attachmentDescription");
+        var attachmentUrlId = $("#attachmentUrl");
+        if (attachmentNameId.hasClass("is_invalid") || attachmentDescriptionId.hasClass("is-invalid") || attachmentUrlId.hasClass("is_invalid")) {
+            $(buttonid).find(":first-child").remove();
+            return;
+        }
+        if (validateInputField(classroomName) && validateInputField(classroomDescription)) {
+            var _data =
+            {
+                "classroom_id": "@Model.m_llClassRoomId",
+                "attachment_name": attachmentNameId.val(),
+                "attachment_description": attachmentDescriptionId.val(),
+                "attachment_url": attachmentUrlId.val()
+            }
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+                type: "POST",
+                data: JSON.stringify(_data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/api/v1/instructor/AddClassroomAttachment",
+                success: function (data) {
+                    debugger;
+                    if (data != null && data.response_code == 1) {
+                        $("#postStudyMaterialUploadSucess").show();
+                        refreshAddAttachment();
+                        $(buttonid).prop("disabled", false)
+                    }
+                    else {
+                        $("#postStudyMaterialUploadFail").show();
+                    }
+                    $(buttonid).disabled = false;
+                    $(buttonid).find(":first-child").remove();
+                    $(buttonid).prop("disabled", false)
+                },
+                error: function (data) {
+                    $("errorModal").modal("show");
+                    $(buttonid).prop("disabled", false)
+                    $(buttonid).find(":first-child").remove();
+                }
+            });
+        }
+        else {
+            $(buttonid).prop("disabled", false)
+            $(buttonid).find(":first-child").remove();
+        }
+    }
+    function refreshAddAttachment() {
+        $("#attachmentName").val("");
+        $("#attachmentDescription").val("");
+        $("#attachmentUrl").val("");
+        $("#attachmentUrl").prop("disabled", false  );
+    }
+    function viewAllClassroomAttachments() {
+        hideAll();
+        $("#navAllAttachments").show();
+        getAllClassroomAttachments();
+    }
+    function getAllClassroomAttachments()
+    {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/ClassroomAttachments?ClassroomId=@Model.m_llClassRoomId",
+            success: function (data) {
+                debugger;
+                var sNo = 0;
+                if (data != null && data.response_code == 1 && data.attachments != null && data.attachments.length > 0) {
+                    var attachments = data.attachments;
+                    $('#tableBodyClassroomAttachments').empty();
+                    for (var i = 0; i < attachments.length; i++) {
+                        sNo++;
+                        var rows = '<tr><td scope="row" ><button type="button" class="btn btn-link font-weight-bold" >' + sNo + '</button></td>'
+                        + '<td>' + attachments[i].attachment_name + '</td><td>' + attachments[i].date_of_addition + '</td>'
+                          + '<td>'
+                            + '<a   class="list-group-horizontal" download  href="' + attachments[i].attachment_url + '">'
+                                + '<i class="fas fa-download fa-sm fa-fw mr-2 text-gray-600 m-1"></i>'
+                            + '</a>'
+                            + '<button type="button" class="btn btn-link" class="list-group-horizontal" onclick="deleteClassroomAttachment(' + attachments[i].attachment_id + ')" data-toggle="modal" >'
+                                + '<i class="fas fa-trash fa-sm fa-fw mr-2 text-gray-600 m-1"></i>'
+                            + '</button>'
+                        + '</td>'
+                        + '</tr>';
+                        $('#tableBodyClassroomAttachments').append(rows);
+                        $("#spinnerClassroomAttachments").remove();
+                        $("#tableClassroomAttachments").show();
+                    }
+                    $("#tableBodyClassroomAttachments").fadeIn();
+
+                    $('#coursesTable').DataTable();
+                }
+                else {
+                    $("#spinnerClassroomAttachments").remove();
+                    $("#spinner").remove();
+                    $("#footerAllAttachments").fadeIn();
+                }
+            }
+        });
+    }
+    function deleteClassroomAttachment(AttachmentId) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/DeleteClassroomAttachment?ClassroomId=@Model.m_llClassRoomId&id=".concat(AttachmentId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+
+                    getAllClassroomAttachments();
+                }
+                else {
+
+                }
+            }
+        });
+    }
+    function openFullscreen(elem) {
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { /* Firefox */
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE/Edge */
+            elem.msRequestFullscreen();
+        }
+        elem.style.width = "100%";
+    }
+    function closeFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { /* Firefox */
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE/Edge */
+            document.msExitFullscreen();
+        }
+    }
+    function changeClassroomOpenStatus(id)
+    {
+        if($(id).prop("checked")==true)
+        {
+            $(id)[0].parentNode.children[1].innerText = " Open ";
+            $(id)[0].nextElementSibling.classList.remove("text-danger");
+            $(id)[0].nextElementSibling.classList.add("text-success");
+            $(id)[0].parentElement.parentNode.nextElementSibling.children[0].disabled = false;
+            $(id)[0].parentElement.parentNode.nextElementSibling.nextElementSibling.children[0].disabled = false;
+        }
+        else
+        {
+            $(id)[0].parentNode.children[1].innerText = " Closed ";
+            $(id)[0].nextElementSibling.classList.remove("text-success");
+            $(id)[0].nextElementSibling.classList.add("text-danger");
+            $(id)[0].parentElement.parentNode.nextElementSibling.children[0].disabled = true;
+            $(id)[0].parentElement.parentNode.nextElementSibling.nextElementSibling.children[0].disabled = true;
+        }
+    }
+    function setClassroomTimeTable(data)
+    {
+        for (var i = 1; i < 8; i++) {
+            $("#classroomStartTime".concat(i)).val(data[i - 1].start_time);
+            $("#classroomFinishTime".concat(i)).val(data[i - 1].close_time);
+            $("#classroomCloseStatus".concat(i)).prop("checked", data[i - 1].is_open);
+            var x=$("#classroomCloseStatus".concat(i))[0];
+            if(!data[i - 1].is_open)
+            {
+                x.parentNode.children[1].innerText = " Closed ";
+                x.nextElementSibling.classList.remove("text-success");
+                x.nextElementSibling.classList.add("text-danger");
+            }
+            else {
+                x.parentNode.children[1].innerText = " Open ";
+                x.nextElementSibling.classList.remove("text-danger");
+                x.nextElementSibling.classList.add("text-success");
+            }
+        }
+    }
+    function createClassroomScheduleUpdateRequest()
+    {
+        debugger
+        var classroomScheduleDetails = [];
+        for(var i=1;i<8;i++)
+        {
+            dayWiseSchedule = {
+                "start_time":$("#classroomStartTime".concat(i)).val(),
+                "close_time":$("#classroomFinishTime".concat(i)).val(),
+                "is_open": $("#classroomCloseStatus".concat(i)).prop("checked")
+                };
+            classroomScheduleDetails.push(dayWiseSchedule);
+        }
+        return classroomScheduleDetails;
+    }
+    function callUpdateClassroomSchedule()
+    {
+        debugger
+        var _data = {
+            "classroom_id": "@Model.m_llClassRoomId",
+            "schedule_details":createClassroomScheduleUpdateRequest(),
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/instructor/InsertClassroomSchedule",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#classroomScheduleUpdateMessage").addClass("text-sucess").removeClass("text-danger");
+                    $("#classroomScheduleUpdateMessage").text("classroom schedule updated successfully");
+                }
+                else {
+                    $("#classroomScheduleUpdateMessage").addClass("text-danger").removeClass("text-success");
+                    $("#classroomScheduleUpdateMessage").text("classroom schedule could not be updated");
+                }
+                $("#classroomScheduleUpdateAlert").show();
+            }
+        });
+    }
+    function callGetClassroomTimeTable() {
+        debugger
+        var _data = {
+            "classroom_id": "@Model.m_llClassRoomId"
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/GetClassroomTimeTable?ClassroomId=@Model.m_llClassRoomId",
+            success: function (data) {
+                if (data != null && data.response_code == 1 && data.classroom_schedule_details!=null) {
+                    setClassroomTimeTable(data.classroom_schedule_details.schedule_details);
+                }
+                else {
+
+                }
+
+            }
+        });
+    }
+    var ClassroomPublicType;
+    var classroomFee = 0;
+    function activateClassroomChoose(option)
+    {
+        ClassroomPublicType = option;
+        switch(option)
+        {
+            case 1:
+                {
+                    $("#activateClassroomPrivate").show();
+                    $("#activateClassroomPublic").hide();
+                    break;
+                }
+            case 2:
+                {
+                    $("#activateClassroomPublic").show();
+                    $("#activateClassroomPrivate").hide();
+                    break;
+                }
+        }
+        $("#activateClassroomButton").prop("disabled", false);
+
+    }
+    function callClassroomMeeting()
+    {
+        debugger
+        try{
+            AndroidInterface.startClassroomMeeting("@Model.m_strClassRoomName","@Model.m_strClassroomMeetingName");
+        }
+        catch(ex)
+        {
+
+        }
+    }
+    function validateAmount(id)
+    {
+        if ($(id).val() == "-")
+        {
+            $(id).val("");
+        }
+        if(parseInt( $(id).val())<0)
+        {
+            $(id).val("");
+        }
+    }
+    $(function () {
+        $('#classroomStartDate').prop('min', function () {
+            return new Date().toJSON().split('T')[0];
+        });
+        $('#classroomStartDate').prop('value', function () {
+            return new Date().toJSON().split('T')[0];
+        });
+        $('#classroomDailyStartTime').prop('value', function () {
+            return new Date().toJSON().split('T')[0];
+        });
+
+    });
+    var selectedDates = {
+        "monday": 0,
+        "tuesday": 0,
+        "wednesday": 0,
+        "thursday": 0,
+        "friday": 0,
+        "saturday": 0,
+        "sunday":0
+    };
+
+    function setDate(id,date)
+    {
+        if ($(id).hasClass("btn-primary"))
+        {
+            $(id).removeClass("btn-primary");
+            $(id).addClass("btn-outline-primary");
+        } else {
+            $(id).addClass("btn-primary");
+            $(id).removeClass("btn-outline-primary");
+        }
+        selectedDates[date] = selectedDates[date] == 0 ? 1 : 0;
+        //alert(selectedDates[date])
+    }
+    function getSelectedDates()
+    {
+        return ""+selectedDates["monday"]+
+            selectedDates["tuesday"] + selectedDates["wednesday"] + selectedDates["thursday"] +
+            selectedDates["friday"] + selectedDates["saturday"] + selectedDates["sunday"];
+    }
+    var smallIconUrl;
+    var mediumSizeIconUrl;
+    var backGroundImagePath;
+    function updateClassroomBgImage()
+    {
+
+        var _data =
+            {
+                "classroom_id": "@Model.m_llClassRoomId",
+                "image_data": {
+                    "small_size_url": smallIconUrl,
+                    "original_url": backGroundImagePath,
+                    "medium_size_url": mediumSizeIconUrl
+                }
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data:JSON.stringify(_data),
+            url: "/api/v1/instructor/UpdateClassroomImage",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    location.reload();
+                }
+                else {
+
+                }
+
+            }
+        });
+
+    }
+    var currentMeetingId = 0;
+    function updateClassroomMeetingDetails() {
+
+        var _data =
+            {
+                "video_link": $("#liveClassVideoUrl").val(),
+                "meeting_id":currentMeetingId,
+                "classroom_id": "@Model.m_llClassRoomId",
+                "topic_name": $("#liveClassTopicName").val(),
+                "topic_description": $("#liveClassNotes").val(),
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/instructor/UpdateLiveClassDetails",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    location.reload();
+                }
+                else {
+
+                }
+
+            }
+        });
+    }
+    function uploadClassroomMeetingVideo() {
+        document.getElementById("meetingVideoUploadProgressbar").style.width = "0%";
+        debugger
+        var data = new FormData();
+        //var file = $('#fileUpload')[0];
+        var file = $("#meetingVideoUpload")[0];
+        data.append('file', file.files[0]);
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        document.getElementById("meetingVideoUploadProgressbar").style.width = percentComplete + "%";
+                        if (percentComplete === 100) {
+
+                        }
+                    }
+                }, false);
+
+                return xhr;
+            },
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            data: data,
+            url: "/api/v1/instructor/UploadVideo",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1 && data.file_location != null && data.file_location != "") {
+                    awsPath = data.file_location;
+                    $("#liveClassVideoUrl").val(data.file_location);
+                    $("#postMeetingVideoUploadAlert").show();
+                    $("#postMeetingVideoUploadAlert").append('<button type="button" class="btn btn-link" >File uploaded successfully </button>');
+                }
+                else {
+                    $("#postUploadAlert").show();
+                    $("#postUploadAlert").append('<button type="button" class="btn btn-link" >File uploading failed</button>');
+                }
+            }
+        });
+    }
+
+    function showClassroomMeetingContent(meetingId)
+    {
+        currentMeetingId = meetingId;
+        var _data =
+           {
+               "meeting_id": meetingId,
+               "classroom_id": "@Model.m_llClassRoomId"
+           }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/instructor/GetLiveClassDetails",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    $("#no-data-present").hide();
+                    if(data.live_class_details.class_topic!=null){
+                        $("#topic-name").text(data.live_class_details.class_topic);
+                        $("#liveClassTopicName").val(data.live_class_details.class_topic);
+
+                    }
+                    if(data.live_class_details.video_url!=null)
+                    {
+                        $("#topic-video-palyer-container").show();
+                        const player = new Plyr("#topic-video-palyer-container", { captions: { active: true } });
+                        window.player = player;
+                        $("#liveClassVideoUrl").val(data.live_class_details.video_url);
+                        $("#video-url").attr("src", data.live_class_details.video_url);
+                        $("#video-url").show();
+                        $("#no-video-data-present").hide();
+                        $("#no_video_present_img").hide();
+                    }
+
+                    else {
+                        $("#topic-video-palyer-container").hide();
+                        $("#video-url").hide();
+                        $("#no-video-data-present").show();
+                        $("#no_video_present_img").show();
+                    }
+                }
+                else {
+                    $("#no-data-present").show();
+                    //else part of ajax call
+                }
+
+            }
+        });
+    }
+    function viewUpdateClassroomSyallabus()
+    {
+        hideAll();
+        $("#updateSyllabusDiv").show();
+        getClassroomSyllabus();
+    }
+    function updateTopic(weekname, topic_no) {
+        classroomSyllabus[weekno - 1]["week" + weekno].topics_to_be_covered[topic_no] = $("#updateTopicOfWeek").val();
+
+    }
+    function deleteTopic(weekno, topic_no) {
+        debugger
+        classroomSyllabus[weekno - 1]["week" + weekno].topics_to_be_covered.splice(topic_no,1);
+    }
+    function addTopicToWeek()
+    {
+        if ($("#currentWeekTopic").val() == "") {
+            return;
+        }
+        debugger
+        classroomSyllabus[currentWeekNo - 1].topics_to_be_covered.push($("#currentWeekTopic").val());
+        $("#week" + currentWeekNo + "-body").append('<li class="list-group-item">' + $("#currentWeekTopic").val() +
+            '<button onclick="deleteTopic(' + currentWeekNo + ',' + classroomSyllabus[currentWeekNo - 1].topics_to_be_covered.length + ')"><i class="fa fa-trash"></i></button></li>');
+        $("#currentWeekTopic").val("");
+        $('#currentWeekTopicPreviewUrl').val("");
+    }
+    function getClassroomSyllabus()
+    {
+
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/GetClassroomSyllabus?ClassroomId=".concat("@Model.m_llClassRoomId"),
+            success: function (data) {
+                $("#spinnerClassroomClassroomSchedule").remove();
+                debugger
+                if (data != null && data.response_code == 1) {
+                    setClassroomSchedule(data.classroom_syllabus_response.week_wise_schedule);
+                }
+                else {
+
+                }
+            }
+        });
+    }
+    function updateClassroomSyllabus()
+    {
+
+        var _data = {
+            "week_wise_schedule":classroomSyllabus,
+            "classroom_id": "@Model.m_llClassRoomId"
+        };
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/instructor/UpdateClassroomSyllabus",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    $("#infoMessage").text("classroom details updated successfully");
+                    $("#successModal").modal("show");
+                    getClassroomSyllabus();
+                }
+                else {
+
+                }
+            }
+        });
+    }
+    var classroomSyllabus = [];
+    var currentWeekNo = 0;
+
+    function addNewWeek()
+    {
+        debugger
+        var week = "week ".concat(classroomSyllabus.length + 1);
+        var weekId = "week".concat(classroomSyllabus.length + 1);
+        var data = {
+            "week_name": week,
+            "topics_to_be_covered": new Array()
+        }
+        classroomSyllabus.push(data);
+        console.log(classroomSyllabus);
+        var row = '<div class="card-header" id="collapse-week-header' + weekId + '">'
+                                    +'<h2 class="mb-0">'
+            + '<button class="btn btn-link text-left" type="button" data-toggle="collapse" data-target="#collapse-week-body' + weekId + '" aria-expanded="true" aria-controls="collapse-week-body' + weekId +'">'+
+                                            week
+                                        +'</button> '
+                                        + '<span><button class="btn btn-outline-danger btn-sm text-left" onclick="requestAddNewTopicToWeek(' + classroomSyllabus.length + ')"><i class="fa fa-plus-circle"></i>'
+                                            +'add topic'
+                                        +'</button></span>'
+                                    +'</h2>'
+                                + '</div>';
+        row += ' <div id="collapse-week-body'+weekId+'" class="collapse" aria-labelledby="headingOne" data-parent="#collapse-week-header' + weekId + '">'
+                                      + '<div class="card-body">'
+                                          + '<ul class="list-group" id="' + weekId + '-body">'
+                                          + '</ul>'
+                                     + ' </div>'
+                                 + ' </div>'
+                                 + ' </div>';
+        $("#classroom-syllabus-container").append(row);
+    }
+    function requestAddNewTopicToWeek(weekNo)
+    {
+        currentWeekNo = weekNo;
+        $("#classroomTopicModal").modal("show");
+    }
+    function setClassroomSchedule(data) {
+        $("#classroom-syllabus-container").empty();
+        classroomSyllabus = [];
+        for (var i = 0; i < data.length; i++) {
+            addNewWeek();
+            currentWeekNo = i + 1;
+            for (var j = 0; j < data[i].topics_to_be_covered.length;j++) {
+                $("#currentWeekTopic").val(data[i].topics_to_be_covered[j]);
+                addTopicToWeek();
+            }
+        }
+    }
+    function sendClassroomNotification() {
+        hideAll();
+        $("#sendClassroomNotification").show();
+    }
+    function sendClassroomSMSNotificationToAllStudents() {
+
+        if ($("#classroomNotification").val() == null || $("#classroomNotification").val() == "") {
+            return;
+        }
+        var _data = {
+            "notification": $("#classroomNotification").val(),
+            "classroom_id": "@Model.m_llClassRoomId"
+        };
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/instructor/SendClassroomNotificationToStudents",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    $("#infoMessage").text("classroom details updated successfully");
+                    $("#successModal").modal("show");
+                    getClassroomSyllabus();
+                }
+                else {
+
+                }
+            }
+        });
+    }
+</script>-->
+<script type="text/javascript">
+    localStorage.setItem("classroom_id", "@Model.m_llClassRoomId");
+</script>
+<script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
+<script src="https://unpkg.com/plyr@3"></script>
+<script type="text/javascript" src="~/Scripts/Classroom/ClassroomDashboard.js"></script>
+

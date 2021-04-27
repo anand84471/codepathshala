@@ -1,0 +1,443 @@
+﻿@{
+    ViewBag.Title = "View all assignments";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Assignments</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                @*<li class="breadcrumb-item"><a href="#" onclick="callViewAllAssignments()">Assignments</a></li>*@
+                <li class="breadcrumb-item active" aria-current="page" id="breadcumbCurrentName">Assignments</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-body" >
+            <div class="table-responsive">
+                 <table id="customTableCodePathshala" class="table-responsive table-hover" style="display:none">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th >Assignment Name</th>
+                            <th >Creation Date</th>
+                            <th >Total No of Questions</th>
+                            <th >Assignment Type</th>
+                            <th>Submissions</th>
+                            <th >Actions</th>
+                        </tr>
+                    </thead>
+                   
+                    <tbody id="assignmentsRows">
+
+                    </tbody>
+                </table>
+                <div id="spinner" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class=" text-center" id="footer" style="display:none">
+            <div class="card-body">
+                <h6 class="card-title"> You have not created any assignments</h6>
+                @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+                <div id="assignmentContainer" class="assignmentContainer"></div>
+                <a id="addAssignmentButton" class="btn btn-primary" href="./CreateAssignment">Add new assignment</a>
+            </div>
+            <div class="card-footer text-muted">
+                Thank you!
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade top modal-lg" id="assignmentDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 " id="myModalLabel"> <b>Assignment Details:</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div id="responseBodyContainer" class="modal-body">
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+               
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<!-- Full Height Modal Right -->
+<div class="modal fade" id="editTopicModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="editOptionBody">
+                    <h5 class="modal-title" id="editTopicModalHeader">Edit Topic</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label" id="ab-topicNameLabel">Topic Name:</label>
+                        <input type="text" class="form-control" id="ab-topicName">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label" id="ab-topicDescriptionLabel">Topic Description:</label>
+                        <textarea class="form-control" id="ab_topicDescription"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="editTopicModalSubmitButton">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editMcqAssignmentQuestionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMcqQuestionHeader">Edit question</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="ab-question" class="col-form-label">Question statement:</label>
+                        <input type="text" class="form-control" id="ab-question">
+                    </div>
+                    <div class="form-group">
+                        <label for="ab-option1" class="col-form-label">Option 1:</label>
+                        <input type="text" class="form-control" id="ab-option1">
+                    </div>
+                    <div class="form-group">
+                        <label for="ab-option2" class="col-form-label">Option 2:</label>
+                        <input type="text" class="form-control" id="ab-option2">
+                    </div>
+                    <div class="form-group">
+                        <label for="ab-option3" class="col-form-label">Option 3:</label>
+                        <input type="text" class="form-control" id="ab-option3">
+                    </div>
+                    <div class="form-group">
+                        <label for="ab-option4" class="col-form-label">Option 4:</label>
+                        <input type="text" class="form-control" id="ab-option4">
+                    </div>
+                    <div class="form-group">
+                        <label for="ab-correctOption">Correct option</label>
+                        <select id="ab-correctOption" class="form-control">
+                            <option selected>Choose...</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </select>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="editMcqQuestionSubmitButton" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="successDelete" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-success modal-content">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoTitle">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-success">
+                    <h3 id="successResponseMessage">deleted successfully</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Confirm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="confirmMessage">Are you sure to want to delete the topic?</h3>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmDeletButtonForCourse" type="button" class="btn btn-primary" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="errorAlertHeader" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="errorAlertMessageBody">Course could not be deleted</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+        (function () {
+            'use strict';
+            //window.addEventListener('load', function () {
+            //    getAssignmentDetails();
+            //}, false);
+            onpageshow = getAllAssignmentDetails();
+        })();
+        function getAssignmentDetails(id) {
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/api/v1/Course/FetchAssignmentDetails?AssignmentId=".concat(id),
+                success: function (data) {
+                    debugger
+                    if (data != null && data.response_code == 1) {
+                        var questionDetails = data.mcq_questions;
+                        if (data.assignment_type == "sub") {
+                            data.assignment_type = "Subjective";
+                        }
+                        AssignmentType = data.assignment_type;
+                        var assignmentHtml = '<div class="card shadow mb-4 border-bottom-primary">'
+                                    + '<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">'
+                                        + '<h6 class="m-0 font-weight-bold text-primary">Assignment Details</h6>'
+                                         + '<div class="dropdown no-arrow">'
+                                         + '</div>'
+                                     + '</div>'
+                                    + '<div class="card-body">'
+                        assignmentHtml += '<dl class="row ml-3">'
+                              + '<dt class="col-sm-3">Assignment name:</dt><dd class="col-sm-9">' + data.assignment_name + '</dd>'
+                              + '<dt class="col-sm-3">Assignment description:</dt><dd class="col-sm-9">' + data.assignment_description + '</dd>'
+                              + '<dt class="col-sm-3">Assignment Creation Date:</dt><dd class="col-sm-9">' + data.creation_date + '</dd>'
+                              + '<dt class="col-sm-3">Assignment Updat Date:</dt><dd class="col-sm-9">' + data.updatione_date + '</dd>'
+                              + '<dt class="col-sm-3">Assignment Type:</dt><dd class="col-sm-9">' + data.assignment_type + '</dd>'
+                              + '</dl></div><h2 class="ml-3">Questions</h2>';
+                        if (data.assignment_type == "mcq") {
+                            assignmentHtml += '<div class="card-body" style="padding:0">'
+                                                    + '<div class="table-responsive">'
+                                                        + '<table id="coursesTable" class="table table-hover text-xsmall">'
+                                                            + '<thead class="thead-dark">'
+                                                                + '<tr>'
+                                                                    + '<th scope="col">S.No</th>'
+                                                                    + '<th scope="col">Question Statement</th>'
+                                                                    + '<th scope="col">Option1</th>'
+                                                                    + '<th scope="col">Option2</th>'
+                                                                    + '<th scope="col">Option3</th>'
+                                                                    + '<th scope="col">Option4</th>'
+                                                                    + '<th scope="col">Correct Option</th>'
+                                                                + '</tr>'
+                                                            + '</thead>'
+                                                            + '<tbody>';
+                        }
+                        else {
+                            assignmentHtml += '<div class="card-body" style="padding:0">'
+                                                   + '<div class="table-responsive">'
+                                                       + '<table id="coursesTable" class="table table-hover text-xsmall">'
+                                                           + '<thead class="thead-dark">'
+                                                               + '<tr>'
+                                                                   + '<th scope="col">S.No</th>'
+                                                                   + '<th scope="col">Question Statement</th>'
+                                                                   + '<th scope="col">Hint</th>'
+                                                                   + '<th scope="col">Addition Date</th>'
+                                                                   //+ '<th scope="col">Actions</th>'
+                                                               + '</tr>'
+                                                           + '</thead>'
+                                                           + '<tbody>';
+                        }
+                        var rows = '';
+                        if (data.assignment_type == "mcq") {
+                            if (questionDetails != null) {
+                                for (var i = 0; i < questionDetails.length; i++) {
+                                    var sNo = i + 1;
+                                    rows += '<tr><th scope="row" >' + sNo + '</th>'
+                                    + '<td>' + questionDetails[i].question_statement + '</td><td>' + questionDetails[i].option1 + '</td><td>' + questionDetails[i].option2 + '</td><td>' + questionDetails[i].option3 + '</td><td>' + questionDetails[i].option4 + '</td><td>' + questionDetails[i].correct_option + '</td>'
+                                    + '</tr>';
+                                }
+                            }
+                        }
+                        else if (data.assignment_type = "Subjective") {
+
+                            var questionDetails = data.subjective_questions;
+                            if (questionDetails != null) {
+                                for (var i = 0; i < questionDetails.length; i++) {
+                                    var sNo = i + 1;
+                                    rows += '<tr><th scope="row" >' + sNo + '</th>'
+                                   + '<td>' + questionDetails[i].question_statement + '</td><td>' + questionDetails[i].hint + '</td><td>' + questionDetails[i].creation_date + '</td>'
+                                   + '</tr>';
+                                }
+                            }
+                        }
+                        assignmentHtml += rows;
+                        assignmentHtml += '</tbody></table></div></div>';
+                    }
+
+                    $("#responseBodyContainer").html(assignmentHtml);
+                    $("#assignmentDetailsModal").modal('show');
+                }
+            });
+        }
+    function searchToCustomTable() {
+        var input, filter, table, tr, td, i, txtValue, a;
+        input = document.getElementById("customTableCodePathshalaSearch");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("customTableCodePathshala");
+        tr = table.getElementsByTagName("tr");
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+            a = tr[i].getElementsByTagName("th")[0];
+            a = a.getElementsByTagName("button")[0];
+            if (a) {
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    function getAllAssignmentDetails() {
+        var x = $('#assignmentsRows').empty();
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/assignments",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var assignments=data.assignments;
+                    for (var i = 0; i < assignments.length; i++) {
+                        if (assignments[i].name.length > 30)
+                        {
+                            assignments[i].name = assignments[i].name.substring(0, 30) + "...";
+                        }
+                        var rows = '<tr><td scope="row" ><button type="button" class="btn btn-link font-weight-bold" onclick="getAssignmentDetails('.concat(assignments[i].assignment_id) + ')">' + assignments[i].name + '</button></td>'
+                        + '<td>' + assignments[i].creation_date + '</td><td>' + assignments[i].no_of_questions + '</td><td>' + assignments[i].type + '</td><td><button type="button" class="btn btn-link font-weight-bold" onclick="getAssignmentSubmissions('.concat(assignments[i].assignment_id) + ')">' + assignments[i].no_of_submissions + '</button></td></td>'
+                        +'<td>'
+                            + '<button type="button" class="btn btn-link" class="list-group-horizontal" onclick="getViewAssignmentDetails(' + assignments[i].assignment_id + ')">'
+                                +'<i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                            +'</button>'
+                            + '<button type="button" class="btn btn-link" class="list-group-horizontal" onclick="requestDeletAssignment('+ assignments[i].assignment_id+')">'
+                                +'<i class="fas fa-trash fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                            + '</button>'
+                        +'</td>'
+                        +'</tr>';
+                        $('#assignmentsRows').append(rows);
+                        $("#spinner").remove();
+                        $("#customTableCodePathshala").show();
+                    }
+                    $('#customTableCodePathshala').DataTable();
+                }
+                else {
+                    $("#footer").show();
+                    $("#spinner").remove();
+                }
+            }
+    });
+    }
+    function getViewAssignmentDetails(id) {
+            debugger;
+            $.ajax({
+                url: '@Url.Action("ViewAssignment", "Instructor")',
+                data: {"id": id},
+                type: 'GET',
+                success: function (data) {
+                    $("#body").html(data);
+                    window.history.pushState({ "html": data, "pageTitle": "Instructor" }, "", "ViewAssignment?id=".concat(id));
+                }
+            });
+    }
+    function getAssignmentSubmissions(id) {
+        debugger;
+        $.ajax({
+            url: '@Url.Action("AssignmentSubmissions", "Instructor")',
+            data: { "id": id },
+            type: 'GET',
+            success: function (data) {
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Instructor" }, "", "AssignmentSubmissions?id=".concat(id));
+            }
+        });
+    }
+    function requestDeletAssignment(AssignmentId) {
+        $("#confirmMessage").text("Are you sure to want to delete the assignment?");
+        $("#confirmDeletButtonForCourse").attr("onclick", "deleteAssignment(" + AssignmentId + ")");
+        $("#confirmDelete").modal('show');
+    }
+    function deleteAssignment(AssignmentId) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/DeleteIndependentAssignment?AssignmentId=".concat(AssignmentId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("assignment deleted successfully");
+                    $("#successDelete").modal('show');
+                    getAllAssignmentDetails();
+                }
+                else {
+                    $("#errorAlertMessageBody").text("assignment could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,164 @@
+﻿@{
+    ViewBag.Title = "Assignment Submissions";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Assignment submissions</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callViewAllAssignment()">Assignments</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callViewAssignment(@ViewBag.TestId)" id="assignment-name-breadcrumb"></a></li>
+                <li class="breadcrumb-item active" aria-current="page" id="breadcumbCurrentName">Submissions</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-body" >
+            <div class="table-responsive">
+                <table id="customTableCodePathshala" class="table-responsive table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Student Name</th>
+                            <th scope="col">Submission Date</th>
+                            <th scope="col">Percentage Score</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assignmentsRows"></tbody>
+                </table>
+                <div id="spinner" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card text-center" id="footer" style="display:none">
+            <div class="card-body">
+                <h6 class="card-title"> You have not submitted any assignments</h6>
+                @*<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+                <div id="assignmentContainer" class="assignmentContainer"></div>
+                <a id="addAssignmentButton" class="btn btn-primary" href="./CreateAssignment">Give new assignments</a>
+            </div>
+            <div class="card-footer text-muted">
+                Thank you!
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade top modal-lg" id="assignmentDetailsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 " id="myModalLabel"> <b>Assignment Submission:</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div id="responseBodyContainer" class="modal-body">
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        //window.addEventListener('load', function () {
+        //    getAssignmentDetails();
+        //}, false);
+        onpageshow = getAllAssignmentDetails();
+    })();
+    function searchToCustomTable() {
+        var input, filter, table, tr, td, i, txtValue, a;
+        input = document.getElementById("customTableCodePathshalaSearch");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("customTableCodePathshala");
+        tr = table.getElementsByTagName("tr");
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+            a = tr[i].getElementsByTagName("th")[0];
+            a = a.getElementsByTagName("button")[0];
+            if (a) {
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    function getSubmissionDetails(id, student_id) {
+        $.ajax({
+            url: '/Instructor/AssignmentResponse?id='.concat(id).concat("&&AssId=".concat(@ViewBag.TestId)).concat("&&viewer=".concat(student_id)),
+            type: 'GET',
+            success: function (data) {
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "Instructor" }, "Assignments", "AssignmentResponse?id=".concat(id).concat("&&AssId=".concat(@ViewBag.TestId)).concat("&&viewer=".concat(student_id)));
+            }
+        });
+    }
+
+    function getAllAssignmentDetails() {
+        var x = $('#assignmentsRows').empty();
+        $("#assignment-name-breadcrumb").text(@ViewBag.TestId);
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/GetAllAssignmentsSubmission?AssignmentId=@ViewBag.TestId",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var assignments = data.submissions;
+                    for (var i = 0; i < assignments.length; i++) {
+                        var rows = '<tr>'
+                        + '<td>' + assignments[i].student_name + '</td><td>' + assignments[i].submission_date + '</td><td>' + assignments[i].percentage_score + '</td>'
+                        + '<td>'
+                            + '<button type="button" class="btn btn-link" class="list-group-horizontal" onclick="getSubmissionDetails(' + assignments[i].submission_id + ',' + assignments[i].student_id + ')">'
+                                + '<i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                            + '</button>'
+                        + '</td>'
+                        + '</tr>';
+                        $('#assignmentsRows').append(rows);
+                        $("#spinner").remove();
+                        $("#customTableCodePathshala").show();
+                    }
+                    $('#customTableCodePathshala').DataTable();
+                }
+                else {
+                    $("#footer").show();
+                    $("#spinner").remove();
+                }
+                $("#spinner").remove();
+            }
+        });
+    }
+
+
+</script>

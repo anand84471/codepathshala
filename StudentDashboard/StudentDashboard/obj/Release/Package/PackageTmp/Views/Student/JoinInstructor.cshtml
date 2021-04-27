@@ -1,0 +1,282 @@
+﻿@{
+    ViewBag.Title = "Follow new Instructor";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<style type="text/css">
+#instructors{
+    border-radius: 10px;
+    background-color: white;
+    width: 70%;
+    min-height: 80vh;
+    margin: auto;
+    margin-top: 2rem;
+    padding-top: 4vh;
+}
+
+.instructorsList{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 10% 70% 20%;
+}
+.profile{
+    margin-top: 1vh;
+    margin-left: 4rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 40px;
+}
+.add{
+    width: 37px;
+    height: 32px;
+}
+.add-cont{
+    text-align: center;
+    margin: auto;
+}
+.icon{
+    width: 3rem;
+    font-size: 1.6rem;
+    height: 2.8rem;
+    text-align: center;
+    border-radius: 60px;
+    background-color: #f0f2f5;
+    cursor: pointer;
+    outline: none;
+    border: none;
+}
+.content{
+    padding-left: 4rem;
+}
+.info{
+    font-size: 1rem;
+    opacity: 0.7;
+}
+.name{
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+.name:hover{
+    text-decoration: underline;
+}
+
+@@media only screen and (max-width: 600px) {
+    #instructors{
+        width: 100%;
+    }
+    .profile{
+        margin-left: 1.5rem;
+        width: 50px;
+        height: 50px;
+    }
+    .add{
+        width: 30px;
+        height: 25px;
+    }
+    .info{
+        font-size: 0.8rem;
+    }
+    .name{
+        font-size: 1.2rem;
+    }
+  
+}
+</style>
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Join Instructors</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Join Instructor</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="input-group pl-lg-5 pr-lg-5">
+        <input type="text" class="form-control" id="courseSearchBox" placeholder="Search for instructor..." aria-label="Search">
+        <div class="input-group-append">
+            <button class="btn btn-primary" onclick="perfromUserSearch()" type="button">
+                <i class="fas fa-search fa-sm"></i>
+            </button>
+        </div>
+    </div>
+   
+    <hr class="ml-5 mr-5" />
+    <div class="card row  shadow-lg mb-4" id="instructors">
+        <div id="joined-members" class="container-fluid">
+        </div>
+        
+    </div>
+    <div class="container-fluid text-center" id="spinner-area">
+        <div class="spinner-border" role="status" id="infinit-spinner">
+            <span class="sr-only" id="infinit-spinner-body">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        'use strict';
+        var input = document.getElementById("courseSearchBox");
+        input.addEventListener("keyup", function (event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                perfromUserSearch();
+            }
+        });
+        onpageshow = searchForInstructor();
+    })();
+    $(window).on("scroll", function () {
+        var scrollHeight = $(document).height();
+        var scrollPos = $(window).height() + $(window).scrollTop();
+        if ((scrollHeight - scrollPos) / scrollHeight == 0) {
+            if (!is_last_id_feteced) {
+                searchForInstructor();
+            }
+        }
+    });
+    function perfromUserSearch() {
+        no_of_rows_fetched = 0;
+        $("#joined-members").empty();
+        searchForInstructor();
+    }
+    var no_of_rows_fetched = 0;
+    var is_last_id_feteced = false;
+    function searchForInstructor() {
+        debugger
+        $("#infinit-spinner").show();
+        $("#infinit-spinner-body").show();
+        var _data =
+            {
+                "key": $("#courseSearchBox").val(),
+                "no_of_rows_fetched": no_of_rows_fetched
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/InstructorSearchNew",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var instructorsData = data.instructors;
+
+                    if (instructorsData==null|| instructorsData.length == 0)
+                    {
+                        is_last_id_feteced = true;
+                    }
+                    no_of_rows_fetched = no_of_rows_fetched + instructorsData.length;
+                    var subCount = document.getElementById("joined-members");
+                    for (let i = 0; i < instructorsData.length; i++) {
+                        if (instructorsData[i].profile_url == null) {
+                            instructorsData[i].profile_url = "../images/profile1.png";
+                        }
+                        let parent = document.createElement("DIV");
+                        let parentAtt = document.createAttribute("class");
+                        parentAtt.value = "instructorsList";
+                        parent.setAttributeNode(parentAtt);
+
+                        let profileImg = document.createElement("IMG");
+                        let profileImgAtt = document.createAttribute("class");
+                        profileImgAtt.value = "profile";
+                        profileImg.setAttributeNode(profileImgAtt);
+                        profileImg.src = instructorsData[i].profile_url
+                        profileImg.alt = "img" + i
+
+                        let parentCont = document.createElement("DIV");
+                        let parentContAtt = document.createAttribute("class");
+                        parentContAtt.value = "content";
+                        parentCont.setAttributeNode(parentContAtt);
+
+                        let nameCont = document.createElement("a");
+                        nameCont.href = "TeacherProfile?id=" + instructorsData[i].id;
+                        let nameContAtt = document.createAttribute("class");
+                        nameContAtt.value = "name";
+                        nameCont.setAttributeNode(nameContAtt);
+                        nameCont.textContent = instructorsData[i].name
+
+                        let infoCont = document.createElement("DIV");
+                        let infoContAtt = document.createAttribute("class");
+                        infoContAtt.value = "info";
+                        infoCont.setAttributeNode(infoContAtt);
+                        infoCont.textContent = instructorsData[i].no_of_course + " Courses Created"
+
+                        let infoCont1 = document.createElement("DIV");
+                        let infoContAtt1 = document.createAttribute("class");
+                        infoContAtt1.value = "info";
+                        infoCont1.setAttributeNode(infoContAtt1);
+                        infoCont1.textContent = instructorsData[i].no_of_students_joined + " Students Joined"
+
+                        parentCont.appendChild(nameCont)
+                        parentCont.appendChild(infoCont)
+                        parentCont.appendChild(infoCont1)
+
+
+                        let addCont = document.createElement("DIV");
+                        let addContAtt = document.createAttribute("class");
+                        addContAtt.value = "add-cont";
+                        addCont.setAttributeNode(addContAtt);
+
+
+                        let icon = document.createElement("a")
+                        icon.href = "TeacherProfile?id="+instructorsData[i].id;
+                        let iconCont = document.createAttribute("class");
+                        iconCont.value = "icon";
+                        icon.setAttributeNode(iconCont);
+
+                        let addImg = document.createElement("I");
+                        let addImgAtt = document.createAttribute("class");
+                        addImgAtt.value = "fa fa-user-plus"
+                        addImg.setAttributeNode(addImgAtt);
+
+                        icon.appendChild(addImg)
+
+                        addCont.appendChild(icon)
+
+                        let underline = document.createElement("hr");
+
+                        parent.appendChild(profileImg)
+                        parent.appendChild(parentCont)
+                        parent.appendChild(addCont)
+
+                        subCount.appendChild(parent);
+
+                        if (i < instructorsData.length - 1) {
+                            subCount.appendChild(underline)
+                        }
+                    }
+                    document.getElementById("instructors").appendChild(subCount)
+                }
+                else {
+                    $("#infinit-spinner").hide();
+                    $("#infinit-spinner-body").hide();
+                    is_last_id_feteced = true;
+                }
+                $("#infinit-spinner").hide();
+                $("#infinit-spinner-body").hide();
+            }
+        });
+    }
+    
+    function callJoinInstructor(id) {
+        debugger
+        $.ajax({
+            url: "TeacherProfile?id=".concat(id),
+            type: 'GET',
+            success: function (data) {
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "TeacherProfile?id=".concat(id));
+            }
+        });
+    }
+</script>
+
+
+<script type="text/javascript">
+   
+ 
+  
+</script>

@@ -1,0 +1,277 @@
+﻿@{
+    ViewBag.Title = "Contact";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+<div class="modal fade" id="successDelete" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-success modal-content">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoTitle">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-success">
+                    <h3 id="successResponseMessage">deleted successfully</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="errorAlertHeader" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="errorAlertMessageBody">Course could not be deleted</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Contact us</h1>
+    </div>
+    <!-- Course section -->
+    <div class="card shadow mb-4">
+        <!-- Card Header - Accordion -->
+        @*<a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                <h6 class="m-0 font-weight-bold text-primary">Contact us</h6>
+            </a>*@
+
+        <div class="card">
+            <!--Section: Contact v.2-->
+            <section class="mb-4">
+
+                <div class="card-header text-white bg-primary text-center w-responsive mx-auto mb-1">
+                    <span><i class="fa fa-envelope"></i></span>
+                    Write to us
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <!--Grid column-->
+                        <div class="col-md-9 mb-md-0 mb-5">
+                            <form class="needs-validation" method="POST" novalidate>
+                                <!--Grid row-->
+                                <div class="row">
+
+                                    <!--Grid column-->
+                                    <div class="col-md-6">
+                                        <div class="md-form mb-0">
+                                            <label for="name" class="">Your name</label>
+                                            <input type="text" id="contact-name" name="name" class="form-control" required onchange="validateInputField(this)">
+                                            <div class="invalid-feedback">
+                                                please enter name
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Grid column-->
+                                    <!--Grid column-->
+                                    <div class="col-md-6">
+                                        <div class="md-form mb-0">
+                                            <label for="email" class="">Your email</label>
+                                            <input type="email" id="contact-email" name="email" class="form-control" required onchange="validateInputField(this)">
+
+                                            <div class="invalid-feedback">
+                                                plese enter email
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Grid column-->
+
+                                </div>
+                                <!--Grid row-->
+                                <!--Grid row-->
+                                <div class="row mt-3">
+                                    <div class="col-md-12">
+                                        <div class="md-form mb-0">
+                                            <label for="subject" class="">Phone No</label>
+                                            <input type="text" hidden id="country-code"/>
+                                            <input type="tel" id="contact-phone" name="phone" pattern=".{10,}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" maxlength="10" minsize="10" required onchange="validateInputField(this)">
+                                            <div class="invalid-feedback">
+                                                Please enter phone no
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="md-form mb-0">
+                                            <label for="subject" class="">Subject</label>
+                                            <input type="text" id="contact-subject" name="subject" class="form-control" required onchange="validateInputField(this)">
+
+                                            <div class="invalid-feedback">
+                                                Please enter subject
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Grid row-->
+                                <!--Grid row-->
+                                <div class="row">
+
+                                    <!--Grid column-->
+                                    <div class="col-md-12">
+
+                                        <div class="md-form">
+                                            <label for="message">Your message</label>
+                                            <textarea type="text" id="contact-message" name="message" rows="2" class="form-control md-textarea" required onchange="validateInputField(this)"></textarea>
+
+                                            <div class="invalid-feedback">
+                                                Please type message
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!--Grid row-->
+                                <div class="text-center text-md-left mt-2">
+                                    <button type="button" class="btn btn-outline-primary  btn-block" onclick="submitContactForm()">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!--Grid column-->
+                        <!--Grid column-->
+                        <div class="col-md-3 text-center">
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <i class="fas fa-map-marker-alt fa-2x"></i>
+                                    <p>Noida, UP</p>
+                                </li>
+
+                                <li>
+                                    <i class="fas fa-phone mt-4 fa-2x"></i>
+                                    <p>+91 7317553431</p>
+                                </li>
+
+                                <li>
+                                    <i class="fas fa-envelope mt-4 fa-2x"></i>
+                                    <p>contact@readmycourse.com</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <!--Grid column-->
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function validateInputField(id) {
+        if ($(id).val() == "") {
+            $(id).addClass("is-invalid");
+        }
+        else {
+            $(id).addClass("is-valid").removeClass("is-invalid");
+        }
+        return;
+    }
+</script>
+<!--Section: Contact v.2-->
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    debugger;
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+
+    })();
+
+    function extractDataFromContactUsForm() {
+        var phoneNo = "+" + iti.s.dialCode + $("#contact-phone").val();
+        var _data = {
+            "name": $("#contact-name").val(),
+            "email": $("#contact-email").val(),
+            "phone_no": phoneNo,
+            "subject": $("#contact-subject").val(),
+            "message": $("#contact-message").val(),
+        }
+        return _data;
+    }
+    function refreshContactUsForm() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function (form) {
+            form.classList.remove('was-validated');
+        });
+        $("#contact-name").val("");
+        $("#contact-email").val("");
+        $("#contact-phone").val("");
+        $("#contact-subject").val("");
+        $("#contact-message").val("");
+    }
+    function submitContactForm() {
+
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var status = true;
+        var validation = Array.prototype.filter.call(forms, function (form) {
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                status = false;
+            }
+            form.classList.add('was-validated');
+        });
+        if (!status) {
+            return;
+        }
+        var _data = extractDataFromContactUsForm();
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/contact",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("response received. we will contact you soon");
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("Form submission failed. Please try again");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+</script>
+
+<script src="../../Scripts/vendor/intl-tel-input-master/intlTelInput.min.js"></script>
+<script src="../../Scripts/vendor/intl-tel-input-master/intlTelInput-jquery.min.js"></script>
+<script src="../../Scripts/vendor/intl-tel-input-master/utils.js"></script>
+<script type="text/javascript">
+    var input = document.getElementById("contact-phone");
+    var iti = window.intlTelInput(input, ({
+        initialCountry: "in",
+    }));
+</script>

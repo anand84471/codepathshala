@@ -1,0 +1,168 @@
+﻿@{
+    ViewBag.Title = "Join new course";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<style type="text/css">
+     .classroom-assignemnts
+    {
+        width:100%;
+        border:10px;
+background: rgb(58,180,60);
+background: linear-gradient(130deg, rgba(58,180,60,1) 100%, rgba(226,210,210,1) 100%, rgba(252,176,69,1) 100%);
+        padding:3px;
+        margin-top:10px;
+        margin-bottom:10px;
+        color:#f8f9fccc !important;
+        border-radius: 8px; 
+    }
+    .classroom-assignemnts-submitted
+    {
+        width:100%;
+        border:10px;
+background: rgb(54,219,16);
+background: linear-gradient(130deg, rgba(54,219,16,1) 100%, rgba(226,210,210,1) 100%, rgba(252,176,69,1) 100%);
+        padding:3px;
+        margin-top:10px;
+        margin-bottom:10px;
+        color:#f8f9fccc !important;
+        border-radius: 8px; 
+    }
+
+</style>
+
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Search for test</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Give new test</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <nav class="container-fluid">
+        <div class="input-group ">
+            <select class="input-group-prepend " style="width:70px" id="inlineFormCustomSelect">
+                <option selected value="1">Filter...</option>
+                <option value="1">Date of creation ascending</option>
+                <option value="2">Date of creation descending</option>
+                <option value="3">Popularity</option>
+                <option value="4">Rating</option>
+            </select>
+            <input type="text" class="form-control" id="testSearchBox" placeholder="Search for test..." aria-label="Search">
+            <div class="input-group-append">
+                <button class="btn btn-primary" onclick="searchTest()" type="button">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="text-center ml-3">
+            <hr class="mb-3" />
+        </div>
+        <div class="col p-1">
+            <div class="alert alert-danger p-2 m-3" role="alert" style="display:none" id="noTestsFound">
+                <h4 class="alert-heading">No tests found.</h4>
+            </div>
+            <div class="row pl-1" >
+                <div class="text-center container-fluid" id="testSearchInfo">
+                    <h1 class="text-center center">Search for tests</h1>
+                    <img src="~/Images/content-search.svg" class="img-fluid" style="width:300px;height:300px;" />
+                </div>
+                <div class="row" id="testContainer"></div>
+            </div>
+            <div class="col-sm-12" id="showMoreTestButton" style="display:none">
+                <button class="btn btn-block btn-outline-primary" onclick="showTests()">Load more</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        'use strict';
+        var input = document.getElementById("testSearchBox");
+        input.addEventListener("keyup", function (event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                showTests();
+            }
+        });
+        onpageshow = showTests();
+    })();
+    var lastFetchedTestId = 0;
+    function searchTest()
+    {
+        lastFetchedTestId = 0;
+        $("#testSearchInfo").show();
+        $("#testContainer").empty();
+        showTests();
+        
+
+    }
+    function showTests() {
+        debugger
+        var _data =
+            {
+                "search_string": $("#testSearchBox").val(),
+                "last_test_fetched": lastFetchedTestId
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchTests",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1 && data.test_details != null) {
+                    var tests = data.test_details;
+                    $("#testSearchInfo").hide();
+                    if (tests.length == 10)
+                    {
+                        $("#showMoreTestButton").show();
+                    }
+                    else {
+                        $("#showMoreTestButton").hide();
+                    }
+                    for (var i = 0; i < tests.length; i++) {
+                        lastFetchedTestId = tests[i].test_id;
+                            if (tests[i].is_submitted == false) {
+                                
+                                row = '<div class="card shadow classroom-assignemnts col-sm-3 p-2 mr-2 ml-2">' +
+                           '<h4 class="text-white font-weight-bold p2"><span ><i class="fa fa-pencil"></i></span> ' + tests[i].test_name + '</h4>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-calendar"></i></span> Added On: ' + tests[i].test_creation_date + '</h6>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-info-circle"></i></span> No Of questions:' + tests[i].no_of_questions + ' | Test type: MCQ | <i class="fa fa-clock-o text-white" aria-hidden="true"> ' + tests[i].total_time_for_test + '</i> secs</h6>';
+                                row += '<h6 class="ml-4"><span class="badge badge-pill badge-light ml-10" id="successbadge">Status: unattempted</span><a class="ml-2 btn btn-sm btn-outline-light" href="StartTest?access_code=' + tests[i].test_access_code + '&id=' + tests[i].test_id + '">Practice Now</a></h6>';
+                            }
+                            else {
+                                row = '<div class="card-body shadow classroom-assignemnts-submitted col-sm-3 p-2 mr-2 ml-2">' +
+                           '<h4 class="text-white font-weight-bold p2"><span ><i class="fa fa-check-circle"></i></span> ' + tests[i].test_name + '</h4>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-calendar"></i></span> Added On: ' + tests[i].test_creation_date + '</h6>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-info-circle"></i></span> No Of questions:' + tests[i].no_of_questions + ' | Test type: MCQ | <i class="fa fa-clock-o" aria-hidden="true">' + tests[i].total_time_for_test + '</h6></i>';
+                                row += '<h6 class="ml-4"><span class="badge badge-pill badge-light ml-10" id="successbadge">Status: attempted</span><a class="btn btn-sm btn-outline-light ml-2" href="TestResponse?id=' + tests[i].test_submission_id + '">View response</a></h6>';
+                            }
+                            row += '</div>';
+                            $("#testContainer").append(row);
+                        }
+
+                } else {
+                    $("#noTestsFound").show();
+                    }
+                
+            }
+        });
+    }
+    function callGiveNewTest(id) {
+        $.ajax({
+           url: "JoinCourse?id=".concat(id),
+            type: 'GET',
+            success: function (data) {
+                $("#body").html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "JoinCourse?id=".concat(id));
+            }
+        });
+    }
+</script>

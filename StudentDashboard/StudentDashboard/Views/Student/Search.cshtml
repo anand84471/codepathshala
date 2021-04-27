@@ -1,0 +1,81 @@
+﻿@using StudentDashboard.Models.Student;
+@model StudentSearchResponse
+@{
+  
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<style type="text/css">
+   
+
+    @@media (max-width:800px) {
+        h1#classroomName {
+            font-size: 20px;
+        }
+
+        .live-class-info-root {
+            padding: 0px;
+        }
+    }
+</style>
+<div class="course-demo-card container-fluid mt-2">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Search result</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="./Home" onclick="">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Search</li>
+            </ol>
+        </nav>
+    </div>
+
+
+    @if (Model.m_lsLiveClasses != null&&Model.m_lsLiveClasses.Count>0)
+    {
+        <h4>Showing results for live classes </h4>
+        <div class="row col-lg-12">
+            @foreach (var liveClasses in Model.m_lsLiveClasses)
+            {
+                <div class="card shadow col-lg-5 p-2 border-primary m-2">
+                    <div class="card-body">
+                        <h4 class="font-weight-bolder">@liveClasses.m_strClasssroomName</h4>
+                        <p><span class="fa fa-calendar ml-2"></span> Created on: @liveClasses.m_strCreationDate</p>
+                        <p><span class="fa fa-users p-2"> @liveClasses.m_iNoOfEnrollments</span> <a class="btn btn-outline-primary right align-content-end" href="./PreviewClassroom?ClassroomId=@liveClasses.m_llClasssroomId">Details</a></p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    @if (Model.m_lsInstructors != null&&Model.m_lsInstructors.Count>0)
+    {
+        <h4>Showing results for instructors </h4>
+        <div class="row">
+            @foreach (var instructors in Model.m_lsInstructors)
+            {
+                <div class="card shadow col-lg-5 p-2 border-primary m-2">
+                    <div class="card-body ">
+                        <h4 class="font-weight-bolder">@instructors.m_strInstructorFullName</h4>
+                        <p><span class="fa fa-calendar ml-2"></span> Joined since: @instructors.m_strDateOfJoining</p>
+                        <p><span class="fa fa-users p-2"> @instructors.m_iNoOfStudentsJoined</span> <a class="btn btn-outline-primary right align-content-end" href="./TeacherProfile?id=@instructors.m_iInstructorId">Profile</a></p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    @if (Model.m_lsTest != null&&Model.m_lsTest.Count>0)
+    {
+        <h4>Showing results for tests </h4>
+        <div class="row">
+            @foreach (var tests in Model.m_lsTest)
+            {
+                <div class="card shadow col-lg-5 p-2 border-primary m-2">
+                    <div class="card-body ">
+                        <h4 class="font-weight-bolder">@tests.m_strTestName</h4>
+                        <p><span class="fa fa-calendar ml-2"></span> added on: @tests.m_strCreationDate</p>
+                        <p><span class="fa fa-users p-2"> Submissions @tests.m_iNoOfSubmissions</span> <a class="btn btn-outline-primary right align-content-end" href="./StartTest?access_code=@tests.m_strTestAccessCode&id=@tests.m_llTestId">Details</a></p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+ 

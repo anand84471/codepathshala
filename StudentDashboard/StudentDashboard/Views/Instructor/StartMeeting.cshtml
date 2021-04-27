@@ -1,0 +1,199 @@
+﻿@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/__BackLayout.cshtml";
+}
+@using StudentDashboard.Models.Instructor;
+@model JitsiMeetingModal
+<style type="text/css">
+    /* Medium Devices, Desktops */
+
+
+    /* Extra Small Devices, Phones */
+    @@media screen and (max-width: 480rem) {
+        !Important #meet {
+            display: none;
+        }
+
+        #jitsiMobile {
+            display: none;
+        }
+    }
+
+    @@media (min-width:320px) {
+        #meet {
+            display: none;
+        }
+
+        #jitsiMobile {
+            display: none;
+        }
+    }
+
+    @@media (min-width:480px) {
+        #meet {
+            display: none;
+        }
+
+        #jitsiMobile {
+            display: none;
+        }
+    }
+
+    @@media (min-width:600px) {
+        #meet {
+            display: none;
+        }
+
+        #jitsiMobile {
+            display: none;
+        }
+    }
+
+    @@media (min-width:801px) { /* tablet, landscape iPad, lo-res laptops ands desktops */
+    }
+
+    @@media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */
+    }
+
+    @@media (min-width:1281px) { /* hi-res laptops and desktops */
+    }
+</style>
+<nav class="navbar  bg-white shadow" style="padding:0px;height:8vh;">
+    <a href="./ClassroomDashboard?id=@Model.m_llClassroomId" class="btn navbar-item nav-item active pr-0">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+
+
+    <div id="courseSpinnerS" class="float-left" style="width:150px">
+        <div class="spinner-grow text-success course-spinner" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-danger course-spinner" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-warning course-spinner" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <a class="navbar-brand " href="#">
+        <img src="~/Images/site-logo-v2-full.png" width="140" height="30" class="align-top " alt="">
+    </a>
+</nav>
+<div id="meet" class="container-fluid" style="display:block;width:100%;height:92vh;padding-left:0px;padding-right:0px;"></div>
+<div class="card shadow text-center mt-2 " id="jitsiMobile" style="display:block">
+    <a target="_top" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm mb-2"
+       href="intent://readmycourse.com/?room_name=@Model.m_strMeetingName&request_type=create&subject=@Model.m_strMeetingTopic #Intent;scheme=https;package=com.readmycourse.android;end">
+        <span class="fa fa-users mr-2"></span>Join this meeting using the app
+    </a>
+    <a target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary ml-2 btn-sm mb-2" href="https://play.google.com/store/apps/details?id=com.readmycourse.android">
+        <span class="fa fa-download mr-2"></span>Install the app
+    </a>
+</div>
+<div class="modal fade" id="requestStartMeeting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAndUpdateIndexTopicHeader">Using small device..? launch in the app</h5>
+
+            </div>
+            <div class="modal-body text-center">
+                @*<a target="_top" rel="noopener noreferrer" class="btn btn-outline-primary btn-lg mb-2"
+                       href="intent://meet.jit.si/@Model.m_strMeetingName#Intent;scheme=org.jitsi.meet;package=org.jitsi.meet;end"><span class="fa fa-users mr-2"></span>Join this meeting using the app
+                    </a>*@
+                <a target="_top" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm mb-2"
+                   href="intent://readmycourse.com/?room_name=@Model.m_strMeetingName&request_type=create&subject=@Model.m_strMeetingTopic #Intent;scheme=https;package=com.readmycourse.android;end">
+                    <span class="fa fa-users mr-2"></span>Join this meeting using the app
+                </a>
+                <a target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm mb-2" href="https://play.google.com/store/apps/details?id=com.readmycourse.android">
+                    <span class="fa fa-download mr-2"></span>Install the app
+
+                </a>
+                
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div> 
+<script src='https://meet.jit.si/external_api.js'></script>
+<div id="meet" class="container-fluid"></div>
+<h1 style="display:none" id="meetingShow">Meeting has been closed <a href="./Home">Go Back</a></h1>
+<div class="modal fade" id="requestStartMeeting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAndUpdateIndexTopicHeader">Using small device..? launch in the app</h5>
+            </div>
+            <div class="modal-body">
+                <a target="_top" rel="noopener noreferrer" class="deep-linking-mobile__href " href="intent://meet.jit.si/@Model.m_strMeetingName#Intent;scheme=org.jitsi.meet;package=org.jitsi.meet;end">
+                <button class="deep-linking-mobile__button deep-linking-mobile__button_primary btn btn-primary">Join this meeting using the app</button></a>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const domain = 'meet.jit.si';
+    const options = {
+        roomName: "@Model.m_strMeetingName",
+        parentNode: document.querySelector('#meet'),
+        enableNoAudioDetection: true,
+        enableNoisyMicDetection: true,
+    };
+    const api = new JitsiMeetExternalAPI(domain, options);
+    api.addEventListener('participantRoleChanged', function (event) {
+        if (event.role === "moderator") {
+            api.executeCommand('password', "@Model.m_strMeetingPassword");
+        }
+    });
+    // join a protected channel
+    //api.on('passwordRequired', function () {
+    //    api.executeCommand('password', 'The Password');
+    //});
+    api.executeCommand('subject', "@Model.m_strMeetingTopic");
+    api.executeCommand('toggleAudio');
+    api.executeCommand('toggleVideo');
+    //api.executeCommand('avatarUrl', 'https://readmycourse.com/Images/site-logo.png');
+    api.on("videoConferenceLeft",
+        (object) =>
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/api/v1/instructor/CloseClassroomMeeting?MeetingId=".concat("@Model.m_llMeetingId"),
+                success: function (data) {
+                    if(data != null && data.response_code == 1)
+                    {
+                        $("#meet").remove();
+                        $("#meetingShow").show();
+                        $("#jitsiMobile").remove();
+                    }
+                }
+            })
+        );
+    $("#requestStartMeeting").modal("show");
+    function markMeetingClosed()
+    {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/CloseClassroomMeeting?MeetingId=".concat("@Model.m_llMeetingId"),
+            success: function (data) {
+                if(data != null && data.response_code == 1)
+                {
+
+                }
+            }
+        });
+    }
+    $("#requestStartMeeting").modal("show");
+   
+</script>

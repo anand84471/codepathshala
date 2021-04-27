@@ -1,0 +1,183 @@
+﻿@{
+    ViewBag.Title = "Account Details";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+@using StudentDashboard.Models.Student;
+@model StudentRegisterModal
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Account</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Account</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="profile-cont">
+        <div class="background">
+        </div>
+        <div class="profile-img">
+            <img src="../images/avatar-user.png" id="profile_image_path" alt="profile" />
+        </div>
+        <div class="profile-name">
+            <button class="btn btn-sm btn-outline-primary mt-2" onclick="requestNewProfilePicture()">change profile picture</button>
+            <div class="name" id="profile_student_name"></div>
+            <div id="joined_since"></div>
+            <hr class="text-center" style="max-width:70vw;" />
+        </div>
+        <div class="profile-tabs">
+
+            <div>
+                <ul id="bottomTabCont" class="nav nav-pills justify-content-start">
+                    <li class="nav-item">
+                        <a href="#about-me" class="nav-link active font-weight-bolder" data-toggle="tab">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profile" class="nav-link font-weight-bolder" data-toggle="tab" id="folllower-tab">Followers (0)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profile" class="nav-link font-weight-bolder" data-toggle="tab" id="following-tab">Following (0)</a>
+                    </li>
+                </ul>
+                <div class="tab-content pt-2">
+                    <div class="tab-pane fade show active" id="about-me">
+                        <div>
+                            <div class="row col-lg-12">
+                                <div class="profile-about-basic-details col-lg-6 card shadow-lg" >
+                                   
+                                    <div class="card-body">
+                                        <h3 class="text-center font-weight-bolder"></h3>
+                                        <h5 class="font-weight-bolder" id="phone-no"><i class="fa fa-mobile p-2"></i></h5>
+                                        <h5 class="font-weight-bolder" id="email-address"><i class="fa fa-envalope p-2"></i></h5>
+                                        <h5 class="font-weight-bolder" id="live-courses-joined"><i class="fa fa-play-circle p-2"></i></h5>
+                                        <h5 class="font-weight-bolder" id="address"><i class="fa fa-map-marker p-2"></i></h5>
+                                        <h5 class="font-weight-bolder" id="no_of_student_followed"><i class="fa fa-rss p-2"></i></h5>
+                                        <h5 class="font-weight-bolder" id="no_of_student_following"><i class="fa fa-rss p-2"></i></h5>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6"></div>
+                            </div>
+                            <div class="row col-sm-12">
+                               <div class="col-sm-3">
+                                  
+                                       <div class="card-body">
+                                           <div class="profile-about-myprogress">
+                                               <i class="fa fa-play-circle"></i>
+                                               <p class="font-weight-bolder" id="no_of_live_classes_attended"></p>
+                                           </div>
+                                       </div>
+                                  
+                               </div>
+                                <div class="col-sm-3">
+                                    <div class="card-body">
+                                        <div class="profile-about-myprogress">
+                                            <i class="fa fa-users"></i>
+                                            <p class="font-weight-bolder" id="connections"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="card-body">
+                                        <div class="profile-about-myprogress">
+                                            <i class="fa fa-pencil"></i>
+                                            <p class="font-weight-bolder" id="assignments-n-tests-submissions"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="card-body">
+                                        <div class="profile-about-myprogress">
+                                            <i class="fa fa-usd" style="color:yellow;"></i>
+                                            <p class="font-weight-bolder" id="coins-earned"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="profile">
+                        <p>feature is coming soon</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="sharepopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to share data?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="shareid" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    (function () {
+        getStudentSelfDetails();
+    })();
+    function getStudentSelfDetails() {
+        debugger
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchStudentSelfProfileDetails",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    data = data.student_details;
+                    $("#student_name").html(data.first_name+ "'s Intro");
+                    $("#profile_student_name").text(data.first_name + " " + data.las_name);
+                    if (data.profile_url != null) {
+                        $("#profile_image_path").attr("src", data.profile_url);
+                    }                   
+                    if (data.full_address == "Not set") {
+                        $("#address").html("<i class='fa fa-map-marker p-2'></i>" + "not set "+"<a class='btn btn-sm btn-outline-primary text-white' href='EditAccount'>set address</a>");
+                    }
+                    else {
+                        $("#address").html("<i class='fa fa-map-marker p-2'></i>" + "From " + data.full_address);
+                    }
+                    $("#no_of_live_course_joined").html("<i class='fa fa-play-circle p-2'></i>" + data.live_courses_joined + " live courses joined");
+                    $("#no_of_student_followed").html("<i class='fa fa-rss p-2'></i>" + "Followed by " + data.no_of_students_followed + " students");
+                    $("#no_of_student_following").html("<i class='fa fa-rss p-2'></i>" + "Following  " + data.no_of_students_following + " students" + "<a class='btn btn-sm btn-outline-primary text-white ml-2' href='JoinNewStudent'>  follow more students</a>");
+                    $("#live-courses-joined").html("<i class='fa fa-play-circle p-2'></i>" + data.no_of_live_classes_joined + " Live courses joined" + "<a class='btn btn-sm btn-outline-primary text-white ml-2' href='JoinNewClassroom'>  Join new live course</a>");
+                    $("#no_of_courses_joined").html("<i class='fa fa-book p-2'></i>" + data.no_of_course_joined + " Courses joined");
+                    $("#joined_since").html("<i class='fa fa-calendar p-2'>" + " Joined since " + data.joining_date);
+                    $("#folllower-tab").text("Followers " + data.no_of_students_followed);
+                    $("#following-tab").text("Following " + data.no_of_students_following);
+                    $("#connections").text(data.no_of_students_following + data.no_of_instructors_followed + "+ students and instructors connections");
+                    $("#no_of_live_classes_attended").text(data.no_of_live_classes_joined + "+ live classes attended");
+                    $("#assignments-n-tests-submissions").text(data.no_of_assignments_submitted + data.no_of_tests_submitted + "+ Assignments and tests submissions");
+                    $("#coins-earned").text("100+ coins earned");
+                    $("#phone-no").html("<i class='fa fa-phone p-2'></i>" + data.phone_no + "<a class='btn btn-sm btn-outline-primary text-white ml-2' href='EditAccount'> update</a>");
+                    $("#email-address").html("<i class='fa fa-envelope p-2'></i>" + data.email_address);
+
+                }
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                alert(err.Message);
+                alert(xhr.responseText);
+            }
+        });
+    }
+   
+</script>

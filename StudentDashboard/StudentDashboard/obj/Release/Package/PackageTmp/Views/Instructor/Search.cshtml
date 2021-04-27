@@ -1,0 +1,192 @@
+﻿@{
+    ViewBag.Title = "Courses";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+
+
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Search Result</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Search</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="">
+        <div class="card-body">
+            <div id="spinner" class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <h3 class="text-danger font-weight-bold" id="noResultFoundMessage" style="display:none">No results found</h3>
+            <div class="text-center " id="searchClassroom" style="display:none">
+                <div class="card-body ">
+                    <h5 class="text-success font-weight-bold">Showing result for classsrooms</h5>
+                </div>
+                <div class="row" id="searchClassroomContainer"></div>
+            </div>
+            <div class="text-center" id="serachCourse" style="display:none">
+                <div class="card-body">
+                    <h5 class="text-success font-weight-bold">Showing result for courses</h5>
+                </div>
+                <div class="row" id="serachCourseContainer" ></div>
+            </div>
+          
+            <div class="text-center " id="serachAssignmentContainer" style="display:none">
+                <div class="card-body ">
+                    <h5 class="text-success font-weight-bold">Showing result for assignments</h5>
+                </div>
+                <div class="row" id="serachAssignment"></div>
+            </div>
+            <div class="text-center " id="serachTestContainer" style="display:none">
+                <div class="card-body">
+                    <h5 class="text-success font-weight-bold">Showing result for tests</h5>
+                </div>
+                <div class="row" id="serachTest"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+        (function () {
+            'use strict';
+            onpageshow = getSearchDetails();
+        })();
+
+
+        function getSearchDetails() {
+            debugger;
+            var _data = {
+               
+                "search_string": "@ViewBag.q"
+            }
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(_data),
+                url: "/api/v1/instructor/Search",
+                success: function (data) {
+                    debugger;
+                    $("#spinner").remove();
+                    if (data != null && data.response_code == 1) {
+                        if (data.courses != null || data.assignments != null || data.tests != null||data.classrooms!=null) {
+                            var htmlData = '';
+                            var courses = data.courses;
+                            if (courses != null && courses.length > 0) {
+                                for (var i = 0; i < courses.length; i++) {
+                                    if (courses[i].course_name.length > 15) {
+                                        courses[i].course_name = courses[i].course_name.substring(0, 15) + "...";
+                                    }
+                                    if (courses[i].course_description.length > 20) {
+                                        courses[i].course_description = courses[i].course_description.substring(0, 20) + "...";
+                                    }
+                                    htmlData += ('<div class="col-xl-3 col-md-6 mb-4">'
+                             + '<div class="card shadow border-left-success  ml-2 mr-2 mb-2">'
+                                 + '<div class="card-body text-center">'
+                                     + '<h4 class="card-title font-weight-bold"><a>' + courses[i].course_name + '</a></h4>'
+                                     + '<p class="card-text">' + courses[i].course_description + '</p>'
+                                     + '<ul class="list-unstyled list-inline rating mb-0">'
+                                         + '<li class="list-inline-item mr-2"><a  class="btn btn-outline-primary" href="ViewCourse?id=' + courses[i].course_id + '">Details<span class="icon text-gray-600"><i class="fas fa-arrow-right"></i></span></a></li>'
+                                     + '</ul>'
+                                 + '</div>'
+                             + '</div>'
+                         + '</div>');
+                                }
+                                $("#serachCourseContainer").append(htmlData);
+                                $("#serachCourse").show();
+                                $("#spinner").remove();
+                            }
+                            var htmlData = '';
+                            var classrooms = data.classrooms;
+                            if (classrooms != null && classrooms.length > 0) {
+                                for (var i = 0; i < classrooms.length; i++) {
+                                    if (classrooms[i].classroom_name.length > 15) {
+                                        classrooms[i].classroom_name = classrooms[i].classroom_name.substring(0, 15) + "...";
+                                    }
+                                  
+                                    htmlData += ('<div class="col-xl-3 col-md-6 mb-4">'
+                             + '<div class="card shadow border-success  ml-2 mr-2 mb-2">'
+                                 + '<div class="card-body text-center">'
+                                     + '<h4 class="text-primary font-weight-bold"><a>' + classrooms[i].classroom_name + '</a></h4>'
+                                        + ' <h6 class="text-success font-weight-bold "> Status: ' + classrooms[i].status + '</h6>'
+                                        + ' <h5 class="card-text font-weight-bold "><i class="fa fa-calendar"></i> Created on:</h5><p>' + classrooms[i].creation_date + '</p>'
+                                     + '<ul class="list-unstyled list-inline rating mb-0">'
+                                         + '<li class="list-inline-item mr-2"><a  class="btn btn-outline-primary" href="ClassroomDashboard?id=' + classrooms[i].classroom_id + '">Details<span class="icon text-gray-600"><i class="fas fa-arrow-right"></i></span></a></li>'
+                                     + '</ul>'
+                                 + '</div>'
+                             + '</div>'
+                         + '</div>');
+                                }
+                                $("#searchClassroomContainer").html(htmlData);
+                                $("#searchClassroom").show();
+                            }
+                            var assignments = data.assignments;
+                            var rows = '';
+                            if (assignments != null && assignments.length > 0) {
+                                for (var i = 0; i < assignments.length; i++) {
+                                    rows += ''
+                                    + '<div class="col-xl-3 col-md-6 mb-4">'
+                                        + '<div class="card shadow border-left-success  ml-2 mr-2 mb-2">'
+                                            + '<div class="card-body  text-center">'
+                                               + ' <h4 class="card-title font-weight-bold text-info">' + assignments[i].name + '</h4>'
+                                               + ' <h5 class="card-text font-weight-bold ">Created on:</h5><p>' + assignments[i].creation_date + '</p>'
+                                               + ' <p class="text mr-3"><i class="fas fa-fw fa-list mr-2"></i><b>No of questions :</b> ' + assignments[i].no_of_questions + '</p>'
+                                               //+ ' <p class="text mr-3"><i class="fas fa-fw fa-book mr-2"></i><b>Courses Created:</b> ' + assignments[i].no_of_course + '</p>'
+                                                + '<ul class="list-unstyled list-inline rating mb-1">'
+                                                    + '<li class="list-inline-item mr-0"><a  class="btn btn-outline-primary" href=ViewAssignment?id=' + assignments[i].assignment_id + '>Details <span class="icon text-gray-600"><i class="fas fa-arrow-right"></i></span></a></li>'
+                                                + '</ul>'
+                                            + '</div>'
+                                        + '</div>'
+                                     + '</div>';
+                                }
+                                $("#serachAssignment").html(rows);
+                                $("#serachAssignmentContainer").show();
+                            }
+                            var tests = data.tests;
+                            if (tests != null && tests.length > 0) {
+                                var rows = '';
+                                for (var i = 0; i < tests.length; i++) {
+                                    rows += ''
+                                    + '<div class="col-xl-3 col-md-6 mb-4">'
+                                        + '<div class="card shadow border-left-success  ml-2 mr-2 mb-2">'
+                                            + '<div class="card-body text-center">'
+                                               + ' <h4 class="card-title font-weight-bold text-info">' + tests[i].test_name + '</h4>'
+                                               + ' <h5 class="card-text font-weight-bold ">Created on:</h5><p>' + tests[i].creation_date + '</p>'
+                                               + ' <p class="text mr-3"><i class="fas fa-fw fa-list mr-2"></i><b>No of questions :</b> ' + tests[i].no_of_questions + '</p>'
+                                               //+ ' <p class="text mr-3"><i class="fas fa-fw fa-book mr-2"></i><b>Courses Created:</b> ' + assignments[i].no_of_course + '</p>'
+                                                + '<ul class="list-unstyled list-inline rating mb-1">'
+                                                
+                                                    + '<li class="list-inline-item mr-0"><a  class="btn btn-outline-primary" herf=ViewTest?id=' + tests[i].test_id + '>Details <span class="icon text-gray-600"><i class="fas fa-arrow-right"></i></a></li>'
+                                                + '</ul>'
+                                            + '</div>'
+                                        + '</div>'
+                                     + '</div>';
+                                }
+                                $("#serachTest").html(rows);
+                                $("#serachTestContainer").show();
+                               
+                            }
+                        }
+                        else {
+
+                            $("#noResultFoundMessage").show();
+                          
+                        }
+                    }
+                    else {
+
+                        $("#noResultFoundMessage").show();
+                        $("#spinner").remove();
+                    }
+                }
+            });
+            
+        }
+     
+</script>

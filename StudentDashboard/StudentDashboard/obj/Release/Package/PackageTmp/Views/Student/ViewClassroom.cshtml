@@ -1,0 +1,1964 @@
+﻿@{
+    ViewBag.Title = "View classroom";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+@using StudentDashboard.Models.Student;
+@model StudentClassroomHomeDetails
+
+<style type="text/css">
+
+    /*Vertical Steps*/
+    .inside-body {
+        padding: 25px;
+    }
+    .live-classes-row {
+        cursor: pointer;
+    }
+ 
+    .list-group.vertical-steps .list-group-item {
+        border: none;
+        border-left: 3px solid #0052c2;
+        box-sizing: border-box;
+        border-radius: 0;
+        counter-increment: step-counter;
+        padding-left: 20px;
+        padding-right: 0px;
+        padding-bottom: 20px;
+        padding-top: 0px;
+    }
+
+        .list-group.vertical-steps .list-group-item.active {
+            background-color: transparent;
+            color: inherit;
+        }
+
+        .list-group.vertical-steps .list-group-item:last-child {
+            border-left: 3px solid transparent;
+            padding-bottom: 0;
+        }
+
+        .list-group.vertical-steps .list-group-item::before {
+            border-radius: 50%;
+            background-color: #0052c2;
+            color: #fff;
+            content: counter(step-counter);
+            display: inline-block;
+            float: left;
+            height: 25px;
+            line-height: 25px;
+            margin-left: -35px;
+            text-align: center;
+            width: 25px;
+        }
+
+        .list-group.vertical-steps .list-group-item span,
+        .list-group.vertical-steps .list-group-item a {
+            display: block;
+            overflow: hidden;
+            padding-top: 2px;
+        }
+    /* End of Vertical Step */
+
+    #how-to .panel-group .panel {
+        border-radius: 0px;
+        border: 0px;
+    }
+
+    #how-to .panel-group {
+        margin: 0px;
+    }
+
+    #how-to .container {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #how-to .panel-heading {
+        padding: 0px !important;
+        border-radius: 0px;
+    }
+
+    #how-to .parent a {
+        display: block;
+        text-decoration: none;
+        padding: 25px;
+    }
+
+    #how-to .child a {
+        display: block;
+        text-decoration: none;
+        padding: 25px;
+    }
+
+    #how-to .parent {
+        background-color: #fff !important;
+    }
+
+    #how-to .child {
+        background-color: #f2f2f2 !important;
+    }
+
+    #how-to .panel-body {
+        border: none;
+    }
+
+    #how-to .panel-body {
+        padding: 0px;
+    }
+
+    #how-to .panel-group .panel + .panel {
+        margin: 0px;
+    }
+
+    #how-to .panel-group .parent {
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    #how-to .panel-group .child {
+        border-bottom: 1px solid #FDFDFD;
+    }
+
+    #superaccordion {
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
+    }
+
+    .panel-heading a:after {
+        content: "";
+        position: relative;
+        top: 1px;
+        right: 10px;
+        display: inline-block;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14pt;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        float: right;
+        transition: transform .25s linear;
+        -webkit-transition: -webkit-transform .25s linear;
+        color: #333;
+    }
+
+    .panel-heading a[aria-expanded="true"]:after {
+        content: "\2212";
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+
+    .panel-heading a[aria-expanded="false"]:after {
+        content: "\002b";
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+
+    .parent a:after {
+        content: "";
+        position: relative;
+        top: -15px;
+        right: 10px;
+        display: inline-block;
+        line-height: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        float: right;
+        transition: transform .25s linear;
+        -webkit-transition: -webkit-transform .25s linear;
+        color: #333;
+    }
+</style>
+<style type="text/css">
+    .classroom-background-container {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .classroom-background-image {
+        max-height: 300px;
+        height: 300px;
+        z-index: -1;
+    }
+
+    .classroom-background-mask {
+        width: 100%;
+        border: 10px;
+        z-index: 10;
+        background: rgb(3,0,237);
+        background: linear-gradient(360deg, rgba(3,0,237,0.969625350140056) 5%, rgba(11,33,196,0.7063200280112045) 77%);
+        backdrop-filter: blur(8px);
+        padding: 20px;
+        margin-top: 140px;
+        margin-bottom: 20px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+
+    .classroom-background {
+        padding-top: 10px;
+        align-items: center;
+        overflow-y: no-display;
+        background: #f8f8f8;
+        margin-bottom: 10px;
+        text-align: center;
+        border: 3px solid #eee;
+        box-shadow: 2px;
+        border-radius: 8px;
+    }
+
+        .classroom-background:hover {
+            border: 2px solid red;
+        }
+
+    .upload-icon {
+        font-size: 72px;
+        align-items: center;
+    }
+
+    .ui-input-container {
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    .ui-form-input-container {
+        position: relative;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .ui-input-container h2 {
+        font-family: sans-serif;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .ui-form-input {
+        padding: 13px 15px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 100%;
+        max-height: 200px;
+    }
+
+    .ui-form-chat {
+        padding: 13px 15px;
+        margin-bottom: 0px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 70%;
+        float: right;
+    }
+
+    .ui-form-chat-instructor {
+        padding: 13px 8px;
+        margin-bottom: 0px;
+        border-radius: 8px;
+        background-color: #757575;
+        color: #fafafa;
+        outline: 0;
+        width: 70%;
+        float: left;
+    }
+
+    .time_date {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #747474;
+        display: block;
+        font-size: 12px;
+        width: 70%;
+        float: right;
+    }
+
+    .time_date_instructor {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: #747474;
+        display: block;
+        font-size: 12px;
+        width: 70%;
+        float: left;
+    }
+
+    .ui-input-container-message {
+        background-color: #fff;
+        border-radius: 4px;
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+
+    .messge-sender {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: rgba(3,0,237,0.969625350140056);
+        display: block;
+        font-size: 18px;
+        width: 70%;
+        float: left;
+    }
+
+    #zmmtg-root {
+        background-color: aquamarine;
+    }
+
+    .classroom-nav li a:hover {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a:active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a.active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav a.active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-nav li a active {
+        border-bottom: 3px solid red;
+    }
+
+    .classroom-assignemnts {
+        width: 100%;
+        border: 10px;
+        background: rgb(58,180,60);
+        background: linear-gradient(90deg, rgba(58,180,60,1) 26%, rgba(253,29,29,1) 100%, rgba(252,176,69,1) 100%);
+        padding: 3px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+
+    .classroom-assignemnts-submitted {
+        width: 100%;
+        border: 10px;
+        background: rgb(58,180,60);
+        background: linear-gradient(130deg, rgba(58,180,60,1) 26%, rgba(226,210,210,1) 100%, rgba(252,176,69,1) 100%);
+        padding: 3px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+
+    #topic-name {
+        color: blueviolet;
+        text-align: left;
+    }
+
+    @@media only screen and (max-width: 600px) {
+        .container-classroom-section {
+            padding-left: 0rem;
+            padding-right: 0rem;
+        }
+    }
+</style>
+<style>
+    <style type="text/css" >
+    #instructors {
+        border-radius: 10px;
+        background-color: white;
+        width: 70%;
+        min-height: 80vh;
+        margin: auto;
+        margin-top: 2rem;
+        padding-top: 4vh;
+    }
+
+    .instructorsList {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 10% 70% 20%;
+    }
+
+    .profile {
+        margin-top: 1vh;
+        margin-left: 4rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 40px;
+    }
+
+    .add {
+        width: 37px;
+        height: 32px;
+    }
+
+    .add-cont {
+        text-align: center;
+        margin: auto;
+    }
+
+    .icon {
+        width: 3rem;
+        font-size: 1.6rem;
+        height: 2.8rem;
+        text-align: center;
+        border-radius: 60px;
+        background-color: #f0f2f5;
+        cursor: pointer;
+        outline: none;
+        border: none;
+    }
+
+    .content {
+        padding-left: 4rem;
+    }
+
+    .info {
+        font-size: 1rem;
+        opacity: 0.7;
+    }
+
+    .name {
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.3rem;
+    }
+
+        .name:hover {
+            text-decoration: underline;
+        }
+
+    @@media only screen and (max-width: 600px) {
+        #instructors {
+            width: 100%;
+        }
+
+        .profile {
+            margin-left: 1.5rem;
+            width: 50px;
+            height: 50px;
+        }
+
+        .add {
+            width: 30px;
+            height: 25px;
+        }
+
+        .info {
+            font-size: 0.8rem;
+        }
+
+        .name {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+<style type="text/css">
+    .star-cb-group {
+        font-size: 0;
+        unicode-bidi: bidi-override;
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+        .star-cb-group * {
+            font-size: 3rem;
+        }
+
+        .star-cb-group > input {
+            display: none;
+        }
+
+            .star-cb-group > input + label {
+                display: inline-block;
+                overflow: hidden;
+                text-indent: 9999px;
+                white-space: nowrap;
+                cursor: pointer;
+            }
+
+                .star-cb-group > input + label:before {
+                    display: inline-block;
+                    text-indent: -9999px;
+                    content: '\2606';
+                    color: #888;
+                }
+
+                .star-cb-group > input:checked ~ label:before,
+                .star-cb-group > input + label:hover ~ label:before,
+                .star-cb-group > input + label:hover:before {
+                    content: '\2605';
+                    color: #e52;
+                    text-shadow: 0 0 1px #333;
+                }
+
+        .star-cb-group > .star-cb-clear + label {
+            text-indent: -9999px;
+            width: 0.5em;
+            margin-left: -0.5em;
+        }
+
+            .star-cb-group > .star-cb-clear + label:before {
+                width: 0.5em;
+            }
+
+        .star-cb-group:hover > input + label:before {
+            content: '\2606';
+            color: #888;
+            text-shadow: none;
+        }
+
+        .star-cb-group:hover > input + label:hover ~ label:before,
+        .star-cb-group:hover > input + label:hover:before {
+            content: '\2605';
+            color: #e52;
+            text-shadow: 0 0 1px #333;
+        }
+
+    fieldset {
+        border: 0;
+    }
+</style>
+<div class="course-demo-card container-fluid container-classroom-section ">
+    <div class="d-sm-flex align-items-center justify-content-between">
+        <h1 class="h3 mb-0 text-gray-800">View classroom</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callMyClassrooms()">Classrooms</a></li>
+                <li class="breadcrumb-item active" aria-current="page" id="currentBreadCumb"></li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-lg-12">
+        <nav class="navbar navbar-expand-lg  navbar-light font-weight-bold">
+            @*<a class="navbar-brand" href="#">@Model.m_strClassRoomName</a>*@
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto classroom-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#navHome" onclick="showHomeDetails()"><span class="fa fa-home"></span> Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    @*<li class="nav-item">
+                            <a class="nav-link" href="#navPreviousMeetings" onclick="showTeachingSessions()">Teaching Sessions <span class="sr-only">(current)</span></a>
+                        </li>*@
+                    <li class="nav-item">
+                        <a class="nav-link" href="#navMessagesContainer" onclick="showClassroomMessages()"><span class="fa fa-comments"></span>  Discussions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#navClassroomAttachments" onclick="getAllClassroomAttachments()"><span class="fa fa-book"></span> Study Materials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#navStudentsJoined" onclick="searchForStudentInClassroom()"><span class="fa fa-users"></span> Students Joined</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#navPreviousClasses" onclick="viewAllPreviousLiveClasses()"><span class="fa fa-play-circle"></span> Live classes</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-pencil-square "></span> Assignments
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#navPractiveNewAssignment" onclick="viewAllClassroomAssignment()"><span class="fa fa-pencil"></span> Practice new assignment</a>
+                            <a class="dropdown-item" href="#navAllAssignmentSubmissions" onclick="viewAllClassroomAssignmentSubmissions()"><span class="fa fa-bars"></span> View all submissions</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-pencil-square "></span> Tests
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#navAllClassroomTests" onclick="viewAllClassroomTest()"><span class="fa fa-pencil"></span>  Submit new test</a>
+                            <a class="dropdown-item" href="#navAllClassroomTestSubmissions" onclick="viewAllClassroomTestSubmissions()"><span class="fa fa-bars"></span>  View all submissions</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-chevron-circle-down"></span> More
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#navClassroomSyllabus" onclick="showClassroomSyllabus()"><span class="fa fa-bookmark"></span>  Classroom syllabus</a>
+                            <a class="dropdown-item" href="#navClassroomSchedule" onclick="showClassroomSchedule()"><span class="fa fa-calendar"></span>  Classroom Schedule</a>
+                            <a class="dropdown-item" href="#" onclick="showFeedbackModal()"><span class="fa fa-star"></span>  Update rating</a>
+                            @*<a class="dropdown-item" href="#navClassroomSchedule" onclick="showClassroomSchedule()"><span class="fa fa-star"></span>  Write classroom feedback</a>*@
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" onclick="callHome()"><span class="fa fa-sign-out"></span>  Exit classroom</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 mb-4" id="classroomHomeDetails">
+            <div class="card shadow mb-4 border-bottom-success ">
+
+                <div class="card-body classroom-background-container" style="background-image:url(../../Images/course-3.jpg)" id="backgroundUrl">
+                    <div class="classroom-background-mask">
+                        <h1 class="card-text font-weight-bold text-gray-100 " id="classroomName"></h1>
+
+                        <h6 class="mb-0 font-weight-bold" id="classroomDescription"></h6>
+
+
+                        <span class="badge badge-pill badge-light" id="classroomCreationDate">Joined since: @Model.m_strClassroomJoiningDate</span>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row" id="classroomContaintProgressDetails">
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-1">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Teaching sessions joined</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfMeetingJoined / @Model.m_iTotalNoOfLiveClasses</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-play-circle fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Assignment submitted</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfAssignmentSubmitted / @Model.m_iTotalNoOfAssignments</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-pen fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Test submitted</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfTestSubmitted / @Model.m_iTotalNoOfTests</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tasks fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Projects completed</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">0 / @Model.m_iTotalNoOfProjects </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-line-chart fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 mb-2" id="classroomMeetingStartSection">
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                <div class="add-items-container p-3 text-center ">
+                    <div class="control-buttons">
+                        @*<button class="btn btn-circle bg-primary text-white" onclick="requestUploadVideo()" data-toggle="tooltip" data-placement="top" title="Upload video"><span><i class="fa fa-file"></i></span></button>*@
+                        @*<button class="btn btn-circle bg-primary text-white" onclick="callAddNewAssignment()" data-toggle="tooltip" data-placement="top" title="Add assignment"><i class="fa fa-pen"></i></button>
+                            <button class="btn btn-circle bg-primary text-white" data-toggle="tooltip" data-placement="top" title="Add test"><span><i class="fa fa-clipboard-list" ></i></span></button>*@
+                        <h4 id="classroomStartDate" class="text-danger font-weight-bolder"></h4>
+
+                        <h6 class="text-danger" id="demo"></h6>
+                        <h2 id="isMeetingActive"></h2>
+                        <button class="btn  bg-primary text-white" onclick="showClassroomSchedule()" data-toggle="tooltip" data-placement="top" title="time table"><span><i class="fa fa-calendar p-1"></i></span> View time table</button>
+                        <a class="btn  bg-primary text-white" id="meetingJoinLink" href="./JoinClassroomMeeting?ClassroomId=@ViewBag.Id" data-toggle="tooltip" data-placement="top" title="Start live" onclick="callClassroomMeeting()"><span><i class="fa fa-play-circle"></i></span> Join live class</a>
+                        @*<a class="btn  bg-primary text-white" id="meetingJoinLink" href="./JoinClassroomMeeting?ClassroomId=@ViewBag.Id" data-toggle="tooltip" data-placement="top" title="Start live"><span><i class="fa fa-play-circle"></i></span> Join live class using app</a>*@
+                    </div>
+                </div>
+            </div>
+            <div id="secctionTest"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 mb-2" id="navMessagesContainer" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Messages</div>
+                <div class="card-body">
+
+                    <div class="ui-input-container-message " id="messagesContainer">
+                        <div class="question" id="questionContainer">
+                        </div>
+                    </div>
+                    <div class="add-items-container p-3">
+                        <div class="ui-input-container">
+
+                            <label class="ui-form-input-container">
+                                <textarea class="ui-form-input" id="classroomMessage" placeholder="Start asking doubts"></textarea>
+                            </label>
+                            <button type="button" onclick="callSubmitMessage(this)" class="btn btn-primary btn-sm">submit</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="secctionTest"></div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navTeachingSessionsContainer" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">View all teaching sessions</div>
+                <div class="card-body">
+
+                </div>
+                <div id="secctionTest"></div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navPractiveNewAssignment" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Practic new assignment</div>
+                <div class="card-body">
+                    <div id="spinnerAllAssignment" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="allClassroomAssignmentContainer"></div>
+
+                    <div id="footerPracticeNewAssignment" style="display:none">
+                        <h6 class="card-title"> No assignments found</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navAllAssignmentSubmissions" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">View assignment submissions</div>
+                <div class="card-body">
+                    <div id="spinnerAllSubmittedAssignment" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="allClassroomAssignmentSubmissionsContainer"></div>
+
+                    <div id="footerAllAssignmentSubmissions" style="display:none">
+                        <h6 class="card-title"> No records found</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navAllClassroomTests" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Give new test</div>
+                <div class="card-body">
+                    <div id="spinnerAllTest" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="allClassroomTestContainer"></div>
+
+                    <div id="footerAllTests" style="display:none">
+                        <h6 class="card-title"> No test found</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navClassroomSchedule" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Classroom Schedule</div>
+                <div class="card-body">
+                    <div id="spinnerClassroomSchedule" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <h6>All the times are in IST(UTC +5:30).</h6>
+                    <table class="table table-responsive">
+                        <thead class="thead-light">
+                            <tr>
+                                <td>Day</td>
+                                <td>Status</td>
+                                <td>Start Time</td>
+                                <td>Close Time</td>
+                            </tr>
+                        </thead>
+                        <tbody id="classroomScheduleContainer">
+                        </tbody>
+                    </table>
+                    <div id="footerClassroomSchedule" style="display:none">
+                        <h6 class="card-title"> No test found</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navClassroomSyllabus" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Classroom Syllabus</div>
+                <div class="card-body">
+                    <div id="spinnerClassroomSyllabus" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="panel-group">
+                        <div id="classroomSyllabusContainer"> </div>
+                    </div>
+
+                    <div id="footerClassroomSyllabus" style="display:none">
+                        <h6 class="card-title">No details found</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navClassroomAttachments" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">View all study materials</div>
+
+                <div class="card-body">
+
+                    <div class="table-responsive ">
+                        <table id="tableClassroomAttachments" class="table-responsive table-hover" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="p-2">S. No.</th>
+                                    <th class="p-2">Attachment Name</th>
+                                    <th class="p-2">Addition Date</th>
+                                    <th class="p-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyClassroomAttachments"></tbody>
+                        </table>
+
+                    </div>
+                    <div id="spinnerClassroomAttachments" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="card-body" id="footerAllStudyMaterials" style="display:none">
+                        <h6 class="card-title"> No study materials found</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navStudentsJoined" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Students joined to this classroom</div>
+                <div class="card-body">
+                    <div class="mb-4" id="instructors">
+                        <div id="joined-members" class="container-fluid">
+                        </div>
+
+                    </div>
+                    <div class="container-fluid text-center" id="spinner-area">
+                        <div class="spinner-border" role="status" id="infinit-spinner">
+                            <span class="sr-only" id="infinit-spinner-body">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-lg-12 mb-2 p-0 pr-sm-1 pl-3" id="navPreviousClasses" style="display:none">
+            <div class="col-lg-8 p-0 p-1">
+                <div class="card shadow-lg">
+                    <p class="text-center"><img id="no_video_present_img" class="text-center img-fluid" src="~/Images/no_video_present.png" style="max-width:300px"></p>
+                    <h5 id="no-video-data-present" class="p-2 text-center align-items-center">Recording might not present.</h5>
+                    <video id="topic-video-palyer-container" playsinline controls class="videos" style="display:none;">
+                        <source src="" id="video-url" type="video/webm" style="display:none;">
+                        Your browser does not support HTML video.
+                    </video>
+                    <h5 class="font-weight-bolder p-2" id="topic-name"></h5>
+                    @*<hr />
+                        <div class="video-more-info">
+                            <div class="left d-sm-inline-flex">
+                                <h6>98 Views <i class="fa fa-line-chart"></i><small>26 January,2020</small> </h6>
+                                <div class="right d-sm-inline-flex">
+                                    <h4>98 Likes <i class="fa fa-line-chart"></i> </h4>
+                                    <h4>98 Comments <i class="fa fa-line-chart"></i> </h4>
+                                    <h4>98 Share <i class="fa fa-line-chart"></i> </h4>
+                                </div>
+                            </div>
+                        </div>*@
+                </div>
+            </div>
+            <div class="card p-0 col-lg-4  border-primary">
+                <div class="card-header">Live classes </div>
+                <div class="card-body">
+                    <div class="table-responsive table-hover">
+                        <table id="coursesTable" class="table-responsive table-hover" style="display:none;max-height:60vh;">
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="spinner" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="text-center" id="footer" style="display:none">
+                        <div class="card-body">
+                            <h6 class="card-title"> Live class is not started.</h6>
+                            <div id="assignmentContainer" class="assignmentContainer"></div>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Thank you!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navClassroomLiveClass" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">Live classes</div>
+                <div class="card-body">
+                    <div class="table-responsive ">
+                        <table id="tableClassroomAttachments" class="table-responsive table-hover" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="p-2">Topic Name</th>
+                                    <th class="p-2">Start Time</th>
+                                    <th class="p-2">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyClassroomAttachments"></tbody>
+                        </table>
+                    </div>
+                    <div id="spinnerClassroomAttachments" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="card-body" id="footerAllStudyMaterials" style="display:none">
+                        <h6 class="card-title"> No study materials found</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-2" id="navAllClassroomTestSubmissions" style="display:none">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header">View test submissions</div>
+                <div class="card-body">
+                    <div id="spinnerAllTestSubmissions" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="allClassroomTestSubmissionsContainer"></div>
+
+                    <div id="footerAllTestSubmissions" style="display:none">
+                        <h6 class="card-title"> No test submission found</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade border-success" id="successModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-success modal-content">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoTitle">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h3 id="infoMessageSuccess">Classroom joined successfully</h3>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-secondary" data-dismiss="modal" href="./MyCourses">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade border-success" id="courseFeedbackModel" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-success modal-content">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-bolder" id="infoTitle">How much would you rate for this course and instructor.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="final-rating"></div>
+                    <form>
+                        <fieldset>
+                            <span class="star-cb-group ml-5">
+                                <input type="radio" id="rating-5" name="rating" value="5" checked="checked"  />
+                                <label for="rating-5">5</label>
+                                <input type="radio"
+                                       id="rating-4"
+                                       name="rating"
+                                       value="4"
+                                       />
+                                <label for="rating-4">4</label>
+                                <input type="radio" id="rating-3" name="rating" value="3" />
+                                <label for="rating-3">3</label>
+                                <input type="radio" id="rating-2" name="rating" value="2" />
+                                <label for="rating-2">2</label>
+                                <input type="radio" id="rating-1" name="rating" value="1" />
+                                <label for="rating-1">1</label>
+                                <input type="radio"
+                                       id="rating-0"
+                                       name="rating"
+                                       value="0"
+                                       class="star-cb-clear" />
+                                <label for="rating-0">0</label>
+                            </span>
+                        </fieldset>
+                        <div class="form-group">
+                            <label for="feedbackMessage">Please enter your message</label>
+                            <textarea class="form-control" id="feedbackMessage" rows="5" placeholder="please enter your message here"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="submitFeedback()" data-dismiss="modal">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="infoMessageFail">Classroom could not be joined</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = init();
+    })();
+    function getAboutCourse() {
+        $("#courseBody").html(aboutCourseDetails);
+    }
+    var aboutCourseDetails;
+    function showSpinner() {
+        $("#spinner").show();
+    }
+    function hideSpinner() {
+        $("#spinner").fadeOut();
+    }
+
+    //----------------Index Section-------------------------------------
+
+    var indexDetails = [];
+    var courseId = 0;
+    var classroomMeetingName;
+    //-----------------------Course section start----------------------
+    function init() {
+        debugger
+
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetClasroomDetails?id=".concat("@ViewBag.Id"),
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var classroomDetails = data.classroom_details;
+                    $("#currentBreadCumb").text(classroomDetails.classroom_name);
+                    $("#classroomName").text(classroomDetails.classroom_name);
+                    $("#classroomDescription").text(classroomDetails.classroom_description);
+                    if (classroomDetails.is_meeting_active) {
+                        $("#isMeetingActive").text("Live class started");
+                        $("#meetingJoinLink").show();
+                    }
+                    else {
+                        //stu_classroom_class_start_date
+                        if (classroomDetails.stu_classroom_class_start_date != null && classroomDetails.stu_classroom_class_start_date != "") {
+                            $("#classroomStartDate").text("This classroom is scheduled to start from " + classroomDetails.stu_classroom_class_start_date+".")
+                        }
+                        $("#isMeetingActive").text("Live class is not started");
+
+                        $("#meetingJoinLink").remove();
+                    }
+                    if (classroomDetails.background_url != null && classroomDetails.background_url != "")
+                    {
+                        $('#backgroundUrl').css('background-image', 'url(' + classroomDetails.background_url + ')');
+                    }
+                    //$("#classroomCreationDate").text("Joined since:" + classroomDetails.creation_date);
+                    classroomMeetingName = classroomDetails.classroom_meeting_name;
+                    setClassroomTimer(classroomDetails.timeScheduleDetails, classroomDetails.classroom_class_start_date);
+                    hideSpinner();
+                }
+                hideSpinner();
+            }
+        });
+    }
+    function joinClassroom() {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/JoinClassroom?id=".concat("@ViewBag.id"),
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $("#successModal").modal('show');
+                    $("#enrollNowButton").remove();
+                    $("#successbadge").show();
+                    $("#goToCourse").show();
+                }
+                else {
+                    $("#failModal").modal('show');
+                    $("#infoMessageFail").test('Course could not be joined');
+                }
+            }
+        });
+
+    }
+    function callSubmitMessage(buttonid) {
+        debugger
+        syncFlag = true;
+        var post = $("#classroomMessage").val();
+        if (post == "") { return; }
+        $(buttonid).append('<i class="fa fa-spinner fa-spin" id="tempspinner"></i>');
+        $(buttonid).disabled = true;
+        if (true) {
+            var _data =
+            {
+                "message": post,
+                "classroom_id": "@ViewBag.Id"
+            }
+            $.ajax({
+                headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+                type: "POST",
+                data: JSON.stringify(_data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: "/api/v1/Course/InsertNewMessageToClassroom",
+                success: function (data) {
+                    debugger;
+                    if (data != null && data.response_code == 1) {
+                        $("#classroomMessage").val("")
+                        getAllMessagesAsync();
+                    }
+                    else {
+                        $("#errorModal").modal("show");
+                    }
+                    $(buttonid).disabled = false;
+                    $(buttonid).find(":first-child").remove();
+                    syncFlag = false;
+                },
+                error: function (data) {
+                    $("errorModal").modal("show");
+                    $(buttonid).disabled = false;
+                    $(buttonid).find(":first-child").remove();
+                }
+            });
+        }
+        else {
+            $(buttonid).disabled = false;
+            $(buttonid).find(":first-child").remove();
+        }
+    }
+    function getAllMessages() {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetAllClassroomMessage?ClassroomId=@ViewBag.Id",
+            success: function (data) {
+                debugger;
+                //stopCourseSpinner();
+                if (data != null && data.response_code == 1) {
+                    $("#questionContainer").empty();
+                    var currentSessionLastMessageModelodelodelodelom_llClassroomId_llClassroomId_llClassroomIdm_llClModelsm_iClassroomRatingsroomIddeld = -1;
+                    for (var i = 0; i < data.message_details.length; i++) {
+                        currentSessionLastMessageId = data.message_details[i].message_id;
+                        if (data.message_details[i].is_me == false) {
+                            var row = ' <div class="container-fluid">'
+                                + '<p class="messge-sender"><spna><i class="fa fa-user mr-2"></i></span>' + data.message_details[i].sender_name + '</p>'
+                                          + '<p class="ui-form-chat-instructor">' + data.message_details[i].message + '</p>'
+                                          + '<p class="time_date_instructor">' + data.message_details[i].message_creation_time + '</p>'
+                                      + '</div>';
+                        }
+                        else {
+                            var row = ' <div class="container-fluid">'
+
+                                          + '<p class="ui-form-chat">' + data.message_details[i].message + '</p>'
+                                          + '<p class="time_date">' + data.message_details[i].message_creation_time + '</p>'
+                                      + '</div>';
+                        }
+                        $("#questionContainer").append(row);
+                        $("#messagesContainer").scrollTop($("#messagesContainer")[0].scrollHeight);
+                        if (currentSessionLastMessageId != -1) {
+                            lastMessageId = currentSessionLastMessageId;
+                        }
+                    }
+                }
+            }
+        });
+    }
+    var messageInerval;
+    var lastMessageId = -1;
+    var syncFlag = false;
+    function runTimer() {
+        messageInerval = setInterval(getAllMessagesAsync, 1000);
+    }
+    function getAllMessagesAsync() {
+        if (lastMessageId == -1 || syncFlag) {
+            return;
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetAllClassroomMessageAfterLast?ClassroomId=@ViewBag.Id&LastMessageId=".concat(lastMessageId),
+            success: function (data) {
+
+                if (data != null && data.response_code == 1) {
+
+                    for (var i = 0; i < data.message_details.length; i++) {
+                        lastMessageId = data.message_details[i].message_id;
+                        if (data.message_details[i].is_me == false) {
+                            var row = ' <div class="container-fluid">'
+                                + '<p class="messge-sender"><spna><i class="fa fa-user mr-2"></i></span>' + data.message_details[i].sender_name + '</p>'
+                                          + '<p class="ui-form-chat-instructor">' + data.message_details[i].message + '</p>'
+                                          + '<p class="time_date_instructor">' + data.message_details[i].message_creation_time + '</p>'
+                                      + '</div>';
+                        }
+                        else {
+                            var row = ' <div class="container-fluid">'
+
+                                          + '<p class="ui-form-chat">' + data.message_details[i].message + '</p>'
+                                          + '<p class="time_date">' + data.message_details[i].message_creation_time + '</p>'
+                                      + '</div>';
+                        }
+                        $("#questionContainer").append(row);
+                        $("#messagesContainer").scrollTop($("#messagesContainer")[0].scrollHeight);
+                    }
+                }
+            }
+        });
+    }
+    function hideAllClssroomDetails()
+    {
+        if (player != null) {
+            try {
+                player.pause();
+            }
+            catch (ex) {
+
+            }
+        }
+
+        clearInterval(messageInerval);
+        $(".nav-link").removeClass("active");
+        $("#classroomHomeDetails").hide();
+        $("#classroomContaintProgressDetails").hide();
+        $("#classroomMeetingStartSection").hide();
+        $("#navMessagesContainer").hide();
+        $("#navTeachingSessionsContainer").hide();
+        $("#navAllAssignments").hide();
+        $("#navAllAssignmentSubmissions").hide();
+        $("#navPractiveNewAssignment").hide();
+        $("#navAllClassroomTests").hide();
+        $("#navAllClassroomTestSubmissions").hide();
+        $("#navClassroomAttachments").hide();
+        $("#navPreviousClasses").hide();
+        $("#navClassroomSchedule").hide();
+        $("#navClassroomSyllabus").hide();
+        $("#navStudentsJoined").hide();
+        is_fetechStudentActive = false;
+    }
+
+    function showClassroomMessages()
+    {
+        hideAllClssroomDetails();
+        $("#navMessagesContainer").show();
+        getAllMessages();
+        runTimer();
+    }
+    function showTeachingSessions()
+    {
+        hideAllClssroomDetails();
+        $("#navTeachingSessionsContainer").show();
+    }
+    function showHomeDetails()
+    {
+        hideAllClssroomDetails();
+        $("#classroomHomeDetails").show();
+        $("#classroomContaintProgressDetails").show();
+        $("#classroomMeetingStartSection").show();
+    }
+    function viewAllClassroomAssignmentSubmissions()
+    {
+        $("#footerAllAssignmentSubmissions").hide();
+        hideAllClssroomDetails();
+        $("#navAllAssignmentSubmissions").show();
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetAllClassroomSubmittedAssignment?ClassroomId=@ViewBag.Id",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    var row = '';
+                    var assignments = data.assignment_details;
+                    $("#allClassroomAssignmentSubmissionsContainer").empty();
+                    if (assignments != null && assignments.length > 0) {
+                        for (var i = 0; i < assignments.length; i++) {
+                            row = '<div class="card-body shadow classroom-assignemnts-submitted p-2">' +
+                            '<h4 class="text-white font-weight-bold p2"><span ><i class="fa fa-pencil"></i></span> ' + assignments[i].assignment_name + '</h4>' +
+                            '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-calendar"></i></span> Submitted On: ' + assignments[i].submission_date + '</h6>' +
+                            '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-info-circle"></i></span> No Of questions:' + assignments[i].no_of_questions +'</h6>';
+                            row += '<h6 class="ml-4"><span class="badge badge-pill badge-light ml-10" id="successbadge">Score: ' + assignments[i].score + '%</span><a class="btn btn-sm btn-outline-light ml-2" href="AssignmentResponse?id=' + assignments[i].submission_id + '">View response</a></h6>';
+
+                            row += '</div>';
+                            $("#allClassroomAssignmentSubmissionsContainer").append(row);
+                        }
+
+                    } else {
+                        $("#footerAllAssignmentSubmissions").show();
+                    }
+                }
+                $("#spinnerAllSubmittedAssignment").remove();
+
+            }
+        });
+    }
+
+    function viewAllClassroomAssignment()
+    {
+        hideAllClssroomDetails();
+        $("#navPractiveNewAssignment").show();
+        $("#footerPracticeNewAssignment").hide();
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetAllClassroomAssignment?ClassroomId=@ViewBag.Id",
+            success: function (data) {
+
+                if (data != null && data.response_code == 1) {
+                    var row = '';
+                    var assignments = data.assignment_details;
+                    $("#allClassroomAssignmentContainer").empty();
+                    if (assignments != null && assignments.length>0){
+                        for (var i = 0; i < assignments.length; i++) {
+
+                            if (assignments[i].is_submitted == false) {
+                                row = '<div class="card-body shadow classroom-assignemnts p-2">' +
+                           '<h4 class="text-white font-weight-bold p2"><span ><i class="fa fa-pencil"></i></span> ' + assignments[i].assignment_name + '</h4>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-calendar"></i></span> Added On: ' + assignments[i].creation_date + '</h6>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-info-circle"></i></span> No Of questions:' + assignments[i].no_of_questions + ' | Assignemt type: ' + assignments[i].assignment_type + '</h6>';
+                                row += '<h6 class="ml-4"><span class="badge badge-pill badge-light ml-10" id="successbadge">Status: unattempted</span><a class="ml-2 btn btn-sm btn-outline-light" href="GiveAssignment?access_code=' + assignments[i].access_code + '&id=' + assignments[i].assignment_id + '">Practice Now</a></h6>';
+                            }
+                            else
+                            {
+                                row = '<div class="card-body shadow classroom-assignemnts-submitted p-2">' +
+                           '<h4 class="text-white font-weight-bold p2"><span ><i class="fa fa-check-circle"></i></span> ' + assignments[i].assignment_name + '</h4>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-calendar"></i></span> Added On: ' + assignments[i].creation_date + '</h6>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-info-circle"></i></span> No Of questions:' + assignments[i].no_of_questions + ' | Assignemt type: ' + assignments[i].assignment_type + '</h6>';
+                                row += '<h6 class="ml-4"><span class="badge badge-pill badge-light ml-10" id="successbadge">Status: attempted</span><a class="btn btn-sm btn-outline-light ml-2" href="AssignmentResponse?id=' + assignments[i].submission_id + '">View response</a></h6>';
+                            }
+                            row += '</div>';
+                            $("#allClassroomAssignmentContainer").append(row);
+                        }
+
+                    } else {
+                        $("#footerPracticeNewAssignment").show();
+                    }
+                }
+                $("#spinnerAllAssignment").remove();
+
+            }
+        });
+    }
+    function getAllLiveClassMeetingDetailsForStudent() {
+
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchAllLiveClassMeetingDetailForStudent?ClassroomId=@ViewBag.Id",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    var meetings = data.meetings;
+                    var isJoined = "absent";
+                    $('#tableBody').empty();
+                    var sNo = 0;
+                    var absentClass = "";
+                    for (var i = 0; i < meetings.length; i++) {
+                        sNo++;
+                        isJoined = "absent";
+                        absentClass = "danger";
+                        if (meetings[i].student_join_id != null) {
+                            isJoined = "present";
+                            absentClass = "info";
+                        }
+                        var rows = '<tr onclick="showClassroomMeetingContent(' + meetings[i].meeting_id + ')" class="a d-sm-flex align-items-center justify-content-between"><td class="pr-2"><button class=btn btn-outline-primary" onclick="showClassroomMeetingContent(' + meetings[i].meeting_id + ')"><i class="fa fa-2x fa-play-circle text-primary"></i></button></td></td>'
+                        + '<td class="pr-2"></td><td class="pr-2">' + meetings[i].date + '</td>'
+                        + '<td class="pr-2"><div class="text-' + absentClass + '">' + isJoined + '</div></td>'
+                        + ''
+                        + '</tr>';
+                        $('#tableBody').append(rows);
+                        $("#spinner").remove();
+                        $("#coursesTable").show();
+                    }
+                    showClassroomMeetingContent(meetings[meetings.length-1].meeting_id);
+                    $("#startPreviousMeeting").fadeIn();
+                    $("#startPreviousMeeting").attr("href", "StartMeeting?ClassroomId=@ViewBag.Id");
+                }
+                else {
+                    $("#footer").show();
+                    $("#spinner").remove();
+                }
+            }
+        });
+    }
+    function viewAllClassroomTest() {
+        hideAllClssroomDetails();
+        $("#navAllClassroomTests").show();
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetAllClassroomTest?ClassroomId=@ViewBag.Id",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    var row = '';
+                    var tests = data.test_details;
+                    $("#allClassroomAssignmentContainer").empty();
+                    if (tests != null && tests.length > 0) {
+                        for (var i = 0; i < tests.length; i++) {
+                            if (tests[i].is_submitted == false) {
+                                row = '<div class="card-body shadow classroom-assignemnts p-2">' +
+                           '<h4 class="text-white font-weight-bold p2"><span ><i class="fa fa-pen"></i></span> ' + tests[i].test_name + '</h4>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-calendar"></i></span> Added On: ' + tests[i].creation_date + '</h6>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-info-circle"></i></span> No Of questions:' + tests[i].no_of_questions + ' | Test type: ' + tests[i].test_type + '</h6>';
+                                row += '<h6 class="ml-4"><span class="badge badge-pill badge-light ml-10" id="successbadge">Status: un attempted</span><a class="ml-2 btn btn-sm btn-outline-light" href="StartTest?access_code=' + tests[i].access_code + '&id=' + tests[i].test_id + '">Practice Now</a></h6>';
+                            }
+                            else {
+                                row = '<div class="card-body shadow classroom-assignemnts-submitted p-2">' +
+                           '<h4 class="text-white font-weight-bold p2"><span ><i class="fa fa-check-circle"></i></span> ' + tests[i].test_name + '</h4>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-calendar"></i></span> Added On: ' + tests[i].creation_date + '</h6>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-info-circle"></i></span> No Of questions:' + tests[i].no_of_questions + ' | Test type: ' + tests[i].test_type + '</h6>';
+                                row += '<h6 class="ml-4"><span class="badge badge-pill badge-light ml-10" id="successbadge">Status: attempted</span><a class="btn btn-sm btn-outline-light ml-2" href="TestResponse?id=' + tests[i].submission_id + '">View response</a></h6>';
+                            }
+                            row += '</div>';
+                            $("#allClassroomTestContainer").append(row);
+                        }
+
+                    } else {
+                        $("#footerAllTests").show();
+                    }
+                }
+                $("#spinnerAllTest").remove();
+
+            }
+        });
+    }
+    function viewAllPreviousLiveClasses()
+    {
+        hideAllClssroomDetails();
+        $("#navPreviousClasses").show();
+        getAllLiveClassMeetingDetailsForStudent();
+    }
+
+    function viewAllClassroomTestSubmissions() {
+        hideAllClssroomDetails();
+        $("#navAllClassroomTestSubmissions").show();
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetAllClassroomTestSubmissions?ClassroomId=@ViewBag.Id",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    var row = '';
+                    var tests = data.test_details;
+                    $("#allClassroomTestSubmissionsContainer").empty();
+                    if (tests != null && tests.length > 0) {
+                        for (var i = 0; i < tests.length; i++) {
+                                row = '<div class="card-body shadow classroom-assignemnts-submitted p-2">' +
+                           '<h4 class="text-white font-weight-bold p2"><span ><i class="fa fa-check-circle"></i></span> ' + tests[i].test_name + '</h4>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-calendar"></i></span> Submitted On: ' + tests[i].submission_date + '</h6>' +
+                           '<h6 class="text-white font-weight-bold ml-4"><span><i class="fa fa-info-circle"></i></span>  Test type: MCQ</h6>';
+                                row += '<h6 class="ml-4"><span class="badge badge-pill badge-light ml-10" id="successbadge">Score: ' + tests[i].score + '</span><a class="btn btn-sm btn-outline-light ml-2" href="TestResponse?id=' + tests[i].submission_id + '">View response</a></h6>';
+                            row += '</div>';
+                            $("#allClassroomTestSubmissionsContainer").append(row);
+                        }
+
+                    } else {
+                        $("#footerAllTestSubmissions").show();
+                    }
+                }
+                $("#spinnerAllTestSubmissions").remove();
+
+            }
+        });
+    }
+    function getAllClassroomAttachments() {
+        hideAllClssroomDetails();
+        $("#navClassroomAttachments").show();
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/ClassroomAttachments?ClassroomId=@ViewBag.Id",
+            success: function (data) {
+                debugger;
+                var sNo = 0;
+                if (data != null && data.response_code == 1 && data.attachments != null && data.attachments.length > 0) {
+                    var attachments = data.attachments;
+                    $('#tableBodyClassroomAttachments').empty();
+                    for (var i = 0; i < attachments.length; i++) {
+                        sNo++;
+                        var rows = '<tr><td scope="row" ><button type="button" class="btn btn-link font-weight-bold" >' + sNo + '</button></td>'
+                        + '<td>' + attachments[i].attachment_name + '</td><td>' + attachments[i].date_of_addition + '</td>'
+                          + '<td>'
+                            + '<a   class="list-group-horizontal" download="' + attachments[i].attachment_name + '"  href="' + attachments[i].attachment_url + '">'
+                                + '<i class="fas fa-download fa-sm fa-fw mr-2 text-gray-600 m-1"></i>'
+                            + '</a>'
+
+                        + '</td>'
+                        + '</tr>';
+                        $('#tableBodyClassroomAttachments').append(rows);
+                        $("#spinnerClassroomAttachments").remove();
+                        $("#tableClassroomAttachments").show();
+                    }
+                    $("#tableBodyClassroomAttachments").fadeIn();
+                    $('#coursesTable').DataTable();
+                }
+                else {
+                    $("#footerAllStudyMaterials").show();
+
+                }
+                $("#spinnerClassroomAttachments").remove();
+            }
+        });
+    }
+    function callClassroomMeeting() {
+        debugger
+        try {
+            AndroidInterface.startClassroomMeeting($("#classroomName").val(), classroomMeetingName);
+        }
+        catch (ex) {
+
+        }
+    }
+    var player=null;
+    function showClassroomMeetingContent(meetingId) {
+        var _data =
+           {
+               "meeting_id": meetingId,
+               "classroom_id": "@ViewBag.Id"
+           }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/course/FetchLiveClassMeetingDetailForStudent",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    $("#no-data-present").hide();
+                    if (data.meeting_details.topic_name != null) {
+                        $("#topic-name").text(data.meeting_details.topic_name);
+                    }
+                    if (data.meeting_details.video_url != null) {
+                        $("#topic-video-palyer-container").show();
+                        if (player == null) {
+                            player = new Plyr("#topic-video-palyer-container", { captions: { active: true } });
+                            window.player = player;
+
+                        }
+
+                        player.source = {
+                            type: 'video',
+                            sources: [
+                                {
+                                    src: data.meeting_details.video_url,
+                                    type: 'video/mp4',
+                                }
+                            ],
+                        };
+
+                        $("#video-url").show();
+                        $("#no-video-data-present").hide();
+                        $("#no_video_present_img").hide();
+                    }
+
+                    else {
+                        $("#topic-video-palyer-container").hide();
+                        $("#no_video_present_img").show();
+                        $("#video-url").hide();
+                        $("#no-video-data-present").show();
+                    }
+                }
+                else {
+                    $("#no-data-present").show();
+                    //else part of ajax call
+                }
+
+            }
+        });
+    }
+     function showClassroomSchedule() {
+        hideAllClssroomDetails();
+        $("#navClassroomSchedule").show();
+         $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+             url: "/api/v1/Course/GetClassroomSchedule?ClassroomId=@ViewBag.Id",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    var row = '';
+                    $("#classroomScheduleContainer").empty();
+                    var scheduleDetails = data.classroom_schedule_details.schedule_details;
+                    for (var i = 0; i < scheduleDetails.length; i++) {
+                        if (scheduleDetails[i].is_open) {
+                            row += '<tr class="font-weight-bold"><td>' + scheduleDetails[i].day_name + '</td><td class="text-success font-weight-bold right">Open</td><td class="text-su    ccess font-weight-bold right">' + scheduleDetails[i].start_time + '</td><td class="text-success font-weight-bold right">' + scheduleDetails[i].close_time +'</td></tr>';
+                        }
+                        else {
+                            row += '<tr class="font-weight-bold"><td>' + scheduleDetails[i].day_name + '</td><td class="text-danger font-weight-bold right">Closed</td><td class="text-success font-weight-bold right">NA</td><td class="font-weight-bold right">NA</td></tr>';
+                        }
+
+                    }
+
+                }
+                $("#classroomScheduleContainer").append(row);
+                $("#spinnerClassroomSchedule").remove();
+            }
+        });
+
+    }
+
+    function setClassroomTimer(data) {
+        var countDownDate = new Date();
+        countDownDate.setTime(countDownDate.getTime() + parseInt(data["days"]) * 24 * 60 * 60 * 1000 + parseInt(data["hours"]) * 60 * 60 * 1000 + parseInt(data["minutes"]) * 60 * 1000 + parseInt(data["seconds"]) * 1000);
+        var x = setInterval(function () {
+            // Get today's date and time
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+            // Find the distance between now and the count down date
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+
+            // Display the result in the element with id="demo"
+            document.getElementById("demo").innerHTML = "time left: "+days + "d " + hours + "h "
+                + minutes + "m " + seconds + "s ";
+
+            // If the count down is finished, write some text
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("demo").innerHTML = "";
+            }
+        }, 1000);
+    }
+    function showClassroomSyllabus() {
+        debugger
+        hideAllClssroomDetails();
+         $("#navClassroomSyllabus").show();
+         $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+             url: "/api/v1/Course/GetClassroomSyllabus?ClassroomId=@ViewBag.Id",
+             success: function (data) {
+                 debugger
+                if (data != null && data.response_code == 1) {
+
+                    $("#classroomSyllabusContainer").empty();
+                    var scheduleDetails = data.syllabus.week_wise_schedule;
+                    for (var i = 0; i < scheduleDetails.length; i++) {
+                        var row = '';
+                        row += ' <div class="panel">'
+                            + '<div id="collapse1" class="panel-collapse ">'
+                            + '<div class="panel-body">'
+                            + '<div class="panel-group" id="week-body-' + i + '">'
+                            + '<div class="panel">'
+                            + '<div class="panel-heading child">'
+                            + '<h4 class="panel-title">'
+                            + '<a class="accordion-toggle" data-toggle="collapse" data-parent="#week-body-' + i + '" href="#week-header-' + i + '" aria-expanded="false">'
+                            + '' + scheduleDetails[i].week_name + ' </a>'
+                            + '</h4>'
+                            + '</div>'
+                            + '<div id="week-header-' + i + '" class="panel-collapse collapse">'
+                            + '<div class="panel-body">'
+                            + '<div class="inside-body">'
+                            + '<ol class="list-group vertical-steps">';
+                        var topics = scheduleDetails[i].topics_to_be_covered;
+                        for (var j = 0; j < topics.length; j++) {
+                            row += '<li class="list-group-item"><span>' + topics[j]+'</span></li>';
+                        }
+                        row += '</ol >'
+                                +'</div >'
+                                +'</div >'
+                                +'</div >'
+                                +'</div >'
+                                +'</div >'
+                                +'</div >'
+                                +'</div >'
+                            + '</div >';
+                        $("#classroomSyllabusContainer").append(row);
+                    }
+
+                }
+
+                $("#spinnerClassroomSyllabus").remove();
+            }
+        });
+    }
+</script>
+<script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
+<script src="https://unpkg.com/plyr@3"></script>
+<script>
+    function onStart() {
+        $('.nav-link').on('click', event => {
+            $('.nav-link').each(function () {
+                $(this).removeClass("active");
+            });
+            const clickedElement = $(event.target);
+            clickedElement.addClass("active");
+        });
+    }
+    onStart();
+    var no_of_rows_fetched = 0;
+    var is_last_id_feteced = false;
+    function searchForStudentInClassroom() {
+        hideAllClssroomDetails();
+        is_fetechStudentActive = true;
+        $("#navStudentsJoined").show();
+        debugger
+        $("#infinit-spinner").show();
+        $("#infinit-spinner-body").show();
+        var _data =
+        {
+            "classroom_id": "@Model.m_llClassroomId",
+            "no_of_rows_fetched": no_of_rows_fetched
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetAllStudentsJoinedToClassroomForStudent",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var studentsData = data.students_joined;
+
+                    if (studentsData == null || studentsData.length == 0 || studentsData.length<10) {
+                        is_last_id_feteced = true;
+                    }
+                    no_of_rows_fetched = no_of_rows_fetched + studentsData.length;
+                    var subCount = document.getElementById("joined-members");
+                    for (let i = 0; i < studentsData.length; i++) {
+                        if (studentsData[i].profile_url == null) {
+                            studentsData[i].profile_url = "../images/profile1.png";
+                        }
+                        let parent = document.createElement("DIV");
+                        let parentAtt = document.createAttribute("class");
+                        parentAtt.value = "instructorsList";
+                        parent.setAttributeNode(parentAtt);
+
+                        let profileImg = document.createElement("IMG");
+                        let profileImgAtt = document.createAttribute("class");
+                        profileImgAtt.value = "profile";
+                        profileImg.setAttributeNode(profileImgAtt);
+                        profileImg.src = studentsData[i].profile_url
+                        profileImg.alt = "img" + i
+
+                        let parentCont = document.createElement("DIV");
+                        let parentContAtt = document.createAttribute("class");
+                        parentContAtt.value = "content";
+                        parentCont.setAttributeNode(parentContAtt);
+
+                        let nameCont = document.createElement("a");
+                        nameCont.href = "StudentProfile?id=" + studentsData[i].student_id;
+                        let nameContAtt = document.createAttribute("class");
+                        nameContAtt.value = "name";
+                        nameCont.setAttributeNode(nameContAtt);
+                        nameCont.textContent = studentsData[i].name
+
+                        let infoCont = document.createElement("DIV");
+                        let infoContAtt = document.createAttribute("class");
+                        infoContAtt.value = "info";
+                        infoCont.setAttributeNode(infoContAtt);
+                        infoCont.textContent = "Joined since " + studentsData[i].date_of_joining;
+
+                        let infoCont1 = document.createElement("DIV");
+                        let infoContAtt1 = document.createAttribute("class");
+                        infoContAtt1.value = "info";
+                        infoCont1.setAttributeNode(infoContAtt1);
+                        infoCont1.textContent = studentsData[i].no_of_followers + " Followers"
+
+                        parentCont.appendChild(nameCont)
+                        parentCont.appendChild(infoCont)
+                        parentCont.appendChild(infoCont1)
+
+
+                        let addCont = document.createElement("DIV");
+                        let addContAtt = document.createAttribute("class");
+                        addContAtt.value = "add-cont";
+                        addCont.setAttributeNode(addContAtt);
+
+
+                        let icon = document.createElement("a")
+                        icon.href = "StudentProfile?id=" + studentsData[i].student_id;
+                        let iconCont = document.createAttribute("class");
+                        iconCont.value = "icon";
+                        icon.setAttributeNode(iconCont);
+
+                        let addImg = document.createElement("I");
+                        let addImgAtt = document.createAttribute("class");
+                        if (studentsData[i].is_following == false) {
+                            addImgAtt.value = "fa fa-user-plus";
+                        }
+                        else {
+                            addImgAtt.value = "fa fa-arrow-right";
+                        }
+                        addImg.setAttributeNode(addImgAtt);
+
+                        icon.appendChild(addImg)
+
+                        addCont.appendChild(icon)
+
+                        let underline = document.createElement("hr");
+
+                        parent.appendChild(profileImg)
+                        parent.appendChild(parentCont)
+                        parent.appendChild(addCont)
+
+                        subCount.appendChild(parent);
+
+                        if (i < studentsData.length - 1) {
+                            subCount.appendChild(underline)
+                        }
+                    }
+                    document.getElementById("instructors").appendChild(subCount)
+                }
+                else {
+                    $("#infinit-spinner").hide();
+                    $("#infinit-spinner-body").hide();
+                    is_last_id_feteced = true;
+                }
+                $("#infinit-spinner").hide();
+                $("#infinit-spinner-body").hide();
+            }
+        });
+    }
+    var is_fetechStudentActive = false;
+    $(window).on("scroll", function () {
+        var scrollHeight = $(document).height();
+        var scrollPos = $(window).height() + $(window).scrollTop();
+        if ((scrollHeight - scrollPos) / scrollHeight == 0) {
+            if (!is_last_id_feteced) {
+                if (is_fetechStudentActive) {
+                    searchForStudentInClassroom();
+                }
+            }
+        }
+    });
+</script>
+<script type="text/javascript">
+    var rating = 5;
+    var logID = 'log',
+        log = $('<div id="' + logID + '"></div>')
+    console.log(log)
+    $('#final-rating').append(log)
+    $('[type*="radio"]').change(function () {
+        var me = $(this)
+        rating = me.attr('value');
+    })
+
+
+</script>
+<script type="text/javascript">
+    function requestFeedback() {
+        debugger
+        if ("@Model.m_iClassroomRating" == "") {
+            $("#courseFeedbackModel").modal("show");
+        }
+    }
+    function showFeedbackModal() {
+        $("#courseFeedbackModel").modal("show");
+    }
+    requestFeedback();
+    function submitFeedback() {
+        _data = {
+            "feedback_message": $("#feedbackMessage").val(),
+            "no_of_ratings": rating ,
+            "classroom_id":"@Model.m_llClassroomId"
+        };
+         $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+             url: "/api/v1/Course/InsertClassroomFeedback",
+             data: JSON.stringify(_data),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                }
+            }
+        });
+    }
+</script>

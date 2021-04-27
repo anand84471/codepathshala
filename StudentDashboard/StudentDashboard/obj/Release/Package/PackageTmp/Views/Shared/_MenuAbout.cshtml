@@ -1,0 +1,105 @@
+﻿<style type="text/css">
+    .topnav {
+        background-color: #333;
+        overflow: hidden;
+    }
+
+        /* Style the links inside the navigation bar */
+        .nav-item a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            border-bottom: 3px solid transparent;
+        }
+
+            .nav-item a:hover {
+                border-bottom: 3px solid #8A2BE2;
+            }
+
+            .nav-item a.active {
+                border-bottom: 3px solid #8A2BE2;
+            }
+            .nav-link active {
+                border-bottom: 3px solid #8A2BE2;
+            }
+    .custom-primary {
+        color: #8A2BE2;
+    }
+</style>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark ftco_navbar ftco-navbar-light shadow-sm" id="ftco-navbar">
+    <div class="container d-flex align-items-center">
+        <a href="~/"><img src="~/Images/site-logo-v2-full.png"  class="navbar-brand"  alt="..." style="max-height:60px;max-width:180px;"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+        <!-- <p class="button-custom order-lg-last mb-0"><a href="appointment.html" class="btn btn-secondary py-2 px-3">Make An Appointment</a></p> -->
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            @*<form class="form-inline">
+
+                <input class="form-control mr-sm-2 shadow-lg" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </form>*@
+            <ul class="navbar-nav ml-auto">
+
+                @*<li class="nav-item active" id="homeMenu"><a href="~/" class="nav-link pl-0">Home</a></li>*@
+                @*<li class="nav-item" id="createMeetingMenu"><a href="~/Classroom" class="nav-link">Classroom</a></li>*@
+                @*<li class="nav-item outline" id="courseMenu"><a href="~/Course" class="nav-link pl-0">Courses</a></li>*@
+                @*<li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="">Categories</a>
+                    <div class="row col-sm-12">
+                        <div class="dropdown-menu mega-area">
+                            <div class="col-sm-3 col-lg-3">
+                                <h6>Data Science</h6>
+                                <div class="">
+                                    <a class="dropdown-item" href="https://www.readmycourse.com/instructor">Instructor</a>
+                                    <a class="dropdown-item" href="https://www.readmycourse.com/student">Student</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-lg-3">
+                                <h6>Data Science</h6>
+                                <div class="">
+                                    <a class="dropdown-item" href="https://www.readmycourse.com/instructor">Instructor</a>
+                                    <a class="dropdown-item" href="https://www.readmycourse.com/student">Student</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-lg-3">
+                                <h6>Data Science</h6>
+                                <div class="">
+                                    <a class="dropdown-item" href="https://www.readmycourse.com/instructor">Instructor</a>
+                                    <a class="dropdown-item" href="https://www.readmycourse.com/student">Student</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </li>*@
+                <li class="nav-item" id="liveClassMenu"><a href="~/JoinLiveClass" class="nav-link pl-0">Join live class</a></li>
+                <li class="nav-item" id="testMenu"><a href="~/Test" class="nav-link pl-0">Practice tests</a></li>
+                <li class="nav-item" id="becomeInstructor"><a href="~/BecomeInstructor" class="nav-link pl-0">Become Instructor</a></li>
+                <li class="nav-item" id="maegAward"><a href="~/MAEGAward" class="nav-link pl-0">MAEG Award</a></li>
+                <li class="nav-item dropdown"></li>
+                @*<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">About</a>
+        <div class="dropdown-menu">
+            <div class="card-body">
+                <a class="dropdown-item" href="https://www.readmycourse.com/instructor">Instructor</a>
+                <a class="dropdown-item" href="https://www.readmycourse.com/student">Student</a>
+            </div>
+        </div>*@
+
+            </ul>
+            <div class="nav-login">
+                <a href="~/login" class="ml-1 btn p-1 right shadow-lg">Log In</a>
+                <a href="~/Student/Join" class="p-1 btn btn-primary m-1 font-weight-bold">Join for Free</a>
+            </div>
+        </div>
+    </div>
+</nav>
+

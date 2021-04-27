@@ -1,0 +1,231 @@
+﻿@{
+    ViewBag.Title = "Students Joined";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Students Joined</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page" id="breadcumbCurrentName">Students Joined</li>
+        </ol>
+    </div>
+    <div class="input-group pl-lg-5 pr-lg-5">
+        <input type="text" class="form-control" id="courseSearchBox" placeholder="Search for student..." aria-label="Search">
+        <div class="input-group-append">
+            <button class="btn btn-primary" onclick="userStudentSearch()" type="button">
+                <i class="fas fa-search fa-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    <hr class="ml-5 mr-5" />
+    <div class="card row  shadow-lg mb-4" id="instructors">
+        <div id="joined-members" class="container-fluid">
+        </div>
+
+    </div>
+    <div class="container-fluid text-center" id="spinner-area">
+        <div class="spinner-border" role="status" id="infinit-spinner">
+            <span class="sr-only" id="infinit-spinner-body">Loading...</span>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        //window.addEventListener('load', function () {
+        //    getAssignmentDetails();
+        //}, false);
+        onpageshow = searchForStudent();
+    })();
+    var no_of_rows_fetched = 0;
+    function searchToCustomTable() {
+        var input, filter, table, tr, td, i, txtValue, a;
+        input = document.getElementById("customTableCodePathshalaSearch");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("customTableCodePathshala");
+        tr = table.getElementsByTagName("tr");
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+            a = tr[i].getElementsByTagName("th")[0];
+            a = a.getElementsByTagName("button")[0];
+            if (a) {
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    function getSubmissionDetails(id) {
+        $.ajax({
+            url: '/Student/TestResponse?id='.concat(id),
+            type: 'GET',
+            success: function (data) {
+                $("#body").html(data);
+
+            }
+        });
+    }
+    function getAllStudentsJoined() {
+        var x = $('#assignmentsRows').empty();
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/Joinee",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var assignments = data.students;
+                    for (var i = 0; i < assignments.length; i++) {
+                        var rows = '<tr>'
+                        + '<td>' + assignments[i].student_name + '</td><td>' + assignments[i].date_of_joining + '</td>'
+                        + '</tr>';
+                        $('#assignmentsRows').append(rows);
+                        $("#spinner").remove();
+                        $("#customTableCodePathshala").show();
+                    }
+                    $('#customTableCodePathshala').DataTable();
+                }
+                else {
+                    $("#footer").show();
+                    $("#spinner").remove();
+                }
+                $("#spinner").remove();
+            }
+        });
+    }
+    function searchForStudent() {
+        debugger
+        $("#infinit-spinner").show();
+        $("#infinit-spinner-body").show();
+        var _data =
+        {
+            "key": $("#courseSearchBox").val(),
+            "no_of_rows_fetched": no_of_rows_fetched
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/Joinee",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var studentsData = data.students;
+
+                    if (studentsData == null || studentsData.length == 0) {
+                        is_last_id_feteced = true;
+                    }
+                    no_of_rows_fetched = no_of_rows_fetched + studentsData.length;
+                    var subCount = document.getElementById("joined-members");
+                    for (let i = 0; i < studentsData.length; i++) {
+                        if (studentsData[i].profile_url == null) {
+                            studentsData[i].profile_url = "../images/profile1.png";
+                        }
+                        let parent = document.createElement("DIV");
+                        let parentAtt = document.createAttribute("class");
+                        parentAtt.value = "instructorsList";
+                        parent.setAttributeNode(parentAtt);
+
+                        let profileImg = document.createElement("IMG");
+                        let profileImgAtt = document.createAttribute("class");
+                        profileImgAtt.value = "profile";
+                        profileImg.setAttributeNode(profileImgAtt);
+                        profileImg.src = studentsData[i].profile_url
+                        profileImg.alt = "img" + i
+
+                        let parentCont = document.createElement("DIV");
+                        let parentContAtt = document.createAttribute("class");
+                        parentContAtt.value = "content";
+                        parentCont.setAttributeNode(parentContAtt);
+
+                        let nameCont = document.createElement("a");
+                        nameCont.href = "StudentProfile?id=" + studentsData[i].student_id;
+                        let nameContAtt = document.createAttribute("class");
+                        nameContAtt.value = "name";
+                        nameCont.setAttributeNode(nameContAtt);
+                        nameCont.textContent = studentsData[i].name
+
+                        let infoCont = document.createElement("DIV");
+                        let infoContAtt = document.createAttribute("class");
+                        infoContAtt.value = "info";
+                        infoCont.setAttributeNode(infoContAtt);
+                        infoCont.textContent = "Joined since " + studentsData[i].date_of_joining;
+
+                        let infoCont1 = document.createElement("DIV");
+                        let infoContAtt1 = document.createAttribute("class");
+                        infoContAtt1.value = "info";
+                        infoCont1.setAttributeNode(infoContAtt1);
+                        infoCont1.textContent = studentsData[i].followers + " Followers"
+
+                        parentCont.appendChild(nameCont)
+                        parentCont.appendChild(infoCont)
+                        parentCont.appendChild(infoCont1)
+
+
+                        let addCont = document.createElement("DIV");
+                        let addContAtt = document.createAttribute("class");
+                        addContAtt.value = "add-cont";
+                        addCont.setAttributeNode(addContAtt);
+
+
+                        let icon = document.createElement("a")
+                        icon.href = "StudentProfile?id=" + studentsData[i].student_id;
+                        let iconCont = document.createAttribute("class");
+                        iconCont.value = "icon";
+                        icon.setAttributeNode(iconCont);
+
+                        let addImg = document.createElement("I");
+                        let addImgAtt = document.createAttribute("class");
+                        addImgAtt.value = "fa fa-user-plus"
+                        addImg.setAttributeNode(addImgAtt);
+
+                        icon.appendChild(addImg)
+
+                        addCont.appendChild(icon)
+
+                        let underline = document.createElement("hr");
+
+                        parent.appendChild(profileImg)
+                        parent.appendChild(parentCont)
+                        parent.appendChild(addCont)
+
+                        subCount.appendChild(parent);
+
+                        if (i < studentsData.length - 1) {
+                            subCount.appendChild(underline)
+                        }
+                    }
+                    document.getElementById("instructors").appendChild(subCount)
+                }
+                else {
+                    $("#infinit-spinner").hide();
+                    $("#infinit-spinner-body").hide();
+                    is_last_id_feteced = true;
+                }
+                $("#infinit-spinner").hide();
+                $("#infinit-spinner-body").hide();
+            }
+        });
+    }
+</script>

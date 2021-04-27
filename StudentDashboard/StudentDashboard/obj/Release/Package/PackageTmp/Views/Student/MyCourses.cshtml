@@ -1,0 +1,287 @@
+﻿@{
+    ViewBag.Title = "My Courses";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<style type="text/css">
+    .my-icon {
+    
+}
+</style>
+<div class="container-fluid " id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">My Courses</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Courses</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="m-lg-5" id="search-course-container"> 
+        <div class="input-group" id="search-help-section">
+            <input type="text" class="form-control" id="courseSearchBox" placeholder="search for course...">
+            <div class="input-group-append">
+                <button class="btn btn-primary input-group-append" onclick="searchForCourse()" type="button">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+      
+    </div>
+    <div class="card shadow-lg container-fluid" id="extra-course-search" style="display:none;">
+        <div class="text-center container-fluid" id="search-help-section">
+            <h2 class="mt-4"><span>Join a course from </span>top instructors</h2>
+        </div>
+        <div class="row container-fluid">
+            <div class="col-sm-6">
+                <img class="img-fluid" src="../Images/join_new_static_course_graphics.svg" style="max-height:70vh;" />
+            </div>
+            <div class="col-sm-6 pt-5">
+
+                <div class="row justify-content-center mb-5 pb-2">
+                    <div class="col-md-8 text-center heading-section heading-section-black ftco-animate">
+                        @*<h2 class="mb-1"><span>Join live class from </span>top instructors</h2>*@
+                        <h6 class="mb-1"><span> Try a free course today from one of 10+ world-class universities.</span> </h6>
+                        <div class="row  align-items-center">
+                            <img class="img p-2 mr-2" style="width:100px;height:100px;" src="~/Images/iit-indore-logo.png" />
+                            <img class="img p-2 mr-2" style="width:100px;height:100px;" src="~/Images/iit_mandi_logo.png" />
+                            <img class="img p-2 mr-2" style="width:120px;height:110px;" src="~/Images/mnnit-allahabad-logo.png" />
+                            <img class="img p-2 mr-2" style="width:90px;height:90px;" src="~/Images/iit-madras-logo.png" />
+                        </div>
+                        <hr>
+                        <a class="btn btn-lg btn-primary" href="./JoinNewCourse">Join a course <span class="fa fa-search"></span></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row d-md-flex align-items-center justify-content-center">
+            <div class="col-md-12 text-center heading-section heading-section-black ftco-animate">
+                <h4 class="mb-1 font-weight-bolder"><span>Features available in our courses</span> </h4>
+                <h6 class="mb-1"><span> “Your sucess is our first priority” </span> </h6>
+                <div class="row">
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/certificate.png" style="height:50px;width:50px;" />
+                            <h4>Certificate of completion</h4>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/video.png" style="height:50px;width:50px;" />
+                            <h4>Life time study material access</h4>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/learning.svg" style="height:50px;width:50px;" />
+                            <h4>Assignments and Tests</h4>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center p-3">
+                        <div class="card-body">
+                            <img src="~/Images/icon/web_icons/job-search.png" style="height:50px;width:50px;" />
+                            <h4>Job opportunities</h4>
+                            <h6></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="ml-5 mr-5" />
+    <div class="row" id="coursesContainer">
+        
+    </div>
+
+</div>
+<div class="modal fade top" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 " id="myModalLabel"> <b>Course Details:</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9" id="courseName"></dd>
+                    <dt class="col-sm-3">Description:</dt>
+                    <dd class="col-sm-9" id="courseDescription"></dd>
+                    <dt class="col-sm-3">Created on:</dt>
+                    <dd class="col-sm-9" id="insertDate">
+                    </dd>
+                    <dt class="col-sm-3">Assignments:</dt>
+                    <dd class="col-sm-9" id="assignments"></dd>
+                    <dt class="col-sm-3">Tests:</dt>
+                    <dd class="col-sm-9" id="tests"></dd>
+                    <dt class="col-sm-3">Indexes:</dt>
+                    <dd class="col-sm-9" id="indexes"></dd>
+                </dl>
+                <ul class="list-group z-depth-0" id="indexContainer"></ul>
+
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<script>
+    (function () {
+        'use strict';
+        var input = document.getElementById("courseSearchBox");
+        input.addEventListener("keyup", function (event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                searchForCourse();
+            }
+        });
+        onpageshow = searchForCourse();
+    })();
+   
+    function searchForCourse() {
+        var coursesContainer = $("#coursesContainer");
+        debugger
+        var _data =
+            {
+                "key": $("#courseSearchBox").val()
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetJoinedCourses",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1 && data.course_details!=null&&data.course_details.length>0) {
+                    var courses = data.course_details;
+                    
+                    $("#extra-course-search").hide();
+                    var rows='';
+                    for (var i = 0; i < courses.length; i++) {
+                        if (courses[i].course_name.length > 18) {
+                            courses[i].course_name = courses[i].course_name.substring(0, 15) + "...";
+                        }
+                        if (courses[i].course_description.length > 22) {
+                            courses[i].course_description = courses[i].course_description.substring(0, 20) + "...";
+                        }
+                        rows+= ('<div class="col-xl-3 col-md-6 mb-4">'
+                 + '<div class="card shadow border-left-success  ml-2 mr-2 mb-2">'
+                     + '<div class="card-body text-center">'
+                         + '<h4 class="card-title font-weight-bold"><a>' + courses[i].course_name + '</a></h4>'
+                         + '<p class="card-text mb-1">' + courses[i].course_description + '</p>'
+                          + '<h6 class="card-title font-weight-light">Joined on:' + courses[i].join_date + '</h6>'
+                         + ' <div class="col mb-2">'
+                         +'<div class="col-auto">'
+                          + '<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">' + courses[i].course_progress + '%</div>'
+                        +'</div>'
+                                    +'<div class="progress progress-sm mr-2">'
+                                        +'<div class="progress-bar bg-info" role="progressbar" style="width: '+courses[i].course_progress+'%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>'
+                                    + '</div>'
+                                   
+                                +'</div>'
+                         + '<ul class="list-unstyled list-inline rating mb-0">'
+                            + '<li class="list-inline-item mr-2"><button  class="btn btn-outline-primary" onclick="getCourseDetails(' + courses[i].course_id + ')">Details</button></li>'
+                            + '<li class="list-inline-item mr-0"><a  class="btn btn-primary" href="LearnCourse?id=' + courses[i].course_id + '">Start learning</a></li>'
+                        + '</ul>'
+                     + '</div>'
+                 + '</div>'
+             + '</div>');
+
+                    }
+                    coursesContainer.html(rows);
+                }
+                else {
+                    coursesContainer.html("");
+                    $("#extra-course-search").show();
+                    $("#search-course-container").hide();
+                }
+            }
+        });
+    }
+
+    function getCourseDetails(Id) {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/getcoursedetails?CourseId=".concat(Id),
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $("#courseDescription").text(data.course_description);
+                    $("#courseName").text(data.course_name);
+                    $("#insertDate").text(data.course_creation_date);
+                    $("#indexes").text(data.indexes.length);
+                    $('#fullHeightModalRight').modal('show');
+
+                    var assignments = 0;
+                    var tests = 0;
+                    $("#indexContainer").empty();
+                    if (data.indexes.length > 0) {
+                        $("#indexContainer").append(
+                           '<li class="list-group-item justify-content-between">'
+                               + '<b class="mr-2">Indexes:  </b>'
+                               + '<span class="badge badge-primary badge-pill">Topics</span>'
+                               + '<span class="badge badge-primary badge-pill">Assignments</span>'
+                               + '<span class="badge badge-primary badge-pill">Tests</span>'
+
+                           + '</li>'
+                           );
+                    }
+
+                    for (var i = 0; i < data.indexes.length; i++) {
+                        var x = 0; y = 0;
+                        if (data.indexes[i].assignment_name != null && data.indexes[i].assignment_name != "") {
+                            x++;
+                            assignments++;
+                        }
+                        if (data.indexes[i].test_name != null && data.indexes[i].test_name != "") {
+                            y++;
+                            tests++;
+                        }
+
+                        $("#indexContainer").append(
+                            '<li class="list-group-item justify-content-between">'
+                                + data.indexes[i].index_name
+                                + '  <span class="badge badge-primary badge-pill">' + data.indexes[i].topic_count + '</span>'
+                                + '<span class="badge badge-primary badge-pill">' + x + '</span>'
+                                + '<span class="badge badge-primary badge-pill">' + y + '</span>'
+                            + '</li>'
+                            );
+                    }
+                    $("#tests").text(tests);
+                    $("#assignments").text(assignments);
+                }
+                else {
+                    $("#footer").show();
+                }
+            }
+        });
+    }
+    function callLearning(id) {
+        $.ajax({
+           url: "LearnCourse?id=".concat(id),
+            type: 'GET',
+            success: function (data) {
+                $(document).html(data);
+                window.history.pushState({ "html": data, "pageTitle": "EditAccount" }, "", "LearnCourse?id=".concat(id));
+            }
+        });
+    }
+
+</script>

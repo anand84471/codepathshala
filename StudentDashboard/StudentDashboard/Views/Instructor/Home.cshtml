@@ -1,0 +1,161 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+@using StudentDashboard.Models;
+@model InstructorRegisterModel
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+        @*<a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>*@
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">My Earnings  </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfCourseCreated</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-inr fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Active courses</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">@Model.m_iActiveCourses</div>
+                                </div>
+                                <div class="col">
+                                    <div class="progress progress-sm mr-2">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="activeCoursesProgress"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Live courses</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfAssignmentCreated</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-play-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        
+        <!-- Pending Requests Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Followers</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfStudentsJoined</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4 text-center border-bottom-success ">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">My Earnings</h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <img class="img-fluid mt-1 mb-1" style="width: 10rem;" src="~/Images/icon/web_icons/earnings.svg" alt="">
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4 text-center border-bottom-success ">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent followers</h6>
+                </div>
+                <div class="card-body">
+                   
+                  
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4 text-center border-bottom-success ">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent courses joined</h6>
+                </div>
+                <div class="card-body">
+                   
+                   
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4 text-center border-bottom-success ">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent live classess joined</h6>
+                </div>
+                <div class="card-body">
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //activeCourses
+    (function () {
+        debugger
+        'use strict';
+        window.localStorage.setItem('access_token', "@ViewBag.Token");
+        window.onpageshow=setCourseProgress();
+       
+        //activeCoursesProgress
+    })();   
+    function setCourseProgress()
+    {
+        var activeCourses=@Model.m_iActiveCourses;
+        var CoursesCreated = @Model.m_iNoOfCourseCreated;
+        if(activeCourses!=null&&CoursesCreated!=null&&CoursesCreated!=0)
+        {
+            var percentageActivaeCourse=activeCourses*100/CoursesCreated;
+            document.getElementById("activeCoursesProgress").style.width=percentageActivaeCourse+"%";
+        }
+    }
+</script>
+
+<!-- /.container-fluid -->

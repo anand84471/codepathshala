@@ -1,0 +1,690 @@
+﻿@{
+    ViewBag.Title = "Assignment Response";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+
+}
+@using StudentDashboard.HttpResponse;
+@model InstructorProfileDetailsModal
+<style type="text/css">
+    
+.profile{
+  box-sizing: border-box;
+  max-width: 380px;
+  padding-top: 40px;
+  font-family: "Roboto Condensed", "Arial", sans-serif;
+  font-size: 14px;
+  font-weight: 400;  
+  color: #222;
+  
+  background-color: #fff;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
+  text-align: center;
+  
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.profile:before{
+  content: "";
+  width: 85px;
+  height: 50px;
+
+  transition: transform .5s cubic-bezier(0.42, 0.04, 0.13, 0.92);
+  border-radius: 50%;
+  background-color: #7B1FA2;
+
+  position: absolute;
+  top: -70px;
+  left: 50%;
+  z-index: -1;  
+  transform: translateX(-50%) scale(7);
+}
+
+
+
+
+.profile__avatar{
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+
+  border: 6px solid #7B1FA2;
+  transition: border-color .4s ease-out .1s;
+}
+.profile__name{
+  margin-top: 10px;
+  margin-bottom: 0;
+  font-size: 30px;
+}
+.profile__stats{
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;  
+
+  margin-top: 25px;
+  margin-bottom: 25px;  
+
+  background-color: #f0f0f0;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  transition: background-color .4s ease-out .1s;
+}
+
+.profile:hover .profile__stats{
+  transition-delay: .2s;
+}
+
+.profile__group{
+  box-sizing: border-box;
+  width: 33.3333333%;
+  transition: border-color .4s ease-out .1s;
+
+  border-right: 1px solid #BDBDBD;
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+profile:hover .profile__group{
+  transition-delay: .4s;
+}
+
+.profile__group:nth-child(n+4){
+  margin-top: 20px;
+}
+
+.profile__group:nth-child(3n+3){
+  border-right: none;
+}
+
+.profile__param, .profile__value{
+  display: block;
+  transition: color .4s ease-out .1s;
+}
+
+.profile__param{
+  text-transform: uppercase;
+}
+
+.profile__value{
+  font-size: 30px;
+  color: #7B1FA2;
+  font-weight: 700;
+}
+
+.profile__socials{
+  padding-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile__social{
+  border: 2px solid currentColor;
+  color: #7B1FA2;
+  border-radius: 50%;
+  transition: color .4s ease-out .3s;
+  
+  margin-left: 10px;
+  margin-right: 10px;  
+  padding: 10px;
+  position: relative;
+}
+
+.profile__social-icon{
+  width: 18px;
+  height: 18px;
+  display: block;
+  fill: currentColor;
+}
+
+.profile__social-name{
+  position: absolute;
+  left: -9999px;
+}
+
+/*
+* demo styles
+*/
+.page{
+  min-height: 100vh;
+  display: flex;
+}
+
+.page__container{
+  padding-left: 1px;
+  padding-right: 1px;
+  margin: auto;
+}
+.topnav {
+  background-color: #fff;
+  overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  display: block;
+  color: #673AB7;
+  text-align: center;
+  padding: 10px 12px;
+  text-decoration: none;
+  font-size: 17px;
+  border-bottom: 3px solid transparent;
+}
+
+.topnav a:hover {
+  border-bottom: 3px solid red;
+}
+
+.topnav a.active {
+  border-bottom: 3px solid red;
+}
+@@import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+
+* {
+	box-sizing: border-box;
+}
+
+.courses-container {
+	float: left;
+}
+
+.course {
+	background-color: #fff;
+	border-radius: 10px;
+	margin: 10px;
+	overflow: hidden;
+    border-radius: 10px;
+	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+    width:210px;
+    height:250px;
+}
+
+.course h6 {
+	opacity: 0.6;
+	margin: 5px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.course h2 {
+	letter-spacing: 1px;
+	margin: 5px;
+}
+
+.course-preview {
+	background-color: #2A265F;
+	color: #fff;
+	margin: 5px 0;
+    padding: 30px;
+}
+.course-preview a {
+	color: #fff;
+	display: inline-block;
+	font-size: 12px;
+	opacity: 0.6;
+	margin-top: 10px;
+	text-decoration: none;
+}
+
+.course-info {
+	padding: 30px;
+	position: relative;
+	
+}
+
+.progress-container {
+	position: absolute;
+	top: 30px;
+	right: 30px;
+	text-align: right;
+	
+}
+.progress {
+	background-color: #ddd;
+	border-radius: 3px;
+	height: 5px;
+	
+}
+
+.progress::after {
+	border-radius: 3px;
+	background-color: #2A265F;
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 5px;
+	width: 66%;
+}
+
+.progress-text {
+	font-size: 10px;
+	opacity: 0.6;
+	letter-spacing: 1px;
+}
+
+.coursebtn {
+	background-color: #2A265F;
+	border: 0;
+	border-radius: 50px;
+	box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+	color: #fff;
+	font-size: 12px;
+	padding: 15px 15px;
+	position: absolute;
+	bottom: 30px;
+	right: 30px;
+	letter-spacing: 1px;
+}
+.scroll {
+   width:auto;
+   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+    direction:ltr; 
+
+}
+
+@@media screen and (max-width: 480px) {
+
+	.social-panel-container.visible {
+		transform: translateX(0px);
+	}
+	
+	.floating-btn {
+		right: 10px;
+	}
+    .container-fluid
+    {
+        padding-left:0.2rem;
+        padding-right:0.2rem;
+    }
+}
+
+</style>
+<div class="container-fluid "   >
+    <div class="d-sm-flex align-items-center justify-content-between mb-4" style="padding-left:2px;padding-right:2px;">
+        <h1 class="h4 mb-0 text-gray-800">Instructor profile</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callJoinNewInstructor()">Join Instructor</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="row" >
+        <div class="page col-sm-12">
+            <div class="page__container">
+                <article class="profile">
+                    <header class="profile__header">
+                        @if (Model.m_strProfileUrl != null)
+                        {
+                            <img src="@Model.m_strProfileUrl" class="profile__avatar" alt="avatar of Stas Melnikov">
+                        }
+                        else
+                        {
+                            <img src="~/Images/avatar-user.png" class="profile__avatar" alt="avatar of Stas Melnikov">
+                        }
+                       
+
+                        <h3 class="profile__name">@Model.m_strInstructorName</h3>
+                        <span class="profile__post">Joined since: @Model.m_strDateOfJoining</span>
+                    </header>
+
+                    <div class="profile__stats">
+                        <div class="profile__group">
+                            <span class="profile__value">@Model.m_iNoOfCoursesCreated</span>
+                            <span class="profile__param">Courses</span>
+                        </div>
+                        <div class="profile__group">
+                            <span class="profile__value">@Model.m_iNoOfAssignmentsCreated</span>
+                            <span class="profile__param">Assignments</span>
+                        </div>
+                        <div class="profile__group">
+                            <span class="profile__value">@Model.m_iNoOfTestsCreated</span>
+                            <span class="profile__param">Tests</span>
+                        </div>
+                        <div class="profile__group">
+                            <span class="profile__value">@Model.m_iNoOfCourseJoin</span>
+                            <span class="profile__param">Course Join</span>
+                        </div>
+                        <div class="profile__group">
+                            <span class="profile__value">@Model.m_iNoOfFollowers</span>
+                            <span class="profile__param">Followers</span>
+                        </div>
+                        @*<div class="profile__group">
+                            <span class="profile__value">1</span>
+                            <span class="profile__param">PHP</span>
+                        </div>*@
+
+                    </div>
+                    @{
+                        if (Model.m_bIsFollowing)
+                        {
+                            <footer class="profile__socials">
+                                <button class="btn btn-primary btn-sm btn-block" style="width:80%" >following since: @Model.m_strDateOfFollowing</button>
+
+                            </footer>
+                        }
+                        else
+                        {
+                            <footer class="profile__socials">
+                                <button class="btn btn-primary btn-sm btn-block" style="width:50%;" onclick="joinInstructor()">follow</button>
+
+                            </footer>
+                        }
+                    }
+                  
+                    @*<footer class="profile__socials">
+                        <a href="#0" class="profile__social">
+                            <svg class="profile__social-icon"><use xlink:href="#twitter"></use></svg>
+                            <span class="profile__social-name">Twitter</span>
+                        </a>
+                        <a href="#0" class="profile__social">
+                            <svg class="profile__social-icon"><use xlink:href="#linkedin"></use></svg>
+                            <span class="profile__social-name">Linkedin</span>
+                        </a>
+                        <a href="#0" class="profile__social">
+                            <svg class="profile__social-icon"><use xlink:href="#codepen"></use></svg>
+                            <span class="profile__social-name">Codepen</span>
+                        </a>
+                    </footer>*@
+                </article>
+            </div>
+          
+        </div>
+        <svg width="26" height="28" style="display: none;">
+            <symbol id="twitter" viewBox="0 0 26 28">
+                <path d="M25.312 6.375c-0.688 1-1.547 1.891-2.531 2.609 0.016 0.219 0.016 0.438 0.016 0.656 0 6.672-5.078 14.359-14.359 14.359-2.859 0-5.516-0.828-7.75-2.266 0.406 0.047 0.797 0.063 1.219 0.063 2.359 0 4.531-0.797 6.266-2.156-2.219-0.047-4.078-1.5-4.719-3.5 0.313 0.047 0.625 0.078 0.953 0.078 0.453 0 0.906-0.063 1.328-0.172-2.312-0.469-4.047-2.5-4.047-4.953v-0.063c0.672 0.375 1.453 0.609 2.281 0.641-1.359-0.906-2.25-2.453-2.25-4.203 0-0.938 0.25-1.797 0.688-2.547 2.484 3.062 6.219 5.063 10.406 5.281-0.078-0.375-0.125-0.766-0.125-1.156 0-2.781 2.25-5.047 5.047-5.047 1.453 0 2.766 0.609 3.687 1.594 1.141-0.219 2.234-0.641 3.203-1.219-0.375 1.172-1.172 2.156-2.219 2.781 1.016-0.109 2-0.391 2.906-0.781z"></path>
+            </symbol>
+            <symbol id="codepen" viewBox="0 0 28 28">
+                <path d="M3.375 18.266l9.422 6.281v-5.609l-5.219-3.484zM2.406 16.016l3.016-2.016-3.016-2.016v4.031zM15.203 24.547l9.422-6.281-4.203-2.812-5.219 3.484v5.609zM14 16.844l4.25-2.844-4.25-2.844-4.25 2.844zM7.578 12.547l5.219-3.484v-5.609l-9.422 6.281zM22.578 14l3.016 2.016v-4.031zM20.422 12.547l4.203-2.812-9.422-6.281v5.609zM28 9.734v8.531c0 0.391-0.203 0.781-0.531 1l-12.797 8.531c-0.203 0.125-0.438 0.203-0.672 0.203s-0.469-0.078-0.672-0.203l-12.797-8.531c-0.328-0.219-0.531-0.609-0.531-1v-8.531c0-0.391 0.203-0.781 0.531-1l12.797-8.531c0.203-0.125 0.438-0.203 0.672-0.203s0.469 0.078 0.672 0.203l12.797 8.531c0.328 0.219 0.531 0.609 0.531 1z"></path>
+            </symbol>
+            <symbol id="linkedin" viewBox="0 0 24 28">
+                <path d="M5.453 9.766v15.484h-5.156v-15.484h5.156zM5.781 4.984c0.016 1.484-1.109 2.672-2.906 2.672v0h-0.031c-1.734 0-2.844-1.188-2.844-2.672 0-1.516 1.156-2.672 2.906-2.672 1.766 0 2.859 1.156 2.875 2.672zM24 16.375v8.875h-5.141v-8.281c0-2.078-0.75-3.5-2.609-3.5-1.422 0-2.266 0.953-2.641 1.875-0.125 0.344-0.172 0.797-0.172 1.266v8.641h-5.141c0.063-14.031 0-15.484 0-15.484h5.141v2.25h-0.031c0.672-1.062 1.891-2.609 4.672-2.609 3.391 0 5.922 2.219 5.922 6.969z"></path>
+            </symbol>
+        </svg>
+        <div class="col-sm-12 container " style="padding:0px">
+            <div class="card-body ">
+                <div class="topnav">
+                    <a href="#courses" data-target="#courses" class="active">Courses</a>
+
+                </div>
+              
+                <div id="courses" style="width:100%" data-toggle="courses">
+                    <div class="row">
+                        <div class="scroll ">
+
+                            @if (Model.m_lsCourses!=null)
+                            {
+                                foreach (var course in Model.m_lsCourses)
+                                {
+                                    <div class="courses-container">
+                                        <div class="course">
+                                            <div class="course-preview">
+                                                <h6>@course.m_dtCourseCreationDate</h6>
+                                                @if (course.m_strCourseName.Length > 20)
+                                                {
+                                                    <h5>@course.m_strCourseName.Substring(0,20) ...</h5>
+                                                }
+                                                else
+                                                {
+                                                    <h5>@course.m_strCourseName</h5>
+                                                }
+
+                                                <div class="form-inline">
+                                                    <h5><span><i class="fa fa-users p-2"></i></span>@course.m_iTotalNoOfStudentsJoined</h5>
+                                                    <div class="nav-divider"></div>
+                                                    <h5><span><i class="fa fa-book p-2"></i></span>@course.m_iNoOfIndexses</h5>
+                                                </div>
+                                            </div>
+                                            <div class="course-info ">
+                                                <button class="coursebtn"  onclick="getCourseDetails(@course.m_llCourseid,this)">Details</button>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade top" id="fullHeightModalRight" tabindex="-1"  role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header custom-dialog-header ">
+                <h4 class="modal-title w-100 " id="myModalLabel"> <b>Course Details:</b></h4>
+                <button type="button" class="close " data-dismiss="modal" aria-label="Close">
+                    <span class="" aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body ">
+                <dl class="row">
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9" id="courseName"></dd>
+                    <dt class="col-sm-3">Description:</dt>
+                    <dd class="col-sm-9" id="courseDescription"></dd>
+                    <dt class="col-sm-3 ">Created on:</dt>
+                    <dd class="col-sm-9" id="insertDate">
+                    </dd>
+                    <dt class="col-sm-3">Assignments:</dt>
+                    <dd class="col-sm-9" id="assignments"></dd>
+                    <dt class="col-sm-3">Tests:</dt>
+                    <dd class="col-sm-9" id="tests"></dd>
+                    <dt class="col-sm-3">Indexes:</dt>
+                    <dd class="col-sm-9" id="indexes"></dd>
+                </dl>
+                <ul class="list-group z-depth-0" id="indexContainer"></ul>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+                <a  class="btn btn-primary" id="joinCourseButton">Join</a>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div> 
+<!-- Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-success" id="exampleModalLongTitle">Success </h5>
+                <button onclick="location.reload();" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Successfully started following to this instructor
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();" >Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-warning" id="exampleModalLongTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Instructor could not be followed
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function getCourseDetails(Id) {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/getcoursedetails?CourseId=".concat(Id),
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $("#courseDescription").text(data.course_description);
+                    $("#courseName").text(data.course_name);
+                    $("#insertDate").text(data.course_creation_date);
+                    $("#indexes").text(data.indexes.length);
+                    $('#fullHeightModalRight').modal('show');
+                    var assignments = 0;
+                    var tests = 0;
+                    $("#indexContainer").empty();
+                    if (data.indexes.length > 0) {
+                        $("#indexContainer").append(
+                           '<li class="list-group-item justify-content-between">'
+                               + '<b class="mr-2">Indexes:  </b>'
+                               + '<span class="badge badge-primary badge-pill">Topics</span>'
+                               + '<span class="badge badge-primary badge-pill">Assignments</span>'
+                               + '<span class="badge badge-primary badge-pill">Tests</span>'
+                           + '</li>'
+                           );
+                    }
+                    for (var i = 0; i < data.indexes.length; i++) {
+                        var x = 0; y = 0;
+                        if (data.indexes[i].assignment_name != null && data.indexes[i].assignment_name != "") {
+                            x++;
+                            assignments++;
+                        }
+                        if (data.indexes[i].test_name != null && data.indexes[i].test_name != "") {
+                            y++;
+                            tests++;
+                        }
+                        $("#indexContainer").append(
+                            '<li class="list-group-item justify-content-between">'
+                                + data.indexes[i].index_name
+                                + '  <span class="badge badge-primary badge-pill">' + data.indexes[i].topic_count + '</span>'
+                                + '<span class="badge badge-primary badge-pill">' + x + '</span>'
+                                + '<span class="badge badge-primary badge-pill">' + y + '</span>'
+                            + '</li>'
+                            );
+                    }
+                    $("#tests").text(tests);
+                    $("#assignments").text(assignments);
+                }
+                else {
+                    $("#footer").show();
+                }
+            }
+        });
+    }
+    function joinInstructor(InstructorId) {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/JoinStudentToInstructor?InstructorId=".concat(@Model.m_iInstructorId),
+        success: function (data) {
+            debugger;
+            if (data != null && data.response_code == 1) {
+                $("#successModal").modal('show');
+                $("#infoMessageSuccess").text('joined to instructor successfully');
+                
+            }
+            else {
+                $("#failModal").modal('show');
+                $("#infoMessageFail").test('Could not be joined to the Instructor');
+            }
+        }
+    });
+    }
+    function getCourseDetails(Id,buttonid) {
+        $(buttonid).append('<i class="fa fa-spinner fa-spin" id="tempspinner"></i>');
+        $(buttonid).disabled = true;
+        courrentCourseId=Id;
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/getcoursedetails?CourseId=".concat(Id),
+            success: function (data) {
+                debugger;
+                $("#joinCourseButton").attr("href", "JoinCourse?id=".concat(courrentCourseId));
+                $(buttonid).find(":first-child").remove();
+                if (data != null && data.response_code == 1) {
+                    $("#courseDescription").text(data.course_description);
+                    $("#courseName").text(data.course_name);
+                    $("#insertDate").text(data.course_creation_date);
+                    $("#indexes").text(data.indexes.length);
+                    $('#fullHeightModalRight').modal('show');
+
+                    var assignments = 0;
+                    var tests = 0;
+                    $("#indexContainer").empty();
+                    if (data.indexes.length > 0) {
+                        $("#indexContainer").append(
+                           '<li class="list-group-item justify-content-between">'
+                               + '<b class="mr-2">Indexes:  </b>'
+                               + '<span class="badge badge-primary badge-pill">Topics</span>'
+                               + '<span class="badge badge-primary badge-pill">Assignments</span>'
+                               + '<span class="badge badge-primary badge-pill">Tests</span>'
+
+                           + '</li>'
+                           );
+                    }
+
+                    for (var i = 0; i < data.indexes.length; i++) {
+                        var x = 0; y = 0;
+                        if (data.indexes[i].assignment_name != null && data.indexes[i].assignment_name != "") {
+                            x++;
+                            assignments++;
+                        }
+                        if (data.indexes[i].test_name != null && data.indexes[i].test_name != "") {
+                            y++;
+                            tests++;
+                        }
+
+                        $("#indexContainer").append(
+                            '<li class="list-group-item justify-content-between">'
+                                + data.indexes[i].index_name
+                                + '  <span class="badge badge-primary badge-pill">' + data.indexes[i].topic_count + '</span>'
+                                + '<span class="badge badge-primary badge-pill">' + x + '</span>'
+                                + '<span class="badge badge-primary badge-pill">' + y + '</span>'
+                            + '</li>'
+                            );
+                    }
+                    $("#tests").text(tests);
+                    $("#assignments").text(assignments);
+                }
+                else {
+                    $("#footer").show();
+                }
+            }
+        });
+    }
+    var courrentCourseId;
+   
+</script>

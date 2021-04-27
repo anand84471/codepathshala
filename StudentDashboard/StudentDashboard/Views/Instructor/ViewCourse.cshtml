@@ -1,0 +1,1780 @@
+﻿@{
+    ViewBag.Title = "View Course";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+<style type="text/css">
+    .custom-blue
+    {
+         background-image: linear-gradient(to right, rgba(51, 91, 255), rgba(51, 80, 210));
+    }
+    @@media only screen and (max-width: 600px) {
+        .container-fluid {
+            padding:0.1rem;
+        }
+         #container-course-body {
+            padding:0.1rem;
+        }
+         h1,display-4{
+             font-size:1rem;
+         }
+          .display-4{
+             font-size:2rem;
+         }
+    }
+</style>
+<div class="container-fluid" id="container-course-body">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">View Course Details</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callViewAllCourse()">Courses</a></li>
+                <li class="breadcrumb-item active" aria-current="page" id="breadcumbCurrentName"></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Course section -->
+    <div class="card shadow mb-0 ">
+            <div class="jumbotron custom-blue">
+                <h1 class="display-4 text-white" id="courseName"><i class="fa fa-book" aria-hidden="true"></i> Course Name</h1>
+                <hr class="my-4">
+                <div class="row ml-2">
+                    <p class="text mr-3 text-gray-100" id="courseCreationDate"><b>Creation date:</b></p>
+                    <p class="text text-gray-100" id="courseUpdationDate"><b>Updation date:</b> </p>
+                    <button class="btn btn-sm btn-danger ml-2" onclick="callPreviewCourse(@ViewBag.CourseId)">Preview Course</button>
+                </div>
+            </div>
+        <!--Course nav bar-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-gray-300">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="getAboutCourse()">About course</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownIndex" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Indexes
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownIndex" id="navBarIndexList">
+                           
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAssinments" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Assignments
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownAssinments" id="navBarAssignmentList">
+                          
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTests" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Tests
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownTests" id="navBarTestList">
+                           
+                        </div>
+                    </li>
+                   
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Add
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#courseBody"  role="button" onclick="requestAddNewAssignment()">Assignment</a>
+                            <a class="dropdown-item" href="#courseBody"  role="button" onclick="requestAddNewTest()">Test</a>
+                            <a class="dropdown-item" href="#courseBody"  role="button" onclick="requestAddNewIndex()">Index</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            More
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#courseBody" role="button" onclick="requestUpdateCourseDetails()" id="editCourseButton">Edit Cousre Details</a>
+                            <a class="dropdown-item" href="#courseBody" role="button" onclick="requestActivateCourse()" id="activateCourseButton">Activate</a>
+                            <a class="dropdown-item" href="#courseBody" role="button" onclick="requestDeleteCourse()" id="deleteCourseButton">Delete</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#courseBody" role="button" onclick="callHome()">Exit</a>
+                        </div>
+                    </li>
+                    @*<li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li>*@
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+        <!--Course nav bar ends-->
+        <!--Course body-->
+        @*<div id="spinner" class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>*@
+        <div id="courseBody">
+        </div>
+        <!--Course body Ends-->
+        <!--About course-->
+    </div>
+</div>
+<div class="modal fade" id="editTopicModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                    <h5 class="modal-title" id="editTopicModalHeader">Edit Topic</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetEditMcqAssignmentModel()" >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label" id="ab-topicNameLabel">Topic Name:</label>
+                            <input type="text" class="form-control" id="ab-topicName">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label" id="ab-topicDescriptionLabel">Topic Description:</label>
+                            <textarea class="form-control" id="ab_topicDescription"></textarea>
+                        </div>
+                    </form>
+                </div>
+            
+            <div class="modal-footer">
+                <button type="button" onclick="resetEditMcqAssignmentModel()" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="editTopicModalSubmitButton">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade " id="previewPdfModal" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTopicModalHeader">Preview upload</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="previewNow"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" onclick="resetEditMcqAssignmentModel()" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="editTopicModalSubmitButton">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editAndUpdateIndexTopic" tabindex="-1"  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAndUpdateIndexTopicHeader">Edit Topic</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetAddTopicModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label" id="bc-topicNameLabel">Topic Name:</label>
+                        <input type="text" class="form-control" id="bc-topicName">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label" id="bc-topicDescriptionLabel">Topic Description:</label>
+                        <textarea class="form-control" id="bc_topicDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label" id="bc-topicAddUrlLabel">video url:</label>
+                        <input class="form-control" type="url" id="bc_topicAddUrl" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlFile1" class="col-form-label">Upload Video</label>
+                        <div class="">
+                            <form class="card-img-top classroom-background" method="post" enctype="multipart/form-data">
+                                
+                                <div class="form-group">
+                                    <input type="file" id="fileVideoUpload" accept="video/*" />
+                                    <input type="text" name="fileVideoUploadPath" readonly hidden />
+                                    <button type="button" class="btn btn-primary" onclick="requestUpload()"><i class="fa fa-upload upload-icon" aria-hidden="true"></i>Upload</button>
+                                    <div class="progress progress-sm mr-2">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="fileUploadProgressBar"></div>
+                                    </div>
+                                    <div class="alert alert-success" id="postUploadAlert" style="display:none" role="alert">
+                                       
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label" id="bc-topicAddUrlLabel">Attachment url:</label>
+                        <input class="form-control" type="url" id="bc_topicAddAttachmentUrl" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlFile1" class="col-form-label">Upload Attachment</label>
+                        <div class="">
+                            <form class="card-img-top classroom-background" method="post" enctype="multipart/form-data">
+                               
+                                <div class="form-group">
+                                    <input type="file" id="fileAttachmentUpload" accept="application/pdf,application/vnd.ms-excel"/>
+                                    <button type="button" class="btn btn-primary" onclick="requestPdfUpload()"><i class="fa fa-upload upload-icon" aria-hidden="true"></i>Upload</button>
+                                    <div class="progress progress-sm mr-2">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" id="fileAttachmentUploadProgressBar"></div>
+                                    </div>
+                                    <div class="alert alert-success" id="postAttachmentUploadAlert" style="display:none" role="alert">
+                                      
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetAddTopicModal()">Close</button>
+                        <button type="button" class="btn btn-primary" id="editAndUpdateIndexTopicButton">Add</button>
+                    </div>
+                </div>
+    </div>
+</div>
+<div class="modal fade" id="courseActivateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Activate course</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 class="text-info">Please enter the course joining fee</h3>
+                  <div class="form-group row">
+                    <label for="inputPassword" class="col-sm-6 col-form-label text-warning">Set course joining fee</label>
+                    <div class="col-sm-4">
+                        <input onchange="validateAmount(this)" min="0" type="number" name="courseName" class="form-control" id="courseFee" placeholder="please set an amount in rupees as the fee of your course" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"  id="activateClassroomButton" onclick="activateCourse()">Activate Now</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editMcqAssignmentQuestionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMcqQuestionHeader">Edit question</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="ab-question" class="col-form-label">Question statement:</label>
+                        <input type="text" class="form-control" id="ab-question">
+                    </div>
+                    <div class="form-group">
+                        <label for="ab-option1" class="col-form-label">Option 1:</label>
+                        <input type="text" class="form-control" id="ab-option1">
+                    </div>
+                    <div class="form-group">
+                        <label for="ab-option2" class="col-form-label">Option 2:</label>
+                        <input type="text" class="form-control" id="ab-option2">
+                    </div>
+                    <div class="form-group">
+                        <label for="ab-option3" class="col-form-label">Option 3:</label>
+                        <input type="text" class="form-control" id="ab-option3">
+                    </div>
+                    <div class="form-group">
+                        <label for="ab-option4" class="col-form-label">Option 4:</label>
+                        <input type="text" class="form-control" id="ab-option4">
+                    </div>
+                    <div class="form-group">
+                        <label for="ab-correctOption">Correct option</label>
+                        <select id="ab-correctOption" class="form-control">
+                            <option selected>Choose...</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </select>
+                    </div>
+                     
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="editMcqQuestionSubmitButton" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editTestMcqQuestionModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTestMcqQuestionModelHeader">Edit question</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="refreshMcqTestModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="test-question" class="col-form-label">Question statement:</label>
+                        <input type="text" class="form-control" id="test-question">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-option1" class="col-form-label">Option 1:</label>
+                        <input type="text" class="form-control" id="test-option1">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-option2" class="col-form-label">Option 2:</label>
+                        <input type="text" class="form-control" id="test-option2">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-option3" class="col-form-label">Option 3:</label>
+                        <input type="text" class="form-control" id="test-option3">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-option4" class="col-form-label">Option 4:</label>
+                        <input type="text" class="form-control" id="test-option4">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-correctOption">Correct option</label>
+                        <select id="test-correctOption" class="form-control">
+                            <option selected>Choose...</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="test-time" class="col-form-label">Time for question(in sec):</label>
+                        <input type="text" class="form-control" id="test-time">
+                    </div>
+                    <div class="form-group">
+                        <label for="test-marks" class="col-form-label">Marks For question:</label>
+                        <input type="text" class="form-control" id="test-marks">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="refreshMcqTestModal()">Close</button>
+                <button type="button" id="editTestMcqQuestionModelSubmitButton" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="successDelete" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-success modal-content">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoTitle">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-success">
+                    <h3 id="successResponseMessage">deleted successfully</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="previewUploadModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Upload preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <video class="video-fluid embed-responsive embed-responsive-16by9" controls id="imagePreview"></video>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Confirm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="confirmMessage">Are you sure to want to delete the topic?</h3>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmDeletButtonForCourse" type="button" class="btn btn-primary" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="errorAlertHeader" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="errorAlertMessageBody">Course could not be deleted</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = init();
+        $('body').on('hidden.bs.modal', function () {
+            if ($('.modal.in').length > 0) {
+                $('body').addClass('modal-open');
+            }
+        });
+    })();
+    function getAboutCourse() {
+        $("#courseBody").html(aboutCourseDetails);
+    }
+    function deleteCourse() {
+        debugger;
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/deletecourse?id=" + deleteId,
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#failDelete").modal('show');
+                }
+            }
+        });
+    }
+    var aboutCourseDetails;
+    var courseId;
+
+    function showSpinner() {
+        $("#spinner").show();
+    }
+    function hideSpinner() {
+        $("#spinner").fadeOut();
+    }
+    var currentIndexName;
+    var currentIndexDescription;
+    var currentTopicDetails = {};
+    //----------------Index Section-------------------------------------
+    function callGetIndexDetails(id) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchCourseIndexDetails?id=".concat(id),
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    var topicDetails = data.topic_details;
+                    currentIndexName = data.index_name;
+                    currentIndexDescription = data.index_description;
+                    var topicHtml = '<div class="card shadow mb-4 border-bottom-primary">'
+                               + '<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">'
+                                   + '<h6 class="m-0 font-weight-bold text-primary">Index Details <span><button class="btn btn-sm btn-outline-danger" onclick=requestAddTopic(' + id + ')><i class="fa fa-plus"></i> Add topic</button></span></h6>'
+                                  +''
+                                    + '<div class="dropdown no-arrow">'
+                                        + '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+                                           + '<i class="fas fa-ellipsis-v fa-sm fa-fw text-primary"></i>'
+                                        + '</a>'
+                                        + '<div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">'
+                                            + '<a class="dropdown-item" href="#courseBody" onclick=requestEditIndex(' + id + ')>Edit Index Details</a>'
+                                            + '<a class="dropdown-item" href="#courseBody" onclick=requestDeleteIndex(' + id + ')>Delete Index</a>'
+                                            + '<a class="dropdown-item" href="#courseBody" onclick=requestAddTopic(' + id + ')>Add Topic</a>'
+                                        + '</div>'
+                                    + '</div>'
+                                + '</div>'
+                               + '<div class="card-body">'
+                    topicHtml += '<dl class="row ml-3">'
+                           + '<dt class="col-sm-3">Index name</dt><dd class="col-sm-9">' + data.index_name + '</dd>'
+                           + '<dt class="col-sm-3">Index description</dt><dd class="col-sm-9">' + data.index_description + '</dd>'
+                           + '</dl>'
+                    +'<span><button class="btn btn-sm btn-outline-danger" onclick="requestEditIndex(' + id + ')"><i class="fa fa-pencil" aria-hidden="true"></i> Edit details</button></span>';
+                    if (topicDetails != null) {
+                        topicHtml += ' <div class="accordion ml-2 mr-2" id="accordionExample"><h2 class="mb-0 ml-2">Topics</h2>';
+                        for (var i = 0; i < topicDetails.length; i++) {
+                            currentTopicDetails[topicDetails[i].topic_id] = topicDetails[i];
+                            topicHtml += ' <div class="card ">'
+                                    + '<div class="card-header" id="headingOne'.concat(i) + '">'
+                                        + '<h2 class="mb-0">'
+                                            + '<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#index'.concat(i) + '" aria-expanded="true" aria-controls="collapseOne">'
+                                                + topicDetails[i].topic_name
+                                            + '</button>'
+                                        + '</h2>'
+                                        + ' <div class="row ml-2">'
+                                            + '<p class="text mr-3" ><b>Creation date:</b> ' + topicDetails[i].creation_date + '</p>'
+                                            + '<p class="text" ><b>Updation date:</b> ' + topicDetails[i].updation_date + '</p>'
+                                            + '<button class="btn close" onclick="requestEditTopic('.concat(topicDetails[i].topic_id) + ',' + id + ')" >'
+                                            + '<i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400 "></i>'
+                                            + '</button>'
+                                            + '<button class="btn close" onclick="requestDeleteTopic('.concat(topicDetails[i].topic_id) + ',' + id + ')">'
+                                                + '<i class="fas fa-trash fa-sm fa-fw mr-2 text-gray-400 "></i>'
+                                            + '</button>'
+                                        + '</div>'
+
+                                    + '</div>'
+                                    + '<div id="index'.concat(i) + '" class="collapse" aria-labelledby="description'.concat(i) + '" data-parent="#accordionExample">'
+                                        + '<div class="card-body">'
+                                            + topicDetails[i].topic_description
+                                        + '</div>'
+                                    + '</div>'
+                                + '</div>';
+                        }
+                        topicHtml += '</div></div>';
+                    }
+                    $("#courseBody").html(topicHtml);
+
+                }
+                hideSpinner();
+            }
+        });
+
+    }
+    function requestEditIndex(IndexId) {
+        $("#editTopicModalHeader").text('Edit Index Details');
+        $("#ab-topicNameLabel").text('Enter Index Name');
+        $("#ab-topicDescriptionLabel").text('Enter Index Description');
+        $("#ab-topicName").val(currentIndexName);
+        $("#ab_topicDescription").val(currentIndexDescription);
+        $("#editTopicModalSubmitButton").attr("onclick", "UpdateIndexDetails(" + IndexId + ")");
+        $("#editTopicModal").modal('show');
+    }
+    function UpdateIndexDetails(IndexId) {
+        debugger
+        var _data = {
+            "index_id": IndexId,
+            "index_name": $("#ab-topicName").val(),
+            "index_description": $("#ab_topicDescription").val(),
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/UpdateIndex",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("index updated successfully");
+                    resetEditMcqAssignmentModel();
+                    callGetIndexDetails(IndexId);
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("index could not be updated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestDeleteIndex(IndexId) {
+        $("#confirmDelete").modal('dispose');
+        $("#confirmDeletButtonForCourse").attr("onclick", "deleteIndex(" + IndexId + ")");
+        $("#confirmMessage").text("Are you sure to want to delete the Index");
+        $("#confirmDelete").modal('show');
+    }
+    function deleteIndex(IndexId) {
+
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/DeleteIndex?id=".concat(IndexId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("index deleted successfully");
+                    $("#successDelete").modal('show');
+                    init();
+                }
+                else {
+                    $("#errorAlertMessageBody").text("Index could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestAddNewIndex() {
+        $("#editTopicModalHeader").text('Add Index Details');
+        $("#ab-topicNameLabel").text('Enter Index Name');
+        $("#ab-topicDescriptionLabel").text('Enter Index Description');
+        $("#editTopicModalSubmitButton").text("Add");
+        $("#editTopicModalSubmitButton").attr("onclick", "AddNewIndex()");
+        $("#editTopicModal").modal('show');
+    }
+    function AddNewIndex(CourseId) {
+        debugger
+        var _data = {
+            "course_id": "@ViewBag.CourseId",
+            "index_name": $("#ab-topicName").val(),
+            "index_description": $("#ab_topicDescription").val(),
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/addindex",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("Index added successfully");
+                    resetEditMcqAssignmentModel();
+                    init();
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("Index could not be updated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestAddNewAssignment() {
+        $("#editTopicModalHeader").text('Add Assignment Details');
+        $("#ab-topicNameLabel").text('Enter Assignment Name');
+        $("#ab-topicDescriptionLabel").text('Enter Assignment Description');
+        $("#editTopicModalSubmitButton").text("Submit");
+        $("#editTopicModalSubmitButton").attr("onclick", "AddnewAssignment()");
+        $("#editTopicModal").modal('show');
+    }
+    function AddnewAssignment() {
+        debugger
+        var _data = {
+            "course_id": "@ViewBag.CourseId",
+            "assignment_type_id": 1,
+            "assignment_name": $("#ab-topicName").val(),
+            "assignment_description": $("#ab_topicDescription").val(),
+            "assignment_tpe": "mcq"
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/AddNewAssignmentToCourse",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("Assignment added successfully");
+                    resetEditMcqAssignmentModel();
+                    init();
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("Assignment could not be added");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+
+    //-------------------Index section ends-----------------------------
+
+    //Topic section---------start---------------------------------------
+    //----------------Content Delete Topic start------------------------
+    function requestDeleteTopic(TopicId, IndexId) {
+        $("#confirmDelete").modal('dispose');
+        $("#confirmDeletButtonForCourse").attr("onclick", "deleteTopic(" + TopicId + "," + IndexId + ")");
+        $("#confirmMessage").text("Are you sure to want to delete the topic");
+        $("#confirmDelete").modal('show');
+    }
+    function deleteTopic(TopicId, IndexId) {
+        var _data = {
+            "index_id": IndexId,
+            "topic_id": TopicId
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(_data),
+            url: "/api/v1/instructor/DeleteTopic",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("topic deleted successfully");
+                    $("#successDelete").modal('show');
+                    callGetIndexDetails(IndexId);
+                }
+                else {
+                    $("#errorAlertMessageBody").text("topic could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    //--------Content Delete topic Ends---------------------------------
+    //----------------Contnet topic edit section------------------------
+    function requestEditTopic(TopicId, IndexId) {
+        debugger
+        $("#editAndUpdateIndexTopicHeader").text('Edit Topic');
+        $("#bc-topicName").val(currentTopicDetails[TopicId].topic_name);
+        $("#bc_topicDescription").val(currentTopicDetails[TopicId].topic_description);
+        $("#bc_topicAddUrl").val(currentTopicDetails[TopicId].file_path);
+        $("#bc_topicAddAttachmentUrl").val(currentTopicDetails[TopicId].file_attachment_path);
+        $("#fileAttachmentUploadProgressBar").show();
+        $("#fileUploadProgressBar").show();
+        $("#editAndUpdateIndexTopicButton").attr("onclick", "editTopic(" + TopicId + "," + IndexId + ")");
+        $("#editAndUpdateIndexTopic").modal('show');
+    }
+    function editTopic(TopicId, IndexId) {
+        debugger
+
+        if (currentTopicVideoAwsPath == "") {
+            currentTopicVideoAwsPath = $("#bc_topicAddUrl").val();
+
+        }
+        if (currentTopicAttachmentAwsPath != "") {
+            currentTopicVideoAwsPath = $("#bc_topicAddAttachmentUrl").val();
+        }
+        var _data = {
+            "topic_id": TopicId,
+            "topic_name": $("#bc-topicName").val(),
+            "topic_description": $("#bc_topicDescription").val(),
+            "file_attachment_path": currentTopicAttachmentAwsPath,
+            "file_path": currentTopicVideoAwsPath,
+            "index_id": IndexId,
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/UpdateTopic",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("topic updated successfully");
+                    resetAddTopicModal();
+                    callGetIndexDetails(IndexId);
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("topic could not be updated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    //---------------------Content topic edit section ends-------------
+    //----------------Add Topic start----------------------------------
+    function requestAddTopic(IndexId) {
+        $("#editAndUpdateIndexTopicHeader").text('Add Topic');
+        $("#bc-topicNameLabel").text('Enter Topic Name');
+        $("#bc-topicDescriptionLabel").text('Enter Topic Description');
+        $("#bc-topicAddUrl").text('Enter youtube url');
+        $("#fileAttachmentUploadProgressBar").show();
+        $("#fileUploadProgressBar").show();
+        $("#editAndUpdateIndexTopicButton").attr("onclick", "AddTopic(" + IndexId + ")");
+        $("#editAndUpdateIndexTopic").modal('show');
+    }
+    function resetAddTopicModal() {
+        $("#bc-topicName").val("");
+        $("#bc_topicDescription").val("");
+        $("#bc_topicAddUrl").val("");
+        $("#postAttachmentUploadAlert").html("");
+        $("#bc_topicAddAttachmentUrl").val("");
+        $("#postAttachmentUploadAlert").hide();
+        $("#postUploadAlert").html("");
+        $("#postUploadAlert").hide();
+        $("#fileVideoUpload").val("");
+        $("#fileAttachmentUpload").val("");
+        document.getElementById("fileAttachmentUploadProgressBar").style.width = "0%";
+        document.getElementById("fileUploadProgressBar").style.width = "0%";
+    }
+    function AddTopic(IndexId) {
+        debugger
+        if(currentTopicVideoAwsPath=="")
+        {
+            currentTopicVideoAwsPath=$("#bc_topicAddUrl").val();
+
+        }
+        if (currentTopicAttachmentAwsPath=="")
+        {
+            currentTopicVideoAwsPath = $("#bc_topicAddAttachmentUrl").val();
+        }
+        var _data = {
+            "index_id": IndexId,
+            "topic_name": $("#bc-topicName").val(),
+            "topic_description": $("#bc_topicDescription").val(),
+            "file_attachment_path":currentTopicAttachmentAwsPath,
+            "file_path": currentTopicVideoAwsPath
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/AddNewTopic",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("topic added successfully");
+                    resetAddTopicModal();
+                    callGetIndexDetails(IndexId);
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("topic could not be added");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    //----------------Add Topic end------------------------------------
+    //Topic section end
+
+    //----------------------Assignment Section Start-------------------
+    function requestAddMcqQuestion(AssignmentId) {
+        debugger
+        $("#editMcqAssignmentQuestionModal").modal('dispose');
+        $("#editMcqQuestionHeader").text("Add question");
+        $("#editMcqQuestionSubmitButton").text("Submit");
+        $("#editMcqQuestionSubmitButton").attr("onclick", "addMcqQuestion(" + AssignmentId + ")");
+        $("#editMcqAssignmentQuestionModal").modal('show');
+    }
+    function addMcqQuestion(AssignmentId) {
+        var _data = extractDataFormAddMcqQuestionModel(AssignmentId);
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/AddMcqQuestionToAssignment",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("question added successfully");
+                    $("#successDelete").modal('show');
+                    getAssignmentDetails(AssignmentId);
+                    refreshAddMcqQuestionModal();
+                }
+                else {
+                    $("#errorAlertMessageBody").text("question could not be added");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestUpdateMcqAssignmentQuestion(QuestionId, AssignmentId) {
+        debugger
+        $("#editMcqAssignmentQuestionModal").modal('dispose');
+        $("#editMcqQuestionHeader").text("Update question");
+        $("#editMcqQuestionSubmitButton").text("Update");
+        setPreAssignmentQuestionDetailsToUpdate(QuestionId);
+        $("#editMcqQuestionSubmitButton").attr("onclick", "updateMcqAssignmentQuestion(" + QuestionId + "," + AssignmentId + ")");
+        $("#editMcqAssignmentQuestionModal").modal('show');
+    }
+    function resetEditMcqAssignmentModel() {
+        $("#ab-topicName").val("");
+        $("#ab_topicDescription").val("");
+    }
+
+    function requestUpdateAssignmentDetails(AssignmentId) {
+        $("#editTopicModalHeader").text('Update Assignment Details');
+        $("#ab-topicNameLabel").text('Enter Assignment Name');
+        $("#ab-topicDescriptionLabel").text('Enter Assignment Description');
+        $("#editTopicModalSubmitButton").text("Update");
+        $("#editTopicModalSubmitButton").attr("onclick", "editAssignment(" + AssignmentId + ")");
+        $("#editTopicModal").modal('show');
+        $("#ab-topicName").val(currentAssignmentName);
+        $("#ab_topicDescription").val(currentAssignmentDescription)
+    }
+    var currentAssignmentName;
+    var currentAssignmentDescription;
+    function editAssignment(AssignmentId) {
+        debugger
+        var _data = {
+            "assignment_id": AssignmentId,
+            "assignment_name": $("#ab-topicName").val(),
+            "assignment_description": $("#ab_topicDescription").val(),
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/UpdateAssignmentDetails",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("Assignment updated successfully");
+                    resetEditMcqAssignmentModel();
+                    getAssignmentDetails(AssignmentId);
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("Assignment could not be updated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function extractDataFormMcqQuestionModel(QuestionId) {
+        var _data = {
+            "question_id": QuestionId,
+            "question_statement": $("#ab-question").val(),
+            "option1": $("#ab-option1").val(),
+            "option2": $("#ab-option2").val(),
+            "option3": $("#ab-option3").val(),
+            "option4": $("#ab-option4").val(),
+            "correct_option": parseInt($("#ab-correctOption").val())
+        }
+        return _data;
+    }
+    function extractDataFormAddMcqQuestionModel(AssignmentId) {
+        var _data = {
+            "assignment_id": AssignmentId,
+            "question_statement": $("#ab-question").val(),
+            "option1": $("#ab-option1").val(),
+            "option2": $("#ab-option2").val(),
+            "option3": $("#ab-option3").val(),
+            "option4": $("#ab-option4").val(),
+            "correct_option": parseInt($("#ab-correctOption").val())
+        }
+        return _data;
+    }
+    function refreshAddMcqQuestionModal() {
+        $("#ab-question").val("");
+        $("#ab-option1").val("");
+        $("#ab-option2").val("");
+        $("#ab-option3").val("");
+        $("#ab-option4").val("");
+        $("#ab-correctOption").val("");
+    }
+    function setPreAssignmentQuestionDetailsToUpdate(QuestionId) {
+        debugger
+        var question = currentAssignmentQuestins[QuestionId];
+        $("#ab-question").val(question.question_statement);
+        $("#ab-option1").val(question.option1);
+        $("#ab-option2").val(question.option2);
+        $("#ab-option3").val(question.option3);
+        $("#ab-option4").val(question.option4);
+        $("#ab-correctOption").val(question.correct_option);
+    }
+    function updateMcqAssignmentQuestion(QuestionId, AssignmentId) {
+        debugger
+        var _data = extractDataFormMcqQuestionModel(QuestionId);
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/UpdateMcqQuestion",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("question updated successfully");
+                    refreshAddMcqQuestionModal();
+                    getAssignmentDetails(AssignmentId);
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("question could not be updated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function deleteMcqQuestion(QuestionId, AssignmentId) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/DeleteMcqQuestion?id=".concat(QuestionId).concat("&&AssignmentId=").concat(AssignmentId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("question deleted successfully");
+                    $("#successDelete").modal('show');
+                    getAssignmentDetails(AssignmentId);
+                }
+                else {
+                    $("#errorAlertMessageBody").text("question could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function deleteAssignment(AssignmentId) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/deleteassignment?AssignmentId=".concat(AssignmentId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("assignment deleted successfully");
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("course could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    var currentAssignmentQuestins = {};
+    var currentTestQuestions = {};
+    function getAssignmentDetails(id) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchAssignmentDetails?AssignmentId=".concat(id),
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    var questionDetails = data.mcq_questions;
+                    currentAssignmentName = data.assignment_name;
+                    currentAssignmentDescription = data.assignment_description;
+                    var assignmentHtml = '<div class="card shadow mb-4 border-bottom-primary">'
+                                + '<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">'
+                                    + '<h6 class="m-0 font-weight-bold text-primary">Assignment Details <span><button class="btn btn-sm btn-outline-danger" onclick=requestAddMcqQuestion(' + id + ')><i class="fa fa-plus"></i> Add question</button></span></h6>'
+
+                                     + '<div class="dropdown no-arrow">'
+                                         + '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+                                            + '<i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>'
+                                         + '</a>'
+                                         + '<div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">'
+                                             + '<a class="dropdown-item" href="#" onclick=requestUpdateAssignmentDetails(' + id + ')>Edit Assignment</a>'
+                                             + '<a class="dropdown-item" href="#" onclick=requestDeletAssignment(' + id + ')>Delete Assignment</a>'
+                                             + '<a class="dropdown-item" href="#" onclick=requestAddMcqQuestion(' + id + ')>Add Question</a>'
+                                         + '</div>'
+                                     + '</div>'
+                                 + '</div>'
+                                + '<div class="card-body">'
+                    assignmentHtml += '<dl class="row ml-3">'
+                          + '<dt class="col-sm-3">Assignment name:</dt><dd class="col-sm-9">' + data.assignment_name + '</dd>'
+                          + '<dt class="col-sm-3">Assignment description:</dt><dd class="col-sm-9">' + data.assignment_description + '</dd>'
+                          + '<dt class="col-sm-3">Assignment Creation Date:</dt><dd class="col-sm-9">' + data.creation_date + '</dd>'
+                          + '<dt class="col-sm-3">Assignment Updat Date:</dt><dd class="col-sm-9">' + data.updatione_date + '</dd>'
+                          + '<dt class="col-sm-3">Assignment Type:</dt><dd class="col-sm-9">Mcq</dd>'
+                          + '</dl></div><h2 class="ml-3">Questions</h2>';
+                    assignmentHtml += '<div class="card-body" style="padding:0">'
+                                            + '<div class="table-responsive">'
+                                                + '<table id="coursesTable" class="table table-hover">'
+                                                    + '<thead class="thead-dark">'
+                                                        + '<tr>'
+                                                            + '<th scope="col">S.No</th>'
+                                                            + '<th scope="col">Question Statement</th>'
+                                                            + '<th scope="col">Option1</th>'
+                                                            + '<th scope="col">Option2</th>'
+                                                            + '<th scope="col">Option3</th>'
+                                                            + '<th scope="col">Option4</th>'
+                                                            + '<th scope="col">Correct Option</th>'
+                                                            + '<th scope="col">Actions</th>'
+                                                        + '</tr>'
+                                                    + '</thead>'
+                                                    + '<tbody>';
+                    var rows = '';
+                    if (questionDetails != null) {
+                        for (var i = 0; i < questionDetails.length; i++) {
+
+                            currentAssignmentQuestins[questionDetails[i].question_id] = questionDetails[i];
+                            var sNo = i + 1;
+                            rows += '<tr><th scope="row" >' + sNo + '</th>'
+                            + '<td>' + questionDetails[i].question_statement + '</td><td>' + questionDetails[i].option1 + '</td><td>' + questionDetails[i].option2 + '</td><td>' + questionDetails[i].option3 + '</td><td>' + questionDetails[i].option4 + '</td><td>' + questionDetails[i].correct_option + '</td>'
+                            + '<td>'
+                                + '<a class="list-group-horizontal"  onclick="requestUpdateMcqAssignmentQuestion(' + questionDetails[i].question_id + ',' + id + ')">'
+                                    + '<i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                                + '</a>'
+                                + '<a class="list-group-horizontal" onclick="requestDeleteMcqQuestion(' + questionDetails[i].question_id + ',' + id + ')" >'
+                                    + '<i class="fas fa-trash fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                                + '</a>'
+                            + '</td>'
+                            + '</tr>';
+                        }
+                    }
+                    assignmentHtml += rows;
+                    assignmentHtml += '</tbody></table></div></div>';
+                }
+                $("#courseBody").html(assignmentHtml);
+            }
+        });
+    }
+
+    function editMcqAssignmentQuestionModel(QuestionId) {
+        $("#editMcqAssignmentQuestionModal").modal('show');
+    }
+    function requestDeletAssignment(AssignmentId) {
+        $("#confirmMessage").text("Are you sure to want to delete the assignment?");
+        $("#confirmDeletButtonForCourse").attr("onclick", "deleteAssignment(" + AssignmentId + ")");
+        $("#confirmDelete").modal('show');
+    }
+    function requestDeleteMcqQuestion(QuestionId, AssignmentId) {
+        $("#confirmDelete").modal('dispose');
+        $("#confirmDeletButtonForCourse").attr("onclick", "deleteMcqQuestion(" + QuestionId + "," + AssignmentId + ")");
+        $("#confirmMessage").text("Are you sure to want to delete the question");
+        $("#confirmDelete").modal('show');
+    }
+    function addMcqAssignmentQuestion(AssignmentId) {
+        $("#editMcqAssignmentQuestionModal").modal('show');
+    }
+    //----------------------Assignment Section Ends--------------------
+
+    //----------------------Test section starts------------------------
+    function getTestDetails(id) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchTestDetails?id=".concat(id),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    var questionDetails = data.mcq_questions;
+                    testName = data.test_name;
+                    testDescription = data.test_description;
+                    var assignmentHtml = '<div class="card shadow mb-4 border-bottom-primary">'
+                                + '<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">'
+                                    + '<h6 class="m-0 font-weight-bold text-primary">Test Details <span><button class="btn btn-sm btn-outline-danger" onclick=requestAddMcqTestQuestion(' + id + ')><i class="fa fa-plus"></i> Add question</button></span></h6>'
+                                     + '<div class="dropdown no-arrow">'
+                                         + '<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+                                            + '<i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>'
+                                         + '</a>'
+                                         + '<div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">'
+                                             + '<a class="dropdown-item" href="#" onclick=requestEditTestDeails(' + id + ')>Edit Test</a>'
+                                             + '<a class="dropdown-item" href="#" onclick=requestDeleteTest(' + id + ')>Delete Test</a>'
+                                             + '<a class="dropdown-item" href="#" onclick=requestAddMcqTestQuestion(' + id + ')>Add Question</a>'
+                                         + '</div>'
+                                     + '</div>'
+                                 + '</div>'
+                                + '<div class="card-body">'
+                    assignmentHtml += '<dl class="row ml-3">'
+                          + '<dt class="col-sm-3">Test name:</dt><dd class="col-sm-9">' + data.test_name + '</dd>'
+                          + '<dt class="col-sm-3">Test description:</dt><dd class="col-sm-9">' + data.test_description + '</dd>'
+                          + '<dt class="col-sm-3">Test Creation Date:</dt><dd class="col-sm-9">' + data.test_creation_datetime + '</dd>'
+                          + '<dt class="col-sm-3">Test Updat Date:</dt><dd class="col-sm-9">' + data.test_updation_datetime + '</dd>'
+                          + '<dt class="col-sm-3">Test Type:</dt><dd class="col-sm-9">Mcq</dd>'
+                          + '</dl></div><h2 class="ml-3">Questions</h2>';
+                    assignmentHtml += '<div class="card-body" style="padding:0">'
+                                            + '<div class="table-responsive">'
+                                                + '<table id="coursesTable" class="table table-hover">'
+                                                    + '<thead class="thead-dark">'
+                                                        + '<tr>'
+                                                            + '<th scope="col">S.No</th>'
+                                                            + '<th scope="col">Question Statement</th>'
+                                                            + '<th scope="col">Option1</th>'
+                                                            + '<th scope="col">Option2</th>'
+                                                            + '<th scope="col">Option3</th>'
+                                                            + '<th scope="col">Option4</th>'
+                                                            + '<th scope="col">Correct Option</th>'
+                                                            + '<th scope="col">Time(sec)</th>'
+                                                            + '<th scope="col">Marks</th>'
+                                                            + '<th scope="col">Actions</th>'
+                                                        + '</tr>'
+                                                    + '</thead>'
+                                                    + '<tbody>';
+                    var rows = '';
+                    if (questionDetails != null) {
+                        for (var i = 0; i < questionDetails.length; i++) {
+                            var sNo = i + 1;
+                            currentTestQuestions[questionDetails[i].question_id] = questionDetails[i];
+                            rows += '<tr><th scope="row" >' + sNo + '</th>'
+                            + '<td>' + questionDetails[i].question_statement + '</td><td>' + questionDetails[i].option1 + '</td><td>' + questionDetails[i].option2 + '</td><td>' + questionDetails[i].option3 + '</td><td>' + questionDetails[i].option4 + '</td><td>' + questionDetails[i].correct_option + '</td>'
+                            + '<td>' + questionDetails[i].question_time_in_seconds + '</td><td>' + questionDetails[i].marks + '</td>'
+                            + '<td>'
+                                + '<button type="button" class="btn btn-link" class="list-group-horizontal"  onclick="requestUpdateMcqTestQuestion(' + questionDetails[i].question_id + ')">'
+                                    + '<i class="fas fa-edit fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                                + '</button>'
+                                + '<button type="button" class="btn btn-link" class="list-group-horizontal" onclick="requestDeleteMcqTestQuestion(' + questionDetails[i].question_id + ')" >'
+                                    + '<i class="fas fa-trash fa-sm fa-fw mr-2 text-gray-400 m-1"></i>'
+                                + '</button>'
+                            + '</td>'
+                            + '</tr>';
+                        }
+                    }
+                    assignmentHtml += rows;
+                    assignmentHtml += '</tbody></table></div></div>';
+                }
+                $("#courseBody").html(assignmentHtml);
+            }
+        });
+    }
+    function requestUpdateMcqTestQuestion(QuestionId) {
+        $("#editTestMcqQuestionModel").modal('dispose');
+        $("#editTestMcqQuestionModelHeader").text("Update question");
+        $("#editTestMcqQuestionModelSubmitButton").text("Update");
+        $("#editTestMcqQuestionModelSubmitButton").attr("onclick", "updateMcqTestQuestion(" + QuestionId + ")");
+        preSetUpdateQuestionModal(QuestionId);
+        $("#editTestMcqQuestionModel").modal('show');
+    }
+    function updateMcqTestQuestion(QuestionId) {
+        var _data = extractDataFromAddMcqTestQuestionModel();
+        _data["test_id"] = "@ViewBag.TestId";
+        _data["question_id"] = QuestionId;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/UpdateMcqQuestionTestDetails",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("question updated successfully");
+                    refreshTestDetails();
+                    refreshMcqTestModal();
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("question could not be updated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function refreshMcqTestModal() {
+        $("#test-question").val("");
+        $("#test-option1").val("");
+        $("#test-option2").val("");
+        $("#test-option3").val("");
+        $("#test-option4").val("");
+        $("#test-correctOption").val("");
+        $("#test-time").val("");
+        $("#test-marks").val("");
+    }
+    function requestEditTestDeails(TestId) {
+        $("#editTopicModalHeader").text('Update Test Details');
+        $("#ab-topicNameLabel").text('Enter Test Name');
+        $("#ab-topicDescriptionLabel").text('Enter Test Description');
+        $("#editTopicModalSubmitButton").attr("onclick", "editTestDetails(" + TestId + ")");
+        $("#ab-topicName").val(testName);
+        $("#ab_topicDescription").val(testDescription);
+        $("#editTopicModal").modal('show');
+    }
+    function editTestDetails(TestId) {
+        debugger
+        var _data = {
+            "test_id": TestId,
+            "test_name": $("#ab-topicName").val(),
+            "test_description": $("#ab_topicDescription").val(),
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/UpdateTestDetails",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("test updated successfully");
+                    resetEditMcqAssignmentModel();
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("test details could not be updated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestDeleteTest(TestId) {
+        $("#confirmDelete").modal('show');
+        $("#confirmMessage").text("Are you sure to want to delete the test?");
+        $("#confirmDeletButtonForCourse").attr("onclick", "DeleteTest(" + TestId + ")");
+    }
+    function DeleteTest(TestId) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/DeleteTestOfCourse?id=".concat(TestId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("test deleted successfully");
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("test could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function preSetUpdateQuestionModal(QuestionId) {
+        $("#test-question").val(currentTestQuestions[QuestionId].question_statement);
+        $("#test-option1").val(currentTestQuestions[QuestionId].option1);
+        $("#test-option2").val(currentTestQuestions[QuestionId].option2);
+        $("#test-option3").val(currentTestQuestions[QuestionId].option3);
+        $("#test-option4").val(currentTestQuestions[QuestionId].option4);
+        $("#test-correctOption").val(currentTestQuestions[QuestionId].correct_option);
+        $("#test-time").val(currentTestQuestions[QuestionId].question_time_in_seconds);
+        $("#test-marks").val(currentTestQuestions[QuestionId].marks);
+    }
+    function requestAddMcqTestQuestion(TestId) {
+        debugger
+        $("#editTestMcqQuestionModel").modal('dispose');
+        $("#editTestMcqQuestionModelHeader").text("Add question");
+        $("#editTestMcqQuestionModelSubmitButton").text("Submit");
+        $("#editTestMcqQuestionModelSubmitButton").attr("onclick", "addMcqTestQuestion(" + TestId + ")");
+        $("#editTestMcqQuestionModel").modal('show');
+    }
+    function extractDataFromAddMcqTestQuestionModel() {
+        var _data = {
+            "question_statement": $("#test-question").val(),
+            "option1": $("#test-option1").val(),
+            "option2": $("#test-option2").val(),
+            "option3": $("#test-option3").val(),
+            "option4": $("#test-option4").val(),
+            "correct_option": parseInt($("#test-correctOption").val()),
+            "question_time_in_seconds": $("#test-time").val(),
+            "marks": $("#test-marks").val(),
+        }
+        return _data;
+    }
+    function addMcqTestQuestion(TestId) {
+        var _data = extractDataFromAddMcqTestQuestionModel();
+        _data["test_id"] = TestId;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/AddNewMcqTestQuestion",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("question added successfully");
+                    getTestDetails(TestId);
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("question could not be added");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestDeleteMcqTestQuestion(QuestionId) {
+        $("#confirmDelete").modal('dispose');
+        $("#confirmDeletButtonForCourse").attr("onclick", "deleteMcqTestQuestion(" + QuestionId + ")");
+        $("#confirmMessage").text("Are you sure to want to delete the question");
+        $("#confirmDelete").modal('show');
+    }
+    function deleteMcqTestQuestion(QuestionId) {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/DeleteMcqTestQuestion?id=".concat(QuestionId),
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("question deleted successfully");
+                    $("#successDelete").modal('show');
+
+                }
+                else {
+                    $("#errorAlertMessageBody").text("question could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    var courseName;
+    var courseDescription;
+    function requestUpdateTestMcqQuestion(QuestionId) {
+
+    }
+    function UpdateMcqTestQuestion(QuestionId) {
+
+    }
+    function requestAddNewTest() {
+        $("#editTopicModalHeader").text('Add Test Details');
+        $("#ab-topicNameLabel").text('Enter Test Name');
+        $("#ab-topicDescriptionLabel").text('Enter Test Description');
+        $("#editTopicModalSubmitButton").attr("onclick", "addNewTest()");
+        $("#editTopicModal").modal('show');
+    }
+    function addNewTest() {
+        debugger
+        var _data = {
+            "course_id": "@ViewBag.CourseId",
+            "test_type_id": 1,
+            "test_name": $("#ab-topicName").val(),
+            "test_description": $("#ab_topicDescription").val(),
+            "test_type": "mcq"
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/InsertNewTestToCourse",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("Test added successfully");
+                    $("#successDelete").modal('show');
+                    init();
+                }
+                else {
+                    $("#errorAlertMessageBody").text("Test could not be added");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    //-----------------------test section ends-------------------------
+
+    //-----------------------Course section start----------------------
+    function requestDeleteCourse() {
+        $("#confirmDelete").modal('show');
+        $("#confirmMessage").text("Are you sure to want to delete the course");
+        $("#confirmDeletButtonForCourse").attr("onclick", "deleteCourse()");
+    }
+    function requestActivateCourse() {
+        $("#courseActivateModal").modal('show');
+    }
+    function deleteCourse() {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/deletecourse",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("course deleted successfully");
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("course could not be deleted");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function activateCourse() {
+        debugger;
+        var _data = {
+            "course_id":@ViewBag.CourseId,
+            "course_fee":$("#courseFee").val()
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data:JSON.stringify(_data),
+            url: "/api/v1/instructor/activatecourse?id",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("course activate successfully");
+                    $("#successDelete").modal('show');
+                    location.reload();
+                }
+                else {
+                    $("#errorAlertMessageBody").text("course could not be activated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function requestUpdateCourseDetails() {
+        $("#editTopicModalHeader").text('Edit Course Details');
+        $("#ab-topicNameLabel").text('Enter Course Name');
+        $("#ab-topicDescriptionLabel").text('Enter Course Description');
+        $("#editTopicModalSubmitButton").attr("onclick", "UpdateCourseDetails()");
+        $("#ab-topicName").val(courseName);
+        $("#ab_topicDescription").val(courseDescription);
+        $("#editTopicModal").modal('show');
+    }
+    var testName;
+    var testDescription;
+    function UpdateCourseDetails() {
+        debugger
+        var _data = {
+            "course_id": "@ViewBag.CourseId",
+            "course_name": $("#ab-topicName").val(),
+            "course_description": $("#ab_topicDescription").val(),
+        }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/UpdateCourse",
+            success: function (data) {
+                if (data != null && data.response_code == 1) {
+                    $("#successResponseMessage").text("course update successfully");
+                    resetEditMcqAssignmentModel();
+                    $("#successDelete").modal('show');
+                }
+                else {
+                    $("#errorAlertMessageBody").text("course could not be updated");
+                    $("#errorAlertHeader").modal('show');
+                }
+            }
+        });
+    }
+    function copyText() {
+        var copyText = document.getElementById("test-url");
+        copyText.select();
+        document.execCommand("copy");
+    }
+    //-----------------------Course section start----------------------
+    function init() {
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchAboutCourse?id=@ViewBag.CourseId",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    aboutCourseDetails = '';
+                    courseName = data.course_name;
+                    courseDescription = data.course_description;
+                    aboutCourseDetails = '<dl class="row ml-3" id="courseDetailsC">'
+                            + '<dt class="col-sm-3">Course name</dt><dd class="col-sm-9">' + data.course_name + '</dd>'
+                            + '<dt class="col-sm-3">Creation date</dt><dd class="col-sm-9">' + data.course_creation_date + '</dd>'
+                            + '<dt class="col-sm-3">Last updation date</dt><dd class="col-sm-9">' + data.course_creation_date + '</dd>'
+                            + '<dt class="col-sm-3">No of indexes</dt><dd class="col-sm-9">' + data.index_count + '</dd>'
+                            + '<dt class="col-sm-3">No of Assignments</dt><dd class="col-sm-9">' + data.assignment_count + '</dd>'
+                            + '<dt class="col-sm-3">No of Tests</dt><dd class="col-sm-9">' + data.test_count + '</dd>'
+                            + '<dt class="col-sm-3">No of Topics</dt><dd class="col-sm-9">' + data.topic_count + '</dd>'
+                            + '<dt class="col-sm-3">Estimeted time for course</dt><dd class="col-sm-9">' + data.test_count + '</dd>'
+                            + '<dt class="col-sm-3">Course Status</dt><dd class="col-sm-9" id="courseStatus">' + data.course_status + '</dd>'
+                            + '<dt class="col-sm-3">Course Fee</dt><dd class="col-sm-9 text-primary">' + data.course_joining_fee + '</dd>'
+                            + '<dt class="col-sm-3">Course description</dt><dd class="col-sm-9">' + data.course_description + '</dd>'
+
+                            + '</dl>';
+                    $("#courseBody").html(aboutCourseDetails);
+                    $("#courseName").text(data.course_name);
+                    $("#breadcumbCurrentName").text(data.course_name);
+                    $("#courseDescription").text(data.course_description);
+                    $("#courseCreationDate").html("<b>Creation date:</b>".concat(data.course_creation_date));
+                    $("#courseUpdationDate").html("<b>Last updated on:</b>".concat(data.course_updation_date));
+                    var indexes = data.index_details;
+                    //fill indexes in nav
+                    $("#navBarIndexList").empty();
+                    if (indexes != null && indexes.length > 0) {
+
+                        for (var i = 0; i < indexes.length; i++) {
+                            $("#navBarIndexList").append('<a class="dropdown-item" href="#" role="button" onclick=callGetIndexDetails(' + indexes[i].index_id + ')>' + indexes[i].index_name + '</a>');
+                        }
+                    }
+                    else {
+                        $("#navBarIndexList").append('<a class="dropdown-item" href="#courseBody" role="button">no index found</a>');
+                    }
+                    //fill assignments in nav
+                    $("#navBarAssignmentList").empty();
+                    var assignment_details = data.assignment_details;
+                    if (assignment_details != null && assignment_details.length > 0) {
+                        for (var i = 0; i < assignment_details.length; i++) {
+                            $("#navBarAssignmentList").append('<a class="dropdown-item" href="#courseBody" role="button" onclick=getAssignmentDetails(' + assignment_details[i].assignment_id + ')>' + assignment_details[i].assignment_name + '</a>');
+                        }
+                    }
+                    else {
+                        $("#navBarAssignmentList").append('<a class="dropdown-item" href="#courseBody" role="button">no assignment found</a>');
+
+                    }
+
+                    //fill tests in nav
+                    var test_details = data.test_details;
+                    $("#navBarTestList").empty();
+                    if (test_details != null && test_details.length > 0) {
+                        for (var i = 0; i < test_details.length; i++) {
+                            $("#navBarTestList").append('<a class="dropdown-item" href="#courseBody" role="button" onclick=getTestDetails(' + test_details[i].test_id + ')>' + test_details[i].test_name + '</a>');
+                        }
+                    }
+                    else {
+                        $("#navBarTestList").append('<a class="dropdown-item" href="#courseBody" role="button">no test found</a>');
+                    }
+                    if (data.course_status == "created") {
+                        $("#courseStatus").append('<button id="courseStatusActivateButton" class="btn btn-sm border btn-primary ml-2" href="#" onclick=requestActivateCourse()>Activate Course</button>');
+                    }
+                    else if (data.course_status == "active") {
+                        $("#activateCourseButton").hide();
+                        $("#deleteCourseButton").hide();
+                        $("#courseStatusActivateButton").hide();
+                        $("#courseDetailsC").append('<div class="card-body p-2">'
+                          + '<p>Share url: <input type="text" readonly="readonly" id="test-url" value="' + data.course_share_url + '" /><span><button class="btn-sm btn-primary ml-2" onclick="copyText()">copy<i class="ml-1 fa fa-copy" ></i></button></span></p>'
+                          + '</div>');
+                    }
+                    else if (data.course_status == "deleted") {
+                        $("#deleteCourseButton").hide();
+                    }
+                }
+                else {
+
+                }
+                hideSpinner();
+            }
+        });
+    }
+
+
+
+
+
+    function requestUpload() {
+        document.getElementById("fileUploadProgressBar").style.width = "0%";
+        debugger
+        var data = new FormData();
+        //var file = $('#fileUpload')[0];
+        var file = $("#fileVideoUpload")[0];
+        data.append('file', file.files[0]);
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        document.getElementById("fileUploadProgressBar").style.width = percentComplete + "%";
+                        if (percentComplete === 100) {
+
+                        }
+                    }
+                }, false);
+
+                return xhr;
+            },
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            data: data,
+            url: "/api/v1/instructor/UploadVideo",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1 && data.file_location != null && data.file_location != "") {
+                    awsPath = data.file_location;
+                    $("#imagePreview").attr("src", data.file_location);
+                    currentTopicVideoAwsPath = data.file_location;
+                    $("#postUploadAlert").show();
+                    $("#postUploadAlert").append('<button type="button" class="btn btn-link" >File uploaded successfully </button>');
+                }
+                else {
+                    $("#postUploadAlert").show();
+                    $("#postUploadAlert").append('<button type="button" class="btn btn-link" >File uploading failed</button>');
+                }
+            }
+        });
+    }
+
+    function requestPreviewUpload() {
+        $("#previewUploadModal").modal("show");
+    }
+
+    function requestPreviewUploadedAttachment() {
+        $("#previewPdfModal").modal("show");
+    }
+    function validateAmount(id) {
+        if ($(id).val() == "-") {
+            $(id).val("");
+        }
+        if (parseInt($(id).val()) < 0) {
+            $(id).val("");
+        }
+    }
+    function requestPdfUpload() {
+        document.getElementById("fileAttachmentUploadProgressBar").style.width = "0%";
+        debugger
+        var data = new FormData();
+        //var file = $('#fileUpload')[0];
+        var file = $("#fileAttachmentUpload")[0];
+        data.append('file', file.files[0]);
+        $.ajax({
+            xhr: function () {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+                        document.getElementById("fileAttachmentUploadProgressBar").style.width = percentComplete + "%";
+                        if (percentComplete === 100) {
+
+                        }
+                    }
+                }, false);
+
+                return xhr;
+            },
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            data: data,
+            url: "/api/v1/instructor/UploadPdf",
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1 && data.file_location != null && data.file_location != "") {
+                    awsPath = data.file_location;
+                    $("#imagePreview").attr("src", data.file_location);
+                    $("#postAttachmentUploadAlert").show();
+                    PDFObject.embed(data.file_location, "#previewNow");
+                    currentTopicAttachmentAwsPath = data.file_location;
+                    $("#postAttachmentUploadAlert").append('<a type="button" target="_blank" >File uploaded successfully </button>');
+                }
+                else {
+                    $("#postAttachmentUploadAlert").show();
+                    $("#postAttachmentUploadAlert").append('<a type="button" class="btn btn-link" onclick="requestPreviewUploadedAttachment()">File uploading failed</button>');
+                }
+            }
+        });
+    }
+    var currentTopicVideoAwsPath="";
+    var currentTopicAttachmentAwsPath = "";
+</script>

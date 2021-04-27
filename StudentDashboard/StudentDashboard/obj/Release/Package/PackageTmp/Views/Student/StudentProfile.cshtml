@@ -1,0 +1,204 @@
+﻿@{
+    ViewBag.Title = "Student profile";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Student Profile</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Student Profile</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="profile-cont">
+       <div class="row pt-3">
+           <div class="col-sm-6">
+               <div class="profile-img">
+                   <img src="../images/avatar-user.png" alt="profile" id="profile_image_path"/>
+               </div>
+               <div class="profile-name">
+                   <div class="name" id="profile_student_name">Anand Vardhan</div>
+                   @*<div>Jai Hind, Jai Bharat</div>*@
+                   <button class="btn btn-primary font-weight-bolder mb-3"  onclick="followStudent(@ViewBag.id)">Follow Now</button>
+               </div>
+           </div>
+           <div class="col-sm-6">
+               <div class="profile-about-basic-details  card shadow-lg">
+
+                   <div class="card-body">
+                       <h3 class="text-center font-weight-bolder" id="student_name">Intro</h3>
+                       <h5 class="font-weight-bolder" id="no_of_live_course_joined"><i class="fa fa-play-circle p-2"></i> 0 live course joined</h5>
+                       <h5 class="font-weight-bolder" id="no_of_student_followed"><i class="fa fa-rss p-2"></i>Followed by 0 students</h5>
+                       <h5 class="font-weight-bolder" id="no_of_instructor_following"><i class="fa fa-rss p-2"></i>Following  0 instructors</h5>
+                       <h5 class="font-weight-bolder" id="no_of_courses_joined"><i class="fa fa-book p-2"></i>0 Courses joined</h5>
+                       <h5 class="font-weight-bolder" id="joined_since"><i class="fa fa-calendar p-2"></i>Joined since </h5>
+                   </div>
+               </div>
+           </div>
+       </div>
+        <hr class="text-center" style="max-width:70vw;" />
+        <div class="profile-tabs">
+
+            <div>
+                <ul id="bottomTabCont" class="nav nav-pills justify-content-start">
+                    <li class="nav-item">
+                        <a href="#about-me" class="nav-link active font-weight-bolder" data-toggle="tab">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profile" class="nav-link font-weight-bolder" data-toggle="tab" id="folllower-tab">Followers (0)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profile" class="nav-link font-weight-bolder" data-toggle="tab" id="following-tab">Following (0)</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="about-me">
+                        <div>
+                           
+                            <div class="row col-sm-12">
+                                <div class="col-sm-3">
+                                    <div class="card-body">
+                                        <div class="profile-about-myprogress">
+                                            <i class="fa fa-users"></i>
+                                            <p class="font-weight-bolder" id="about-connections">0+ students and instructors connections</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+
+                                    <div class="card-body">
+                                        <div class="profile-about-myprogress">
+                                            <i class="fa fa-play-circle"></i>
+                                            <p class="font-weight-bolder" id="about-live-classess-attended">0+ live classes joined</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                
+                                <div class="col-sm-3">
+                                    <div class="card-body">
+                                        <div class="profile-about-myprogress">
+                                            <i class="fa fa-pencil"></i>
+                                            <p class="font-weight-bolder" id="about-practices">0+ Assignments and tests submissions</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="card-body">
+                                        <div class="profile-about-myprogress">
+                                            <i class="fa fa-usd" style="color:yellow;"></i>
+                                            <p class="font-weight-bolder" id="coins-earned">0 coins earned</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="profile">
+                        <p>Profile tab content ...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-success" id="exampleModalLongTitle">Success </h5>
+                <button onclick="location.reload();" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="infoMessageSuccess">
+                OOPS! Some error has occurred
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-warning" id="exampleModalLongTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="infoMessageFail">
+                OOPS! Some error has occurred
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        getStudentDetails();
+    })();
+    function getStudentDetails() {
+        debugger
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/FetchStudentPublicDetails?id=@ViewBag.id",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $("#student_name").html(data.name.split(" ")[0] + "'s Intro");
+                    $("#no_of_live_course_joined").html("<i class='fa fa-play-circle p-2'></i>" + data.no_of_live_courses_joined + " live courses joined");
+                    $("#no_of_student_followed").html("<i class='fa fa-rss p-2'></i>" + "Followed by " + data.no_of_followers + " students");
+                    $("#no_of_instructor_following").html("<i class='fa fa-rss p-2'></i>" + "Following  " + data.no_of_students_folowing + " instructors");
+                    $("#no_of_courses_joined").html("<i class='fa fa-book p-2'></i>" + data.no_of_course_joined + " Courses joined");
+                    $("#joined_since").html("<i class='fa fa-calendar p-2'>" + " Joined since " + data.joining_date);
+                    $("#folllower-tab").text("Followers " + data.no_of_followers);
+                    $("#following-tab").text("Following " + data.no_of_students_folowing);
+                    $("#about-connections").text(data.no_of_followers + data.no_of_students_folowing + "+ students and instructors connections");
+                    $("#about-live-classess-attended").text(data.no_of_live_classes_attended + "+ live classes attended");
+                    $("#coins-earned").text("0 coins earned");
+                    $("#profile_student_name").text(data.name);
+                    if (data.profile_url!=null)
+                    {
+                        $("#profile_image_path").attr("src", data.profile_url);
+                    }
+                    
+                }
+            }
+        });
+    }
+    function followStudent(StudentId) {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/JoinToStudent?id=".concat(StudentId),
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $("#successModal").modal('show');
+                    $("#infoMessageSuccess").text('joined to ' + $("#profile_student_name").text().split(" ")[0] + ' successfully');
+
+                }
+                else {
+                    $("#failModal").modal('show');
+                    $("#infoMessageFail").text('Could not joined to ' + $("#profile_student_name").text().split(" ")[0]);
+                }
+            }
+        });
+    }
+
+</script>

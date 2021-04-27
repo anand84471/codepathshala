@@ -1,0 +1,255 @@
+﻿@{
+    ViewBag.Title = "Assignment Response";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+@*@using StudentDashboard.Models.Student;
+    @model StudentRegisterModal*@
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">View Assignment Response</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callAssignmentSubmissions()">Assignment submissions</a></li>
+                <li class="breadcrumb-item active" aria-current="page">View response</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="card shadow mb-4 border-left-primary">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary" id="AssignmentName">Assignment Name</h6>
+            <ul class="list-inline m-0">
+                @*<li class="list-inline-item m-0"><button type="button" class="btn btn-outline-primary m-0" id="testRemainigTimeHH">03</button></li>
+                    <li class="list-inline-item m-0 ml-1 font-weight-bolder">:</li>*@
+                <li class="list-inline-item m-0"><button type="button" class="btn btn-outline-primary m-0" id="minutes">00</button></li>
+                <li class="list-inline-item m-0 ml-1 font-weight-bolder">:</li>
+                <li class="list-inline-item m-0"><button type="button" class="btn btn-outline-primary m-0" id="seconds">00</button>
+            </ul>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <button class="dropdown-item afterSubmit" id="giveFeedBack" onclick="requestAssignmentFeedback()">Give Feedback</button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" onclick="callHome()">Exit</button>
+                </div>
+            </div>
+        </div>
+        <!-- Card Body -->
+        <div class="row">
+            <div class="card-body  col-sm-6" id="pieChartContainer" style="display:none">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="pieChartBody"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-primary"></i> Not attempted
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-success"></i>  Correct
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-info"></i> Incorrect
+                    </span>
+                </div>
+            </div>
+            <div class="card-body col-sm-6 mt-4" id="assignmentResponseContainer" style="display:none">
+                <h4 class="small font-weight-bold">Correct answers <span class="float-right" id="correctAnswers">00</span></h4>
+                <h4 class="small font-weight-bold">Incorrect answers <span class="float-right" id="incorrectAnswers">00</span></h4>
+                <h4 class="small font-weight-bold">Total No of question <span class="float-right" id="totalQuestions">00</span></h4>
+                <h4 class="small font-weight-bold">Percentage Score <span class="float-right" id="percentageScore">00%</span></h4>
+                <div class="progress mb-4">
+                    <div id="progressbarScore" class="progress-bar bg-danger" role="progressbar" style="width: 50%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <h4 class="small font-weight-bold">Time taken <span class="float-right" id="timeTaken"></span></h4>
+                <div class="progress mb-4">
+                    <div id="progressbarTime" class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" id="assignmentContainer">
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        'use strict';
+        onpageshow = getSubmissionDetails();
+    })();
+
+    var mcq_questions;
+    var toalAnsweredQuestions = 0;
+
+    function getSubmissionDetails() {
+        debugger
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/AssignmentSubmissionDetails?id=".concat(@ViewBag.id),
+            success: function (data) {
+                debugger
+                if (data != null && data.response_code == 1) {
+                    $("#AssignmentName").text(data.assignment_name);
+                    var questions = data.submission_details;
+                    mcq_questions = questions;
+                    timeTakenToSolveAssignment = data.time_to_solve_in_seconds;
+                    processResponse();
+                }
+            }
+        });
+    }
+    function returnFinalResponse()
+    {
+        debugger
+        correctOptionCount = 0;
+        inCorrectOptionCount = 0;
+        notAttemptedQuestionCount = 0;
+        var response = '';
+        var optionNo = 0;
+        answerResponse = [];
+        for (var i = 0; i < mcq_questions.length; i++) {
+            var currentAnswer = {};
+            optionNo++;
+            var qNo = i + 1;
+            var row = '<h4 class="m-0 font-weight-bold text-primary"><span class="mr-2">' + qNo + '. </span>' + mcq_questions[i].question_statement + '</h4>';
+            row +=
+                '<div class="custom-control custom-radio">'
+                    + '<input type="radio" class="custom-control-input" name="responseoptions'+i+'" id="' + optionNo + '" disabled>'
+                    + '<label class="custom-control-label"  for="' + optionNo + '">' + mcq_questions[i].option1 + '</label>'
+                + '</div>';
+            optionNo++;
+            row +=
+                '<div class="custom-control custom-radio">'
+                    + '<input type="radio" class="custom-control-input"  name="responseoptions' + i + '" id="' + optionNo + '" disabled>'
+                    + '<label class="custom-control-label"  for="' + optionNo + '">' + mcq_questions[i].option2 + '</label>'
+                + '</div>';
+            optionNo++;
+            row +=
+               '<div class="custom-control custom-radio">'
+                   + '<input type="radio" class="custom-control-input"  name="responseoptions' + i + '" id="' + optionNo + '" disabled>'
+                   + '<label class="custom-control-label" for="' + optionNo + '">' + mcq_questions[i].option3 + '</label>'
+               + '</div>';
+            optionNo++;
+            row +=
+                '<div class="custom-control custom-radio">'
+                    + '<input type="radio" class="custom-control-input"  name="responseoptions' + i + '" id="' + optionNo + '" disabled>'
+                    + '<label class="custom-control-label"  for="' + optionNo + '">' + mcq_questions[i].option4 + '</label>'
+                + '</div>';
+
+            if (mcq_questions[i]["option_selected"] == -1) {
+                row += '<div class="alert alert-dark" role="alert">No option selected</div>';
+                notAttemptedQuestionCount++;
+            }
+            else {
+                if (mcq_questions[i]["option_selected"].toString() != mcq_questions[i]["correct_option"]) {
+                    row += '<div class="alert alert-danger" role="alert">Wrong</div>';
+                   inCorrectOptionCount++;
+                }
+                else {
+                    row += '<div class="alert alert-success" role="alert">Correct</div>';
+                    correctOptionCount++;
+                }
+
+                row += '<p>Option selected: ' + mcq_questions[i]["option_selected"] + '</p>'
+
+            }
+
+            response += row;
+            answerResponse.push(currentAnswer);
+        }
+        return response;
+    }
+    function markSuccess() {
+        for (var i = 0; i < mcq_questions.length; i++) {
+            if (mcq_questions[i]["correct_option"] != null) {
+                var corrcetAnswer = 4 * i + mcq_questions[i]["correct_option"];
+                document.getElementById(corrcetAnswer.toString()).checked = true;
+            }
+
+        }
+    }
+
+    function secondsToHms(d) {
+        var data = {};
+        var h = Math.floor(d / 3600);
+        var m = Math.floor(d % 3600 / 60);
+        var s = Math.floor(d % 3600 % 60);
+        if (h.toString.length < 2) {
+            data["hourse"] = '0'+h;
+        }
+        if (m.toString.length < 2) {
+            data["minutes"] = '0'+m;
+        }
+        if (s.toString.length < 2) {
+            data["seconds"] = '0'+s;
+        } 
+        return data;
+    }
+
+    function processResponse()
+    {
+        response = returnFinalResponse();
+        $("#assignmentContainer").append(response);
+        markSuccess();
+        createPieChart();
+        $("#assignmentResponseContainer").show();
+        $("#timeTaken").html(timeTakenToSolveAssignment + " Secs");
+        $("#correctAnswers").html(correctOptionCount);
+        $("#totalQuestions").html(mcq_questions.length);
+        $("#incorrectAnswers").html(inCorrectOptionCount);
+        $("#percentageScore").html(Math.floor((correctOptionCount/mcq_questions.length)*100)+"%");
+        document.getElementById("progressbarScore").style.width = Math.floor((correctOptionCount / mcq_questions.length) * 100) + "%";
+        var time_data = secondsToHms(timeTakenToSolveAssignment);
+        $("#seconds").text(time_data.seconds);
+        $("#minutes").text(time_data.minutes);
+    }
+    var correctOptionCount;
+    var inCorrectOptionCount;
+    var notAttemptedQuestionCount;
+    var timeTakenToSolveAssignment = 0;
+    var answerResponse;
+    function createPieChart()
+    {
+        $("#pieChartContainer").show();
+        // Set new default font family and font color to mimic Bootstrap's default styling
+        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#858796';
+        // Pie Chart Example
+        var ctx = document.getElementById("pieChartBody");
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ["Not attempted", "Correct", "Incorrect"],
+                datasets: [{
+                    data: [notAttemptedQuestionCount,correctOptionCount, inCorrectOptionCount],
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    caretPadding: 10,
+                },
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 80,
+            },
+        });
+    }
+    var submissionId;
+</script>

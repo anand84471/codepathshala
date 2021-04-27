@@ -1,0 +1,384 @@
+﻿@{
+    ViewBag.Title = "Create Assignment";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_InstructorLayout.cshtml";
+}
+<div class="container-fluid" id="addNewCourseContainer">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Create Assignment</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callViewAllClassroom()">Classrooms</a></li>
+                <li class="breadcrumb-item"><a href="ClassroomDashboard?id=@ViewBag.ClassroomId">@ViewBag.ClassroomId</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Add assignment</li>
+
+            </ol>
+        </nav>
+    </div>
+    <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Create New Assignment</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="./Contact">Save</a>
+                    <a class="dropdown-item" href="./LogOut">Release</a>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#cancelModal">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Delete
+                    </a>
+                </div>
+                <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModal" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Ready to delete the test?</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">All the data of the current assignment will be gone.</div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
+                                <a class="btn btn-primary" href="./Home">Yes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-success" id="postsubmit" style="display:none" role="alert">
+                Assignment added successfully
+            </div>
+            <div id="testContainer" class="assignmentContainer"></div>
+            <button id="addAssignmentButton" type="button" class="btn btn-primary  btn-block" onclick="addNewAssignment()">Add new Assignment</button>
+            <button id="submitAssignmentButton" style="display:none" type="button" class="btn btn-outline-primary  btn-block" onclick="document.getElementById('courseForm').submit()">Submit</button>
+        </div>
+
+    </div>
+</div>
+<div class="modal fade top" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-full-height modal-top" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 " id="myModalLabel"> <b>Assignment Details:</b></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9" id="previewAssignmentName">Assignment Name</dd>
+                    <dt class="col-sm-3">Description:</dt>
+                    <dd class="col-sm-9" id="previewAssignmentDescription" value="">Assignment Description</dd>
+                </dl>
+                <div id="previewOptions" onloadstart="fillQuestions()">
+
+                </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+<div class="modal fade" id="infomodal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoTitle">Assignment created</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="infoMessage">Assignment added successfully</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="invalidSubmittion" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="courseIdGenerated">Some of the fields are empty</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function callGetAssignmentDetailsApi()
+    {
+        $("#previewAssignmentName").val()=$("#assignmentName").val();
+        $("#previewAssignmentDescription").val()=$("#assignmentDescription").val();
+
+    }
+    function addNewTestQuestion() {
+        var questionType = $("#selectAssignmentTypeId").val();
+        $("#selectAssignmentTypeId").prop("disabled", true);
+        switch (questionType) {
+            case "sub":
+                {
+                    addNewSubjectiveQuestion();
+                    break;
+                }
+            case "mcq":
+                {
+                    addNewMcqQuestion();
+                    break;
+                }
+        }
+        $("#submitAssignmentButton").show();
+    }
+    function validateInputField(id) {
+        if ($(id).val() == "") {
+            $(id).addClass("is-invalid");
+        }
+        else {
+            $(id).addClass("is-valid").removeClass("is-invalid");
+        }
+    }
+    var totalNoOfQuestions = 0;
+    function addNewAssignment() {
+        $("#addAssignmentButton").remove();
+        document.getElementById("testContainer").insertAdjacentHTML("beforeend",
+            '<form>'
+                                            + '<h5 class="card-title">Add Assignment Details</h5>'
+                                            + '<div class="form-group row">'
+                                                + '<label for="assignmentName" class="col-sm-3 col-form-label">Name of Assignment</label>'
+                                                + '<div class="col-sm-8">'
+                                                    + '<input type="text"  onchange="validateInputField(this)" class="form-control" id="assignmentName" placeholder="Enter name of assignment">'
+                                                + '</div>'
+                                            + '</div>'
+                                            + '<div class="form-group row">'
+                                                + '<label for="assignmentDescription" class="col-sm-3 col-form-label">Description of Assignment</label>'
+                                                + '<div class="col-sm-8">'
+                                                    + '<textarea type="text" placeholder="Enter assignment description" id="assignmentDescription" name="message" rows="2" class="form-control md-textarea"></textarea>'
+                                                + '</div>'
+                                            + '</div>'
+                                            + '<div class="form-group row">'
+                                                + '<label for="sel1" class="col-sm-3 col-form-label">Select Assignment type:</label>'
+                                                + '<div class="col-sm-8">'
+                                                    + '<select class="form-control" id="selectAssignmentTypeId">'
+                                                        + '<option value="mcq">MCQ</option>'
+                                                        + '<option value="sub">Subjective</option>'
+                                                    + '</select>'
+                                                + '</div>'
+                                            + '</div>'
+
+                                            + '<div id="testQuestionContainer"></div>'
+                                            + '<button id="addAssignmentButton"  type="button" class="btn btn-outline-primary  btn-block" onclick="addNewTestQuestion()">Add  Question</button>'
+                                            + '<button id="submitAssignmentButton" style="display:none" type="button" class="btn btn-primary  btn-block" onclick="submitAssignment()">Submit</button>'
+                            + '</form>'
+          );
+    }
+    function addNewMcqQuestion() {
+        totalNoOfQuestions++;
+            document.getElementById("testQuestionContainer").insertAdjacentHTML("beforeend",
+                 '<div class="assignment-mcq-section">'
+                          + '<button type="button" class="btn close' + 'data-dismiss="alert" onclick="removeDiv(this)" aria-label="Close">'
+                                    + '<span aria-hidden="true" class="ml-3">×</span>'
+                          + '</button> '
+                            + '<div class="form-group row">'
+                                + '<label  class="col-sm-3 col-form-label">Question statement</label>'
+                                + '<div class="col-sm-8">'
+                                    + '<input type="text" class="form-control" name="question"  onchange="validateInputField(this)" placeholder="Enter question">'
+                                + '</div>'
+                            + '</div>'
+                            + '<div class="form-group row">'
+                                + '<label  class="col-sm-3 col-form-label">Option 1</label>'
+                                + '<div class="col-sm-8 mb-2">'
+                                    + '<input type="text" class="form-control" name="option1"  onchange="validateInputField(this)" placeholder="Enter option 1">'
+                                + '</div>'
+                                + '<label class="col-sm-3 col-form-label">Option 2</label>'
+                                + '<div class="col-sm-8 mb-2">'
+                                    + '<input type="text" class="form-control" name="option2"  onchange="validateInputField(this)" placeholder="Enter option 2">'
+                                + '</div>'
+                                + '<label class="col-sm-3 col-form-label">Option 3</label>'
+                                + '<div class="col-sm-8 mb-2">'
+                                    + '<input type="text" class="form-control" name="option3"  onchange="validateInputField(this)" placeholder="Enter option 3">'
+                                + '</div>'
+                                + '<label class="col-sm-3 col-form-label">Option 4</label>'
+                                + '<div class="col-sm-8">'
+                                    + '<input type="text" class="form-control" name="option4"  onchange="validateInputField(this)" placeholder="Enter option 4">'
+                                + '</div>'
+                                + '<hr />'
+                            + '</div>'
+                            + '<div class="form-group row">'
+                                                                + '<label class="col-sm-3 col-form-label">Select Correct Option</label>'
+                                                                + '<div class="col-sm-8">'
+                                                                    + '<select class="form-control" name="correctOptionAssignment">'
+                                                                        + '<option value="-1">select...</option>'
+                                                                        + '<option value="1">Option 1</option>'
+                                                                        + '<option value="2">Option 2</option>'
+                                                                        + '<option value="3">Option 3</option>'
+                                                                        + '<option value="4">Option 4</option>'
+                                                                    + '</select>'
+                                                                + '</div>'
+                                                            + '</div>'
+                                                            +'<hr>'
+                    + '</div>'
+                );
+        }
+    function removeDiv(elem) {
+        $(elem).parent('div').remove();
+        totalNoOfQuestions--;
+        if(totalNoOfQuestions==0)
+        {
+            $("#selectAssignmentTypeId").prop("disabled", false);
+        }
+    }
+    function addNewSubjectiveQuestion() {
+        totalNoOfQuestions++;
+        document.getElementById("testQuestionContainer").insertAdjacentHTML("beforeend",
+        '<div class="subjective-section">'
+                      + '<button type="button" class="btn" data-dismiss="alert" onclick="removeDiv(this)" aria-label="Close">'
+                                + '<span aria-hidden="true" class="ml-3">×</span>'
+                      + '</button> '
+                + '<div class="form-group row">'
+                    + '<label for="inputPassword" class="col-sm-3 col-form-label">Question statement</label>'
+                    + '<div class="col-sm-8">'
+                        + '<textarea onchange="validateInputField(this)" type="text" class="form-control" name="subjectiveAssignmentQuestionStatement" placeholder="Enter question"></textarea>'
+                    + '</div>'
+                + '</div>'
+                + '<div class="form-group row">'
+                    + '<label for="inputPassword" class="col-sm-3 col-form-label">Question hint</label>'
+                    + '<div class="col-sm-8">'
+                        + '<textarea onchange="validateInputField(this)" type="text" class="form-control" name="subjectiveAssignmentQuestionHint" placeholder="Enter hint for question"></textarea>'
+                    + '</div>'
+                + '</div>'
+            + '</div>'
+        );
+    }
+    function submitAssignment(indexcount) {
+        debugger;
+        var assignmentName = $("#assignmentName").val();
+        if (assignmentName == "")
+        {
+            $("#assignmentName").addClass("is-invalid");
+            $('#invalidSubmittion').modal('show');
+            return;
+        }
+        var assignmentDescription = $("#assignmentDescription").val();
+        var assignmentType = $("#selectAssignmentTypeId").val();
+        var questions = [];
+        if (assignmentType == "mcq") {
+            var question = $("[name='question']");
+            var option1 = $("[name='option1']");
+            var option2 = $("[name='option2']");
+            var option3 = $("[name='option3']");
+            var option4 = $("[name='option4']");
+            var correctOption = $("[name='correctOptionAssignment']");
+            for (var i = 0; i < question.length; i++) {
+                if (!question[i].disabled) {
+                    if (question[i].classList.contains("is-invalid") || option1[i].classList.contains("is-invalid") || option2[i].classList.contains("is-invalid") ||
+                        option3[i].classList.contains("is-invalid") || option4[i].classList.contains("is-invalid") ||
+                        question[i].value == "" || option1[i].value == "" || option2[i].value == "" || option3[i].value == "" || option4[i].value == "" || correctOption[i].value == "-1"
+                        ) {
+                        if (question[i].value == "") {
+                            question[i].classList.add("is-invalid");
+                        }
+                        else if (option1[i].value == "") {
+                            option1[i].classList.add("is-invalid");
+                        }
+                        else if (option2[i].value == "") {
+                            option2[i].classList.add("is-invalid");
+                        }
+                        else if (option3[i].value == "") {
+                            option3[i].classList.add("is-invalid");
+                        }
+                        else if (option4[i].value == "") {
+                            option4[i].classList.add("is-invalid");
+                        }
+                        else if (correctOption[i].value == "") {
+                            correctOption[i].classList.add("is-invalid");
+
+                        }
+                        $("#invalidSubmittion").modal('show');
+                        return;
+                    }
+
+
+                    var Question = {
+                        "question_statement": question[i].value,
+                        "option1": option1[i].value,
+                        "option2": option2[i].value,
+                        "option3": option3[i].value,
+                        "option4": option4[i].value,
+                        "correct_option": parseInt(correctOption[i].value)
+                    }
+                    questions.push(Question);
+                }
+            }
+        }
+        else if (assignmentType = "sub") {
+            var subjectiveTestQuestionStatement = $("[name='subjectiveAssignmentQuestionStatement']");
+            var subjectiveTestQuestionHint = $("[name='subjectiveAssignmentQuestionHint']");
+            for (var i = 0; i < subjectiveTestQuestionStatement.length; i++) {
+                if (!subjectiveTestQuestionStatement[i].disabled) {
+                    var Question = {
+                        "question_statement": subjectiveTestQuestionStatement[i].value,
+                        "hint": subjectiveTestQuestionHint[i].value
+                    }
+                    questions.push(Question);
+                }
+            }
+        }
+        var _data =
+            {
+                "is_classroom_assignment":true,
+                "classroom_id":"@ViewBag.ClassroomId",
+                "assignment_name": assignmentName,
+                "assignment_description": assignmentDescription,
+                "assignment_type": assignmentType,
+                "mcq_questions": questions,
+
+                "subjective_questions": questions
+            }
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('access_token') },
+            type: "POST",
+            data: JSON.stringify(_data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/instructor/addnewassignment",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    $('#infomodal').modal('show');
+                    $("#testContainer").fadeOut();
+                    $("#postsubmit").append('<a type="button" class="btn btn-link" href="ViewClassroomAssignment?ass_id=' + data.assignment_id + '&c_id=@ViewBag.ClassroomId" onclick="callViewAssignment(' + data.assignment_id + ')">View assignment&rarr;</a>');
+                    $("#postsubmit").show();
+                }
+                else {
+                }
+            }
+        });
+    }
+    addNewAssignment();
+</script>
+
+

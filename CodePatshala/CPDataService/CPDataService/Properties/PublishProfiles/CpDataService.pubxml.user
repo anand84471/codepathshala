@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\D\Build\test\ReadMyCourseHome\18_3_2021_NEW\dataservice</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="ApplicationInsights.config">
+      <publishTime>12/08/2020 11:11:53</publishTime>
+    </File>
+    <File Include="bin/ApplicationInsights.config">
+      <publishTime>12/08/2020 11:11:53</publishTime>
+    </File>
+    <File Include="bin/CPDataService.dll">
+      <publishTime>03/18/2021 13:41:46</publishTime>
+    </File>
+    <File Include="bin/CPDataService.pdb">
+      <publishTime>03/18/2021 13:41:46</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
+      <publishTime>12/08/2020 11:11:58</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.DependencyCollector.dll">
+      <publishTime>12/08/2020 11:11:59</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.PerfCounterCollector.dll">
+      <publishTime>12/08/2020 11:12:00</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.ServerTelemetryChannel.dll">
+      <publishTime>12/08/2020 11:12:02</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.Web.dll">
+      <publishTime>12/08/2020 11:12:01</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.WindowsServer.dll">
+      <publishTime>12/08/2020 11:12:01</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ApplicationInsights.dll">
+      <publishTime>12/08/2020 11:11:58</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>12/08/2020 11:12:05</publishTime>
+    </File>
+    <File Include="bin/NLog.dll">
+      <publishTime>12/08/2020 11:12:02</publishTime>
+    </File>
+    <File Include="CpDataService.svc">
+      <publishTime>12/08/2020 11:11:53</publishTime>
+    </File>
+    <File Include="NLog.config">
+      <publishTime>12/08/2020 11:11:53</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>12/08/2020 11:11:53</publishTime>
+    </File>
+    <File Include="scripts/ai.0.22.9-build00167.js">
+      <publishTime>12/08/2020 11:11:58</publishTime>
+    </File>
+    <File Include="scripts/ai.0.22.9-build00167.min.js">
+      <publishTime>12/08/2020 11:11:58</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>02/09/2021 11:08:18</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

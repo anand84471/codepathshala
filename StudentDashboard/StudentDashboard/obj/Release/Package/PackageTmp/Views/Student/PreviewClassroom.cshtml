@@ -1,0 +1,947 @@
+﻿@{
+    ViewBag.Title = "Join classroom";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_StudentLayout.cshtml";
+}
+@using StudentDashboard.Models.Student;
+@model ClassroomJoinDetailsModal
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style type="text/css">
+    .classroom-background-container {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .classroom-background-image {
+        max-height: 300px;
+        height: 300px;
+        z-index: -1;
+    }
+
+    .classroom-background-mask {
+        width: 100%;
+        border: 10px;
+        z-index: 10;
+        background: rgb(3,0,237);
+        background: linear-gradient(360deg, rgba(3,0,237,0.969625350140056) 5%, rgba(11,33,196,0.7063200280112045) 77%);
+        backdrop-filter: blur(8px);
+        padding: 20px;
+        margin-top: 140px;
+        margin-bottom: 20px;
+        color: #f8f9fccc !important;
+        border-radius: 8px;
+    }
+
+    .classroom-background {
+        padding-top: 10px;
+        align-items: center;
+        overflow-y: no-display;
+        background: #f8f8f8;
+        margin-bottom: 10px;
+        text-align: center;
+        border: 3px solid #eee;
+        box-shadow: 2px;
+        border-radius: 8px;
+    }
+
+        .classroom-background:hover {
+            border: 2px solid red;
+        }
+
+    .upload-icon {
+        font-size: 72px;
+        align-items: center;
+    }
+
+    .ui-input-container {
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    .ui-form-input-container {
+        position: relative;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .ui-input-container h2 {
+        font-family: sans-serif;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .ui-form-input {
+        padding: 13px 15px;
+        border-radius: 8px;
+        border: 2px solid #1a73e8;
+        outline: 0;
+        width: 100%;
+        min-height: 200px;
+    }
+
+    #zmmtg-root {
+        background-color: aquamarine;
+    }
+</style>
+
+<style type="text/css">
+
+    /*Vertical Steps*/
+    .inside-body {
+        padding: 25px;
+    }
+
+    .list-group.vertical-steps .list-group-item {
+        border: none;
+        border-left: 3px solid #0052c2;
+        box-sizing: border-box;
+        border-radius: 0;
+        counter-increment: step-counter;
+        padding-left: 20px;
+        padding-right: 0px;
+        padding-bottom: 20px;
+        padding-top: 0px;
+    }
+
+        .list-group.vertical-steps .list-group-item.active {
+            background-color: transparent;
+            color: inherit;
+        }
+
+        .list-group.vertical-steps .list-group-item:last-child {
+            border-left: 3px solid transparent;
+            padding-bottom: 0;
+        }
+
+        .list-group.vertical-steps .list-group-item::before {
+            border-radius: 50%;
+            background-color: #0052c2;
+            color: #fff;
+            content: counter(step-counter);
+            display: inline-block;
+            float: left;
+            height: 25px;
+            line-height: 25px;
+            margin-left: -35px;
+            text-align: center;
+            width: 25px;
+        }
+
+        .list-group.vertical-steps .list-group-item span,
+        .list-group.vertical-steps .list-group-item a {
+            display: block;
+            overflow: hidden;
+            padding-top: 2px;
+        }
+    /* End of Vertical Step */
+
+    #how-to .panel-group .panel {
+        border-radius: 0px;
+        border: 0px;
+    }
+
+    #how-to .panel-group {
+        margin: 0px;
+    }
+
+    #how-to .container {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #how-to .panel-heading {
+        padding: 0px !important;
+        border-radius: 0px;
+    }
+
+    #how-to .parent a {
+        display: block;
+        text-decoration: none;
+        padding: 25px;
+    }
+
+    #how-to .child a {
+        display: block;
+        text-decoration: none;
+        padding: 25px;
+    }
+
+    #how-to .parent {
+        background-color: #fff !important;
+    }
+
+    #how-to .child {
+        background-color: #f2f2f2 !important;
+    }
+
+    #how-to .panel-body {
+        border: none;
+    }
+
+    #how-to .panel-body {
+        padding: 0px;
+    }
+
+    #how-to .panel-group .panel + .panel {
+        margin: 0px;
+    }
+
+    #how-to .panel-group .parent {
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    #how-to .panel-group .child {
+        border-bottom: 1px solid #FDFDFD;
+    }
+
+    #superaccordion {
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
+    }
+
+    .panel-heading a:after {
+        content: "";
+        position: relative;
+        top: 1px;
+        right: 10px;
+        display: inline-block;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14pt;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        float: right;
+        transition: transform .25s linear;
+        -webkit-transition: -webkit-transform .25s linear;
+        color: #333;
+    }
+
+    .panel-heading a[aria-expanded="true"]:after {
+        content: "\2212";
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+
+    .panel-heading a[aria-expanded="false"]:after {
+        content: "\002b";
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+
+    .parent a:after {
+        content: "";
+        position: relative;
+        top: -15px;
+        right: 10px;
+        display: inline-block;
+        line-height: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        float: right;
+        transition: transform .25s linear;
+        -webkit-transition: -webkit-transform .25s linear;
+        color: #333;
+    }
+
+    .main-review {
+        font-size: 48px;
+    }
+
+    .student-review-count {
+        margin-top: 30px;
+        margin-left: 20px;
+        font-size: 16px;
+    }
+
+    .review-progress-bar {
+        border-radius: 0.35rem;
+        width: 100%;
+        margin-top: 13px;
+    }
+
+    .review-no-of-ratings {
+        margin-top: 13px;
+    }
+
+    .review-image {
+        max-width: 50px;
+        max-height: 50px;
+        border: 100px;
+        border-radius: 50px;
+    }
+
+    .reviewer-name {
+        margin-left: 20px;
+    }
+
+    .review-date {
+        margin-left: 20px;
+        margin-top: 1px;
+    }
+    .classroom-no-info{
+        max-width:100%;
+    }
+    .content-side-padding{
+        padding-left:0.3rem;
+        padding-right:0.3rem;
+    }
+</style>
+<div class="course-demo-card container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Join new classroom</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" onclick="callHome()">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" onclick="callJoinNewClassroom()">Join classroom</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Enroll now</li>
+                @*<li class="breadcrumb-item active" >Data</li>*@
+            </ol>
+        </nav>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4 border-bottom-success ">
+                <div class="card-body classroom-background-container" style="background-image:url(../../Images/course-3.jpg)" id="classroom_bg_content">
+                    <div class="classroom-background-mask">
+                        <h1 class="card-text font-weight-bold text-gray-100 " id="classroomName"></h1>
+                        @*<p class="text mr-3  text-white" id="classroomCreationDate"></p>*@
+                        <span class="badge badge-pill badge-light" id="successbadge" style="display:none">Joined Successfully</span>
+                        <h4 class="text-white" id="classroomJoiningText">Full course fee &#8377  <span class="badge badge-pill badge-light" id="classroomJoiningFee"></span> <span class="badge badge-pill badge-light" style="text-decoration: line-through;" id="classroomJoiningFeeMain"></span></h4>
+                        @*<span><button class="btn btn-outline-light custom-green text-white font-weight-bold" id="enrollNowButton" onclick="requestClassroomPayment()">Join now</button></span>*@
+                        <span><button class="btn btn-outline-light custom-green text-white font-weight-bold" id="enrollNowButton" onclick="joinClassroomTrial()">Join now</button></span>
+                        <h5 class="text-danger font-weight-bold" id="demoClassrooms">Attend three sessions free and pay only after you are satisfied.</h5>
+                        <h6 class="text-warning font-weight-bold" href="@ViewBag.ReturnUrl" id="registration-last-date"></h6>
+
+                        <span><a class="btn btn-outline-light custom-green text-white font-weight-bold" id="goToCourse" style="display:none;" href="./MyClassrooms">Go to my classroom<i class="ml-2 fa fa-arrow-right"></i></a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade border-success" id="successModal" tabindex="-1" role="dialog" aria-labelledby="infomodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-success modal-content">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoTitle">Success</h5>
+
+                </div>
+                <div class="modal-body">
+                    <h3 id="infoMessageSuccess">Classroom joined successfully</h3>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-secondary" data-dismiss="modal" href="ViewClassroom?classroom_id=@Model.m_llClassroomId">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-labelledby="modalIndexCreatedTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="card border-danger modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalIndexCreatedTitle">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-danger">
+                <h3 id="infoMessageFail">Classroom could not be joined</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pl-3" id="classroomContaintProgressDetails">
+    <div class="">
+        <div class="row col-sm-12 p-0">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card  border-left-primary shadow h-100 py-1">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Live classes</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfLiveClass +</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-play-circle fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Assignments and Tests</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfPracticeMaterials +</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-pen fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Study materials</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfStudyMaterials +</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-book fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Students joined</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.m_iNoOfStudentsJoined +</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-users fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2 class="text-center content-side-padding font-weight-bold" >About course</h2>
+        <h5 class="p-2" style="margin-left:1rem;margin-right:1rem;" id="classroomDescription">This will generate a configuration file and a code file that contains the client class. Add the two files to your client application and use the generated client class to call the Service. For example: This will generate a configuration file and a code file that contains the client class. Add the two files to your client application and use the generated client class to call the Service. For example:</h5>
+
+        @if (Model.classroomSyllabusDetailsModal != null)
+        {
+            <section class="content-side-padding">
+                <h2 class="text-center text-capitalize font-weight-bolder" style="padding-left:0.2rem;padding-right:0.2rem;">Syllabus</h2>
+                <div id="how-to" class="container mb-5 p-0">
+
+                    <!-- Super Accordion -->
+                    <div class="panel-group" id="superaccordion">
+                        <!-- Accordion 1 -->
+                        @for (var i = 0; i < Model.classroomSyllabusDetailsModal.m_lsClassroomWeekWiseSyallabus.Count; i++)
+                        {
+                            <div class="panel">
+                                <div id="collapse1" class="panel-collapse ">
+                                    <div class="panel-body">
+                                        <div class="panel-group" id="week-body-@i">
+                                            <div class="panel">
+                                                <div class="panel-heading child">
+                                                    <h4 class="panel-title">
+                                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#week-body-@i" href="#week-header-@i" aria-expanded="false">
+                                                            @Model.classroomSyllabusDetailsModal.m_lsClassroomWeekWiseSyallabus[i].m_strWeekName
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div id="week-header-@i" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        <div class="inside-body">
+                                                            <ol class="list-group vertical-steps">
+                                                                @for (var j = 0; j < Model.classroomSyllabusDetailsModal.m_lsClassroomWeekWiseSyallabus[i].lsTopicsToBeCovered.Count; j++)
+                                                                {
+                                                                    <li class="list-group-item"><span>@Model.classroomSyllabusDetailsModal.m_lsClassroomWeekWiseSyallabus[i].lsTopicsToBeCovered[j]</span></li>
+                                                                }
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <!-- End of Super Accordion -->
+                </div>
+            </section>
+        }
+        @if (Model.classroomScheduleDetails != null)
+        {
+    <section class="content-side-padding">
+        <h2 class="text-center text-capitalize font-weight-bolder">Time table</h2>
+        <div class="container p-0 ftco-animate">
+            <div class="col-lg-12 mb-2 p-0" id="navUpdateSchedulerDetails">
+                <div class="card shadow-lg border-primary">
+                    <div class="card-header"> <h6>All the times are in IST(UTC +5:30)</h6></div>
+                    <div class="card-body">
+
+                        <table class="table table-responsive">
+                            <thead class="thead-light">
+                                <tr>
+                                    <td>Day</td>
+                                    <td>Status</td>
+                                    <td>Start Time</td>
+                                    <td>Close Time</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (Model.classroomScheduleDetails.m_lsDayWiseScheduleDetails != null)
+                                {
+                                    for (var i = 0; i < Model.classroomScheduleDetails.m_lsDayWiseScheduleDetails.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>@Model.classroomScheduleDetails.m_lsDayWiseScheduleDetails[i].m_strDayName</td>
+                                            <td>
+                                                @if (Model.classroomScheduleDetails.m_lsDayWiseScheduleDetails[i].IsOpen)
+                                                {
+                                                    <label class="text-primary">Open</label>
+                                                }
+                                                else
+                                                {
+                                                    <label class="text-danger">Closed</label>
+                                                }
+                                            </td>
+                                            <td>@Model.classroomScheduleDetails.m_lsDayWiseScheduleDetails[i].m_strClassroomStartTime</td>
+                                            <td>@Model.classroomScheduleDetails.m_lsDayWiseScheduleDetails[i].m_strClassroomCloseTime</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+        }
+    </div>
+    <!-- Earnings (Monthly) Card Example -->
+
+
+
+</div>
+
+
+
+<section class="container-fluid course-review-section">
+    <h2 class="text-center mt-3 p-2 font-weight-bold container-fluid" style="margin-left:1rem;margin-right:1rem;">Reviews</h2>
+    <div class="p-2 course-rating col-lg-12 row" style="margin-left:1rem;margin-right:1rem;">
+        <div class="col-lg-4">
+            <div class="d-flex">
+                <div class="main-review " id="final-review-content">
+                    5 / 5
+                </div>
+
+                <div class="student-review-count text-primary">
+                    <i class="fa fa-users"></i> 450 students
+                </div>
+            </div>
+
+            <div class="single-reviews">
+                <div class="d-flex justify-content-between">
+                    <i class="fa fa-star fa-2x p-1" style="color:orange;"></i>
+                    <div class="progress review-progress-bar">
+                        <div id="1-start-rating" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                    <h5 class="review-no-of-ratings">1</h5>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <i class="fa fa-star fa-2x p-1" style="color:orange;"></i>
+                    <div class="progress review-progress-bar">
+                        <div id="2-start-rating"  class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                    <h5 class="review-no-of-ratings">2</h5>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <i class="fa fa-star fa-2x p-1" style="color:orange;"></i>
+                    <div class="progress review-progress-bar">
+                        <div id="3-start-rating"  class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                    <h5 class="review-no-of-ratings">3</h5>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <i class="fa fa-star fa-2x p-1" style="color:orange;"></i>
+                    <div class="progress review-progress-bar">
+                        <div id="4-start-rating"  class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                    <h5 class="review-no-of-ratings">4</h5>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <i class="fa fa-star fa-2x p-1" style="color:orange;"></i>
+                    <div class="progress review-progress-bar">
+                        <div id="5-start-rating"  class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                    <h5 class="review-no-of-ratings">5</h5>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-6">
+
+            <div class="every-users-rating pt-2 pb-2 font-weight-bold" id="classroom_name_for_review">Top reviews </div>
+            <div id="reviewsContainer"></div>
+           
+        </div>
+
+    </div>
+</section>
+<div class="row d-md-flex align-items-center justify-content-center">
+    <div class="col-md-12 text-center heading-section heading-section-black ftco-animate">
+        <h4 class="mb-1 font-weight-bolder"><span>Features available in our live classes</span> </h4>
+        <h6 class="mb-1"><span> “who knows, does it live” </span> </h6>
+        <div class="row">
+            <div class="col-lg-3 text-center p-3">
+                <div class="card-body">
+                    <img src="~/Images/icon/web_icons/certificate.png" style="height:100px;width:100px;" />
+                    <h4>Certificate of completion</h4>
+                </div>
+            </div>
+            <div class="col-lg-3 text-center p-3">
+                <div class="card-body">
+                    <img src="~/Images/icon/web_icons/video.png" style="height:100px;width:100px;" />
+                    <h4>Life time study material access</h4>
+                </div>
+            </div>
+            <div class="col-lg-3 text-center p-3">
+                <div class="card-body">
+                    <img src="~/Images/icon/web_icons/messenger.png" style="height:100px;width:100px;" />
+                    <h4>Doubt solving at any time</h4>
+                </div>
+            </div>
+            <div class="col-lg-3 text-center p-3">
+                <div class="card-body">
+                    <img src="~/Images/icon/web_icons/job-search.png" style="height:100px;width:100px;" />
+                    <h4>Job opportunities</h4>
+                    <h6></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<section class="ftco-section ftco-counter img" id="section-counter" style="padding-top:0.5rem;" data-stellar-background-ratio="0.5">
+    <div class="container text-center">
+
+        <div class="row justify-content-center pb-1">
+            <div class="col-md-12 text-center heading-section heading-section-black ftco-animate">
+                <h2 class="mb-1 font-weight-bolder"><span>Certificate of completion</span> </h2>
+                <img class="img-fluid" src="~/Images/rmc_certifcate_sample.jpg.jpg" style="max-height:40vh;" />
+                <hr style="max-width:50vw;" />
+            </div>
+        </div>
+    </div>
+</section>
+<div class="accordion p-2 bg-white" id="accordionExample">
+    <h1 class="text-center mb-1 font-weight-bolder text-primary"><span>FAQs</span> </h1>
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h2 class="mb-0">
+                <button class="btn btn-link font-weight-bolder" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    What if I miss the class?
+                </button>
+            </h2>
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div class="card-body">
+                If you miss the class you can attent in any other session. You can view recorded sessions also.
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingTwo">
+            <h2 class="mb-0">
+                <button class="btn btn-link collapsed font-weight-bolder" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Can I attend demo session?
+                </button>
+            </h2>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+            <div class="card-body">
+                Yes you can attend demo session for free. Before the final class will be started you can attend demo live classes.
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingThree">
+            <h2 class="mb-0">
+                <button class="btn btn-link collapsed font-weight-bolder" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Can I cancel my memebership and get refund?
+                </button>
+            </h2>
+        </div>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+            <div class="card-body">
+                Yes you are eligible for refund in the period of thress classes.
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingFour">
+            <h2 class="mb-0">
+                <button class="btn btn-link collapsed font-weight-bolder" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseThree">
+                    When will I get the certificate?
+                </button>
+            </h2>
+        </div>
+        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
+            <div class="card-body">
+                You will get the certificate after completion of all the live sessions and study materials.
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    (function () {
+        'use strict';
+        onpageshow = init();
+    })();
+    function getAboutCourse() {
+        $("#courseBody").html(aboutCourseDetails);
+    }
+    var aboutCourseDetails;
+    function showSpinner()
+    {
+       $("#spinner").show();
+    }
+    function hideSpinner()
+    {
+        $("#spinner").fadeOut();
+    }
+
+    //----------------Index Section-------------------------------------
+
+    var indexDetails = [];
+    var courseId = 0;
+    //-----------------------Course section start----------------------
+    function init() {
+        debugger
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetClasroomDetails?id=".concat("@ViewBag.Id"),
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    var classroomDetails = data.classroom_details;
+                    $("#classroomName").text(classroomDetails.classroom_name);
+                    $("#classroom_name_for_review").text("Top reviews for ".concat(classroomDetails.classroom_name));
+                    $("#classroomDescription").text(classroomDetails.classroom_description);
+                    $("#classroomJoiningFee").text(classroomDetails.classroom_joining_fee);
+                    if (classroomDetails.classroom_joining_fee != "free") {
+                        $("#classroomJoiningFeeMain").text(2 * parseInt(classroomDetails.classroom_joining_fee));
+                    }
+                    else {
+                        $("#classroomJoiningFeeMain").hide();
+                    }
+                    $("#demoClassrooms").text("Attend " + classroomDetails.no_of_demo_sessions+" sessions free and pay only after you are satisfied.");
+                    $("#classroomCreationDate").text("Creation date:" + classroomDetails.creation_date);
+                    if (classroomDetails.stu_classroom_class_start_date != null && classroomDetails.stu_classroom_class_start_date != "") {
+                        $("#registration-last-date").text("Hurry! Few seats available. Live class will start from " + classroomDetails.stu_classroom_class_start_date+".");
+                    }
+                    else {
+                        $("#registration-last-date").text("Hurry! Few seats available. Seats Filling fast.")
+                    }
+                    if (classroomDetails.is_registration_closed) {
+                        $("#enrollNowButton").hide();
+                        $("#registration-last-date").text("Sorry!, You can not join this course. Registration has been closed for this course. If still want to join plz contact on info@readmycourse.com")
+                    }
+
+                    $("#classroom_bg_content").css("background-image", 'url(' + classroomDetails.background_url + ')');
+                    hideSpinner();
+                }
+                hideSpinner();
+                getClassroomReviews();
+            }
+        });
+    }
+    function requestClassroomPayment()
+    {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/JoinClassroomPayNow?ClassroomId=".concat("@ViewBag.id"),
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    if (data.is_free_course && data.is_joined)
+                    {
+                        triggerClassroomSuccess();
+                    }
+                    else {
+                        createRazroPayPayemntRequest(data.payment_data);
+                    }
+                }
+                else {
+
+                }
+            }
+        });
+    }
+    function createRazroPayPayemntRequest(data)
+    {
+    var options = {
+        "key": data.key, // Enter the Key ID generated from the Dashboard
+        "amount":data.payment_data.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": data.payment_data.currency,
+        "name": data.name,
+        "description": data.description,
+        "image": data.image,
+        "order_id": data.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response) {
+            var razorPayOrder = {
+                "razorpay_payment_id": response.razorpay_payment_id,
+                "razorpay_order_id": response.razorpay_order_id,
+                "razorpay_signature": response.razorpay_signature,
+            }
+            var pass = {
+                "order_id": data.order_id,
+                "classroom_id":"@ViewBag.id",
+                "payment_response": razorPayOrder
+            }
+            joinClassroom(pass);
+        },
+        //"prefill": {
+        //    "name": "Gaurav Kumar",
+        //    "email": "gaurav.kumar@example.com",
+        //    "contact": "7317553431"
+        //},
+        "notes": {
+            "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+            "color": "#CE51F0"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+    }
+    function triggerClassroomSuccess()
+    {
+        $("#successModal").modal('show');
+        $("#enrollNowButton").remove();
+        $("#successbadge").show();
+        $("#goToCourse").show();
+        $("#classroomJoiningText").remove();
+    }
+    function joinClassroomTrial() {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/JoinClassroomTrial?ClassroomId=".concat("@ViewBag.id"),
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    triggerClassroomSuccess();
+                }
+                else {
+                    $("#failModal").modal('show');
+                    $("#infoMessageFail").test('Classroom could not be joined');
+                }
+            }
+        });
+    }
+    function joinClassroom(razorPayResponse) {
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(razorPayResponse),
+            url: "/api/v1/Course/JoinClassroom",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    triggerClassroomSuccess();
+                }
+                else {
+                    $("#failModal").modal('show');
+                    $("#infoMessageFail").test('Classroom could not be joined');
+                }
+            }
+        });
+    }
+    function getClassroomReviews() {
+
+        debugger;
+        $.ajax({
+            headers: { "Authorization": 'Bearer ' + localStorage.getItem('jwttoken') },
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: "/api/v1/Course/GetClassroomReviews?ClassroomId=@ViewBag.id",
+            success: function (data) {
+                debugger;
+                if (data != null && data.response_code == 1) {
+                    review = data.data;
+                    if (review.avg_rating != null) {
+                        $("#1-start-rating").css("width", "" + review.avg_rating.star_1 + "%");
+                        $("#1-start-rating").text("" + review.avg_rating.star_1 + "%");
+                        $("#2-start-rating").css("width", "" + review.avg_rating.star_2 + "%");
+                        $("#2-start-rating").text("" + review.avg_rating.star_2 + "%");
+                        $("#3-start-rating").css("width", "" + review.avg_rating.star_3 + "%");
+                        $("#3-start-rating").text("" + review.avg_rating.star_3 + "%");
+                        $("#4-start-rating").css("width", "" + review.avg_rating.star_4 + "%");
+                        $("#4-start-rating").text("" + review.avg_rating.star_4 + "%");
+                        $("#5-start-rating").css("width", "" + review.avg_rating.star_5 + "%");
+                        $("#5-start-rating").text("" + review.avg_rating.star_5 + "%");
+                        $("#final-review-content").text("" + review.avg_rating.avg_rating + " / 5");
+                    }
+                    reviews = review.reviews;
+                    if (reviews != null) {
+                        var rating = "";
+                        for (var i = 0; i < reviews.length; i++) {
+                            review_details = reviews[i];
+                            rating+='<div class="d-flex">'
+                                + '<img class="review-image" src="' + review_details.profile_url + '" onerror="loadDefaultImage(this)" />'
+                                        +'<div>'
+                                + '<a href="StudentProfile?id=' + review_details.user_id+'" class="font-weight-bold reviewer-name">'+review_details.name+'</a>'
+                                            +'<p class="review-date">'+review_details.date+'</p> '
+                                        +'</div> '
+                                    +'</div>'
+                            +'<div class="single-review-stars">';
+                            for (var j = 1; j < review_details.no_of_ratings; j++) {
+                                rating += '<i class="fa fa-star p-1" style="color:orange;"></i>';
+                            }
+                            if (review_details.no_of_ratings % 1 == 0) {
+                                rating += '<i class="fa fa-star p-1" style="color:orange;"></i>';
+                            }
+                            else {
+                                rating += '<i class="fa fa-star icon-star-half p-1" style="color:orange;"></i>';
+                            }
+                            rating += '</div>';   
+                            rating += '<p>' + review_details.feedback + '</p>';
+                        
+                        }
+                        $("#reviewsContainer").append(rating);
+                    }
+                }
+                else {
+
+                }
+            }
+        });
+    }
+    function loadDefaultImage(id) {
+        id.src = '/Images/avatar-user.png';
+    }
+</script>
